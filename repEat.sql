@@ -6,14 +6,35 @@ USE `repEat`;
 -- Creazione database
 --
 
+DROP TABLE IF EXISTS `Limiti`;
+CREATE TABLE `Limiti` (
+  `livello` int(11) UNSIGNED NOT NULL,
+  `max_dipendenti` tinyint UNSIGNED NOT NULL,
+  `max_tavoli` tinyint UNSIGNED NOT NULL,
+  `max_menu` tinyint UNSIGNED NOT NULL,
+  `max_stanza` tinyint UNSIGNED NOT NULL,
+  `durata_validita` int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`livello`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `Licenza`;
+CREATE TABLE `Licenza` (
+  `chiave` int(11) UNSIGNED NOT NULL,
+  `data_acquisto` DATE NOT NULL,
+  `livello` int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY(`chiave`),
+  foreign key(`livello`) references Limiti(`livello`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `Ristorante`;
 CREATE TABLE `Ristorante` (
   `id_ristorante` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nome_ristorante` varchar(255) NOT NULL,
   `indirizzo` varchar(255) NOT NULL,
   `limite_consegna_ordine` tinyint UNSIGNED DEFAULT 15, -- minuti prima che un ordine sia considerato definitivamente in ritardo
-
+  `license_key` int(11) UNSIGNED,
   PRIMARY KEY (`id_ristorante`),
+  foreign key (`license_key`) references Licenza(`chiave`),
   UNIQUE KEY `nomeRistorante_UNIQUE` (`nome_ristorante`),
   UNIQUE KEY `indirizzo_UNIQUE` (`indirizzo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -27,7 +48,7 @@ CREATE TABLE `Utente` (
   `name` varchar(32) NOT NULL,
   `surname` varchar(32) NOT NULL,*/
   `pref_theme` enum('light', 'dark') DEFAULT 'light',
-  `privilegi` bit(3), -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
+  `privilegi` bit(3) DEFAULT 0, -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
   `id_ristorante` int(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username_UNIQUE` (`username`),
@@ -130,32 +151,17 @@ CREATE TABLE `Ordine` (
   `ts_consegna` timestamp NULL DEFAULT NULL,
   `conto` int(11) UNSIGNED NOT NULL,
   `piatto` int(11) UNSIGNED NOT NULL,
-  `utente` int(11) UNSIGNED NOT NULL,
+  `utente_ordine` int(11) UNSIGNED NOT NULL,
+  `utente_preparazione` int(11) UNSIGNED,
+  `utente_consegna` int(11) UNSIGNED,
   PRIMARY KEY (`id_ordine`),
   foreign key(`conto`) references Conto(`id_conto`),
   foreign key(`piatto`) references Piatto(`id_piatto`),
-  foreign key(`utente`) references Utente(`id_utente`)
+  foreign key(`utente_ordine`) references Utente(`id_utente`)
+  foreign key(`utente_preparazione`) references Utente(`id_utente`)
+  foreign key(`utente_consegna`) references Utente(`id_utente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `Limiti`;
-CREATE TABLE `Limiti` (
-  `livello` int(11) UNSIGNED NOT NULL,
-  `max_dipendenti` tinyint UNSIGNED NOT NULL,
-  `max_tavoli` tinyint UNSIGNED NOT NULL,
-  `max_menu` tinyint UNSIGNED NOT NULL,
-  `max_stanza` tinyint UNSIGNED NOT NULL,
-  `durata_validita` int(11) UNSIGNED NOT NULL,
-  PRIMARY KEY (`livello`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `Licenza`;
-CREATE TABLE `Licenza` (
-  `chiave` int(11) UNSIGNED NOT NULL,
-  `data_acquisto` DATE NOT NULL,
-  `livello` int(11) UNSIGNED NOT NULL,
-  PRIMARY KEY(`chiave`),
-  foreign key(`livello`) references Limiti(`livello`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Popolamento
@@ -179,41 +185,94 @@ INSERT INTO `Utente` VALUES (1,'pippo','pippo@gmail.com','$2y$10$vm/G2EAMu9nhZnk
 -- Funzioni
 -- 
 
-/*
 
-register_user(...) -- invalid info, existing user, 
-update_user(id, ...), -- invalid id, invalid info
-delete_user(id), -- DON'T IMPLEMENT IT!!
-set_privilege(id, user_id, priv)
-get_user(id) -- invalid id
 
-get_staff_stats(id, rest_id) -- invalid restaurant id
-register_restaurant(key, id, ...), -- invalid key, out of date key, invalid id
-update_restaurant(id, ...), -- invalid restaurant id
-get_restaurant(id), 
-get_restaurant_detailed(id), 
-list_restaurants()
+-- register_user(...) -- invalid info, existing user, 
+INSERT INTO Utente (username, mail, password) VALUES ('username', 'mail', 'password');
+-- update_user(id, ...), -- invalid id, invalid info
+UPDATE Utente SET username = 'username', mail = 'mail', pasword = 'password', pref_theme = 'pref_theme' WHERE id_utente = 'id';
+-- delete_user(id), -- DON'T IMPLEMENT IT!!
+-- set_privilege(id, user_id, priv)
+UPDATE Utente SET privilegi = 'priv' WHERE id_utente = 'id';
+
+-- get_user(id) -- invalid id
+SELECT * FROM Utente WHERE id_utente = 'id';
+
+-- get_staff_stats(id, rest_id) -- invalid restaurant id
+-- TODO!!
+-- register_restaurant(key, id, ...), -- invalid key, out of date key, invalid id
+INSERT INTO Ristorante (nome_ristorante, indirizzo) VALUES ('nome', 'indirizzo');
+-- update_restaurant(id, ...), -- invalid restaurant id
+UPDATE Ristorante SET nome_ristorante = 'nome_ristorante', indirizzo = 'indirizzo', limite_consegna_ordine = 'limite_consegna_ordine' WHERE id_ristorante = 'id';
+-- get_restaurant(id), 
+SELECT * FROM Ristorante WHERE id_ristorante = 'id';
+-- get_restaurant_detailed(id), 
+-- list_restaurants()
+SELECT nome_ristorante FROM Ristorante;
 
 -- available components: stanza, tavolo, menu, piatto
-add_component(id, component, ...), 
-update_component(id, component_id, ...), 
-delete_component(id, component_id)
+-- add_component(id, component, ...), 
+-- update_component(id, component_id, ...), 
+-- delete_component(id, component_id),
+-- get_component(id)
 
-make_order(id, ...), 
-set_prepared(id, order_id), 
-set_delivered(id, order_id), 
-get_orders(id)
-get_max_table_wait(id, table_id)
+-- FIX!!
+INSERT INTO Stanza () VALUES ();
+INSERT INTO Tavolo () VALUES ();
+INSERT INTO Menu () VALUES ();
+INSERT INTO Piatto () VALUES ();
 
-get_check(id, table_id), 
-review(check_id)
+UPDATE Stanza SET privilegi = 'priv' WHERE id_Stanza = 'id';
+UPDATE Tavolo SET privilegi = 'priv' WHERE id_Tavolo = 'id';
+UPDATE Menu SET privilegi = 'priv' WHERE id_Menu = 'id';
+UPDATE Piatto SET privilegi = 'priv' WHERE id_Piatto = 'id';
 
-write_message(id, ...), 
-get_messages(id)
-send_request(id, restaurant_id), 
-accept_request(msg_id)
+DELETE FROM Stanza WHERE id_Stanza = 'id';
+DELETE FROM Tavolo WHERE id_Tavolo = 'id';
+DELETE FROM Menu WHERE id_Menu = 'id';
+DELETE FROM Piatto WHERE id_Piatto = 'id';
 
-generate_key(level), 
-activate_key(key, id)
+SELECT * FROM Stanza WHERE id_Stanza = 'id';
+SELECT * FROM Tavolo WHERE id_Tavolo = 'id';
+SELECT * FROM Menu WHERE id_Menu = 'id';
+SELECT * FROM Piatto WHERE id_Piatto = 'id';
 
-*/
+-- make_order(id, ...), 
+INSERT INTO Ordine (utente_ordine, conto, piatto, quantita, note, ts_ordine) VALUES ('utente', 'conto', 'piatto', 'quantita', 'note', CURRENT_TIMESTAMP);
+
+-- set_prepared(id, order_id), 
+UPDATE Ordine SET ts_preparazione=CURRENT_TIMESTAMP, utente_preparazione = 'user' WHERE id_ ordine = 'id';
+-- set_delivered(id, order_id), 
+UPDATE Ordine SET ts_consegna=CURRENT_TIMESTAMP, utente_consegna = 'user' WHERE id_ ordine = 'id';
+-- get_orders(id)
+SELECT * 
+    FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto
+    WHERE C.ristorante = (SELECT ristorante
+                            FROM Utente
+                            WHERE id_utente = 'id');
+-- get_max_table_wait(id, table_id) TODO!!
+
+-- get_check(id, table_id),  TODO!!
+-- review(check_id, review)
+UPDATE Conto SET valutwzione = 'valutazione' WHERE id_conto = 'conto';
+
+  `id_msg` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `is_req` bit(1) NOT NULL,
+  `msg` text DEFAULT NULL,
+  `ts` timestamp NOT NULL,
+  `from` int(11) UNSIGNED NOT NULL,
+  `to` int(11) UNSIGNED NOT NULL,
+ 
+-- write_message(id, ...), 
+INSERT INTO Messaggio (from, to, msg, is_req, ts) VALUES ('id', 'dest', 'msg', 0, CURRENT_TIMESTAMP);
+
+-- get_messages(id)
+SELECT * FROM Messaggio WHERE from = 'id' AND to = 'dest';
+-- send_request(id, restaurant_id), 
+INSERT INTO Messaggio (from, to, msg, is_req, ts) VALUES ('id', 'dest', NULL, 1, CURRENT_TIMESTAMP);
+-- accept_request(msg_id) TODO!!
+
+-- generate_key(level),  TODO!!
+-- activate_key(key, id) TODO!!
+
+
