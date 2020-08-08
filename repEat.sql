@@ -28,7 +28,7 @@ CREATE TABLE `Utente` (
   `surname` varchar(32) NOT NULL,*/
   `pref_theme` enum('light', 'dark') DEFAULT 'light',
   `privilegi` bit(3), -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
-  `id_ristorante` int(11),
+  `id_ristorante` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`mail`),
@@ -39,7 +39,7 @@ DROP TABLE IF EXISTS `Messaggio`;
 CREATE TABLE `Messaggio` (
   `id_msg` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `is_req` bit(1) NOT NULL,
-  `msg` text,
+  `msg` text DEFAULT NULL,
   `ts` timestamp NOT NULL,
   `from` int(11) UNSIGNED NOT NULL,
   `to` int(11) UNSIGNED NOT NULL,
@@ -52,19 +52,19 @@ DROP TABLE IF EXISTS `Stanza`;
 CREATE TABLE `Stanza` (
   `id_stanza` int(11) NOT NULL, -- TODO: make manual auto-increment per restaurant 
   `nome_stanza` varchar(32) NOT NULL,
-  `ristorante` int(11),
+  `ristorante` int(11) NOT NULL,
   PRIMARY KEY (`id_stanza`, `ristorante`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `Tavolo`;
 CREATE TABLE `Tavolo` (
-  `id_tavolo` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tavolo` int(11) NOT NULL AUTO_INCREMENT, -- TODO: make manual auto-increment per room per restaurant 
   `percentX` tinyint NOT NULL DEFAULT 0,
   `percentY` tinyint NOT NULL DEFAULT 0,
   `stato` enum('libero', 'ordinato', 'pronto', 'servito') NOT NULL DEFAULT 'libero',
   `stanza` int(11) NOT NULL,
-  `ristorante` int(11),
+  `ristorante` int(11) NOT NULL,
   PRIMARY KEY (`id_tavolo`, `stanza`,`ristorante`),
   foreign key(`stanza`) references Stanza(`id_stanza`),
   foreign key(`ristorante`) references Stanza(`ristorante`)
@@ -73,9 +73,9 @@ CREATE TABLE `Tavolo` (
 DROP TABLE IF EXISTS `Menu`;
 CREATE TABLE `Menu` (
   `id_menu` int(11) NOT NULL AUTO_INCREMENT,
-  `orarioInizio` TIME,
-  `orarioFine` TIME,
-  `ristorante` int(11),
+  `orarioInizio` TIME DEFAULT NULL,
+  `orarioFine` TIME DEFAULT NULL,
+  `ristorante` int(11) NOT NULL,
   PRIMARY KEY (`id_menu`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -85,9 +85,12 @@ CREATE TABLE `Piatto` (
   `id_piatto` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(32) NOT NULL,
   `prezzo` float UNSIGNED NOT NULL, -- per porzione o al kg
-  `ingredienti` varchar(255),
-  `allergeni` set('pesce', 'molluschi', 'latticini', 'glutine', 'frutta a guscio', 'crostacei', 'arachidi', 'lupini', 'uova', 'solfiti', 'soia', 'sesamo', 'senape', 'sedano', 'piccante', 'surgelato'),
-  `ristorante` int(11),
+  `ingredienti` varchar(255) DEFAULT NULL,
+  `allergeni` set('pesce', 'molluschi', 'latticini', 'glutine', 
+					'frutta a guscio', 'crostacei', 'arachidi', 
+                    'lupini', 'uova', 'solfiti', 'soia', 'sesamo', 
+                    'senape', 'sedano', 'piccante', 'surgelato') DEFAULT NULL, 
+  `ristorante` int(11) NOT NULL,
   PRIMARY KEY (`id_piatto`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -106,10 +109,10 @@ CREATE TABLE `Conto` (
   `valutazione` tinyint,
   `totale` float UNSIGNED,
   `tipo_pagamento` enum('carta', 'bancomat', 'contanti'),
-  `ts_pagamento` timestamp,
+  `ts_pagamento` timestamp DEFAULT CURRENT_TIMESTAMP,
   `tavolo` int(11) NOT NULL,
   `stanza` int(11) NOT NULL,
-  `ristorante` int(11),
+  `ristorante` int(11) NOT NULL,
   PRIMARY KEY (`id_conto`),
   foreign key(`tavolo`) references Tavolo(`id_tavolo`),
   foreign key(`stanza`) references Tavolo(`stanza`),
@@ -120,11 +123,11 @@ CREATE TABLE `Conto` (
 DROP TABLE IF EXISTS `Limiti`;
 CREATE TABLE `Limiti` (
   `livello` int(11) NOT NULL,
-  `max_dipendenti` tinyint,
-  `max_tavoli` tinyint,
-  `max_menu` tinyint,
-  `max_stanza` tinyint,
-  `durata_validita` int(11),
+  `max_dipendenti` tinyint NOT NULL,
+  `max_tavoli` tinyint NOT NULL,
+  `max_menu` tinyint NOT NULL,
+  `max_stanza` tinyint NOT NULL,
+  `durata_validita` int(11) NOT NULL,
   PRIMARY KEY (`livello`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -141,8 +144,8 @@ CREATE TABLE `Licenza` (
 -- Popolamento
 --
 
-INSERT INTO `Ristorante` (nome_ristorante, indirizzo) VALUES ('Pesce Rosso', 'via Rossi 34'),
-																('Gatto blu', 'via Verdi 82');
+INSERT INTO `Ristorante` (nome_ristorante, indirizzo) VALUES ('Pesce Rosso', 'via Rossi 34'), -- id 1
+																('Gatto blu', 'via Verdi 82'); -- id 2
 
 
 INSERT INTO `Utente` VALUES (1,'pippo','pippo@gmail.com','$2y$10$vm/G2EAMu9nhZnkW7QiBO.ka9Z5XnFEERXij17zdFkzfdIa/Z7KJW', 'light', 0, 1), -- password: pippo 
@@ -158,19 +161,23 @@ INSERT INTO `Utente` VALUES (1,'pippo','pippo@gmail.com','$2y$10$vm/G2EAMu9nhZnk
 -- 
 -- Funzioni
 -- 
+
 /*
+
 register_user(...) -- invalid info, existing user, 
 update_user(id, ...), -- invalid id, invalid info
-delete_user(id), -- invalid id
+delete_user(id), -- DON'T IMPLEMENT IT!!
+set_privilege(id, user_id, priv)
 get_user(id) -- invalid id
 
-get_staff_stats(rest_id) -- invalid restaurant id
+get_staff_stats(id, rest_id) -- invalid restaurant id
 register_restaurant(key, id, ...), -- invalid key, out of date key, invalid id
 update_restaurant(id, ...), -- invalid restaurant id
 get_restaurant(id), 
 get_restaurant_detailed(id), 
 list_restaurants()
 
+-- available components: stanza, tavolo, menu, piatto
 add_component(id, component, ...), 
 update_component(id, component_id, ...), 
 delete_component(id, component_id)
