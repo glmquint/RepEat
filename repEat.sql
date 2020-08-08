@@ -8,7 +8,7 @@ USE `repEat`;
 
 DROP TABLE IF EXISTS `Ristorante`;
 CREATE TABLE `Ristorante` (
-  `id_ristorante` int(11) NOT NULL AUTO_INCREMENT,
+  `id_ristorante` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nome_ristorante` varchar(255) NOT NULL,
   `indirizzo` varchar(255) NOT NULL,
   `limite_consegna_ordine` tinyint UNSIGNED DEFAULT 15, -- minuti prima che un ordine sia considerato definitivamente in ritardo
@@ -28,7 +28,7 @@ CREATE TABLE `Utente` (
   `surname` varchar(32) NOT NULL,*/
   `pref_theme` enum('light', 'dark') DEFAULT 'light',
   `privilegi` bit(3), -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
-  `id_ristorante` int(11) DEFAULT NULL,
+  `id_ristorante` int(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`mail`),
@@ -50,21 +50,21 @@ CREATE TABLE `Messaggio` (
 
 DROP TABLE IF EXISTS `Stanza`;
 CREATE TABLE `Stanza` (
-  `id_stanza` int(11) NOT NULL, -- TODO: make manual auto-increment per restaurant 
+  `id_stanza` int(11) UNSIGNED NOT NULL, -- TODO: make manual auto-increment per restaurant 
   `nome_stanza` varchar(32) NOT NULL,
-  `ristorante` int(11) NOT NULL,
+  `ristorante` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_stanza`, `ristorante`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `Tavolo`;
 CREATE TABLE `Tavolo` (
-  `id_tavolo` int(11) NOT NULL AUTO_INCREMENT, -- TODO: make manual auto-increment per room per restaurant 
-  `percentX` tinyint NOT NULL DEFAULT 0,
-  `percentY` tinyint NOT NULL DEFAULT 0,
+  `id_tavolo` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, -- TODO: make manual auto-increment per room per restaurant 
+  `percentX` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `percentY` tinyint UNSIGNED NOT NULL DEFAULT 0,
   `stato` enum('libero', 'ordinato', 'pronto', 'servito') NOT NULL DEFAULT 'libero',
-  `stanza` int(11) NOT NULL,
-  `ristorante` int(11) NOT NULL,
+  `stanza` int(11) UNSIGNED NOT NULL,
+  `ristorante` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_tavolo`, `stanza`,`ristorante`),
   foreign key(`stanza`) references Stanza(`id_stanza`),
   foreign key(`ristorante`) references Stanza(`ristorante`)
@@ -72,17 +72,17 @@ CREATE TABLE `Tavolo` (
 
 DROP TABLE IF EXISTS `Menu`;
 CREATE TABLE `Menu` (
-  `id_menu` int(11) NOT NULL AUTO_INCREMENT,
+  `id_menu` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `orarioInizio` TIME DEFAULT NULL,
   `orarioFine` TIME DEFAULT NULL,
-  `ristorante` int(11) NOT NULL,
+  `ristorante` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_menu`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `Piatto`;
 CREATE TABLE `Piatto` (
-  `id_piatto` int(11) NOT NULL AUTO_INCREMENT,
+  `id_piatto` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nome` varchar(32) NOT NULL,
   `prezzo` float UNSIGNED NOT NULL, -- per porzione o al kg
   `ingredienti` varchar(255) DEFAULT NULL,
@@ -90,29 +90,29 @@ CREATE TABLE `Piatto` (
 					'frutta a guscio', 'crostacei', 'arachidi', 
                     'lupini', 'uova', 'solfiti', 'soia', 'sesamo', 
                     'senape', 'sedano', 'piccante', 'surgelato') DEFAULT NULL, 
-  `ristorante` int(11) NOT NULL,
+  `ristorante` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_piatto`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `ComposizioneMenu`;
 CREATE TABLE `composizioneMenu` (
-  `menu` int(11) NOT NULL,
-  `piatto` int(11) NOT NULL,
+  `menu` int(11) UNSIGNED NOT NULL,
+  `piatto` int(11) UNSIGNED NOT NULL,
   foreign key(`menu`) references Menu(`id_menu`),
   foreign key(`piatto`) references Piatto(`id_piatto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `Conto`;
 CREATE TABLE `Conto` (
-  `id_conto` int(11) NOT NULL AUTO_INCREMENT,
+  `id_conto` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `valutazione` tinyint,
   `totale` float UNSIGNED,
   `tipo_pagamento` enum('carta', 'bancomat', 'contanti'),
   `ts_pagamento` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `tavolo` int(11) NOT NULL,
-  `stanza` int(11) NOT NULL,
-  `ristorante` int(11) NOT NULL,
+  `tavolo` int(11) UNSIGNED NOT NULL,
+  `stanza` int(11) UNSIGNED NOT NULL,
+  `ristorante` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_conto`),
   foreign key(`tavolo`) references Tavolo(`id_tavolo`),
   foreign key(`stanza`) references Tavolo(`stanza`),
@@ -120,22 +120,39 @@ CREATE TABLE `Conto` (
 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `Ordine`;
+CREATE TABLE `Ordine` (
+  `id_ordine` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `note` varchar(255) DEFAULT NULL,
+  `quantita` float UNSIGNED NOT NULL DEFAULT 1,
+  `ts_ordine` timestamp NOT NULL,
+  `ts_preparazione` timestamp NULL DEFAULT NULL,
+  `ts_consegna` timestamp NULL DEFAULT NULL,
+  `conto` int(11) UNSIGNED NOT NULL,
+  `piatto` int(11) UNSIGNED NOT NULL,
+  `utente` int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id_ordine`),
+  foreign key(`conto`) references Conto(`id_conto`),
+  foreign key(`piatto`) references Piatto(`id_piatto`),
+  foreign key(`utente`) references Utente(`id_utente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `Limiti`;
 CREATE TABLE `Limiti` (
-  `livello` int(11) NOT NULL,
-  `max_dipendenti` tinyint NOT NULL,
-  `max_tavoli` tinyint NOT NULL,
-  `max_menu` tinyint NOT NULL,
-  `max_stanza` tinyint NOT NULL,
-  `durata_validita` int(11) NOT NULL,
+  `livello` int(11) UNSIGNED NOT NULL,
+  `max_dipendenti` tinyint UNSIGNED NOT NULL,
+  `max_tavoli` tinyint UNSIGNED NOT NULL,
+  `max_menu` tinyint UNSIGNED NOT NULL,
+  `max_stanza` tinyint UNSIGNED NOT NULL,
+  `durata_validita` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`livello`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `Licenza`;
 CREATE TABLE `Licenza` (
-  `chiave` int(11) NOT NULL,
+  `chiave` int(11) UNSIGNED NOT NULL,
   `data_acquisto` DATE NOT NULL,
-  `livello` int(11) NOT NULL,
+  `livello` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY(`chiave`),
   foreign key(`livello`) references Limiti(`livello`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
