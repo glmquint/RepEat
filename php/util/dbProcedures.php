@@ -84,7 +84,7 @@
     	return null;
 	}
 
-	function check_existing_fieldValue($field, $value){
+	function check_existing_fieldValue($field, $value){ // FIX: This seems redundant...
 		echo "\nfield: " . $field;
 		echo "\nvalue: " . $value;
 		global $repEatDB;
@@ -101,9 +101,15 @@
 		
 	}
 
-	function addLicenseLevel($id_livello, $max_dipendenti, $max_tavoli, $max_menu, $max_stanze, $durata_validita, $prezzo){  // CURRENTLY NOT PUBLICLY AVAILABLE
+	function addLicenseLevel($id_livello, $max_dipendenti, $max_tavoli, $max_menu, $max_stanze, $durata_validita, $prezzo){  // CURRENTLY NOT AVAILABLE
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$id_livello = $trackMyMoviesDb->sqlInjectionFilter($id_livello);
+		$max_dipendenti = $trackMyMoviesDb->sqlInjectionFilter($max_dipendenti);
+		$max_tavoli = $trackMyMoviesDb->sqlInjectionFilter($max_tavoli);
+		$max_menu = $trackMyMoviesDb->sqlInjectionFilter($max_menu);
+		$max_stanze = $trackMyMoviesDb->sqlInjectionFilter($max_stanze);
+		$durata_validita = $trackMyMoviesDb->sqlInjectionFilter($durata_validita);
+		$prezzo = $trackMyMoviesDb->sqlInjectionFilter($prezzo);
 		$queryText = 'INSERT INTO Livello (id_livello, max_dipendenti, max_tavoli, max_menu, max_stanze, durata_validita, prezzo) VALUES ('.
 											$id_livello . ', ' . $max_dipendenti . ', ' . $max_tavoli . ', ' . $max_menu . ', ' . $max_stanze . ', ' . $durata_validita . ', ' . $prezzo . ');';
 						
@@ -114,7 +120,6 @@
 
 	function listLevels(){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
 		$queryText = 'SELECT * FROM Livello';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -125,7 +130,7 @@
 
 	function generateKey($level){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$level = $trackMyMoviesDb->sqlInjectionFilter($level);
 		$queryText = 'INSERT INTO Licenza (chiave, data_acquisto, livello) VALUE (FLOOR(RAND()*4294967295, CURRENT_DATE, ' . $level . ');';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -135,7 +140,9 @@
 
 	function registerRestaurant($nome_ristorante, $indirizzo, $license_key){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$nome_ristorante = $trackMyMoviesDb->sqlInjectionFilter($nome_ristorante);
+		$indirizzo = $trackMyMoviesDb->sqlInjectionFilter($indirizzo);
+		$license_key = $trackMyMoviesDb->sqlInjectionFilter($license_key);
 		$queryText = 'INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE (\'' . $nome_ristorante . '\', \'' . $indirizzo . '\', ' . $license_key .');';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -146,7 +153,7 @@
 
 	function checkLicenseValidity($restaurant){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$restaurant = $trackMyMoviesDb->sqlInjectionFilter($restaurant);
 		$queryText = 'SELECT IFNULL((SELECT CURRENT_DATE) < '.
 						'(SELECT L.data_attivazione + INTERVAL (IF(Lv.durata_validita = 0, NULL, Lv.durata_validita)) DAY ' .
 						'FROM Licenza L INNER JOIN Ristorante R ON L.chiave = R.license_key INNER JOIN Livello Lv ON L.livello = Lv.id_livello ' .
@@ -158,9 +165,13 @@
 
 	}
 
-	function updateRestaurant(){ // TODO: check isset($var) to make dynamic query
+	function updateRestaurant($nome_ristorante, $indirizzo, $limite_consegna_ordine, $license_key, $ristorante){ // TODO: check isset($var) to make dynamic query
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$nome_ristorante = $trackMyMoviesDb->sqlInjectionFilter($nome_ristorante);
+		$indirizzo = $trackMyMoviesDb->sqlInjectionFilter($indirizzo);
+		$limite_consegna_ordine = $trackMyMoviesDb->sqlInjectionFilter($limite_consegna_ordine);
+		$license_key = $trackMyMoviesDb->sqlInjectionFilter($license_key);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'UPDATE Ristorante SET nome_ristorante = \'' . $nome_ristorante . '\', indirizzo = \''. $indirizzo . '\', limite_consegna_ordine = '. $limite_consegna_ordine . ', license_key = '. $license_key . ' WHERE id_ristorante = '. $ristorante . ';';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -168,9 +179,9 @@
 		return $result;
 	}
 
-	function getRestaurant($id){
+	function getRestaurant($ristorante){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'SELECT * FROM Ristorante WHERE id_ristorante = ' . $ristorante;
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -181,7 +192,6 @@
 
 	function listRestaurants(){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
 		$queryText = 'SELECT nome_ristorante FROM Ristorante';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -193,9 +203,14 @@
 //get_restaurant_detailed(id), TODO AS COMPOSITE FUNCTION IN PHP
 
 
-	function updateUser(id, ...){ //TODO: check isset($var) to make dynamic query
+	function updateUser($username, $mail, $password, $pref_theme, $ristorante, $utente){ //TODO: check isset($var) to make dynamic query
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$username = $trackMyMoviesDb->sqlInjectionFilter($username);
+		$mail = $trackMyMoviesDb->sqlInjectionFilter($mail);
+		$password = $trackMyMoviesDb->sqlInjectionFilter($password);
+		$pref_theme = $trackMyMoviesDb->sqlInjectionFilter($pref_theme);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
+		$utente = $trackMyMoviesDb->sqlInjectionFilter($utente);
 		$queryText = 'UPDATE Utente SET username = \'' . $username . '\', mail = \'' . $mail . '\', password = \'' . password_hash($password, PASSWORD_DEFAULT) . '\', pref_theme = \'' . $pref_theme . '\', ristorante = ' . $ristorante . ' WHERE id_utente = ' . $utente . ';';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -206,9 +221,10 @@
 
 // delete_user(id), -- DONT IMPLEMENT IT!!
 
-	function setPrivilege(){
+	function setPrivilege($privilegi, $target_user){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$privilegi = $trackMyMoviesDb->sqlInjectionFilter($privilegi);
+		$target_user = $trackMyMoviesDb->sqlInjectionFilter($target_user);
 		$queryText = 'UPDATE Utente SET privilegi = ' . $privilegi . ' WHERE id_utente = ' . $target_user ';';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -216,9 +232,9 @@
 		return $result;
 
 	}
-	function getUser(id){
+	function getUser($user){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$user = $trackMyMoviesDb->sqlInjectionFilter($user);
 		$queryText = 'SELECT * FROM Utente WHERE id_utente = ' . $user . ';';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -227,9 +243,9 @@
 
 	}
 
-	function listUsers(rest_id){
+	function listUsers($ristorante){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'SELECT id_utente, username FROM Utente WHERE ristorante = ' . $ristorante . ';';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -241,9 +257,10 @@
 
 // available components: stanza, tavolo, menu, piatto
 
-	function addRoom(){
+	function addRoom($nome_stanza, $ristorante){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$nome_stanza = $trackMyMoviesDb->sqlInjectionFilter($nome_stanza);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'INSERT INTO Stanza (nome_stanza, ristorante) VALUE (\'' . $nome_stanza . '\', ' . $ristorante');';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -252,9 +269,10 @@
 
 	}
 
-	function addTable(){
+	function addTable($stanza, $ristorante){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$stanza = $trackMyMoviesDb->sqlInjectionFilter($stanza);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'INSERT INTO Tavolo (stanza, ristorante) VALUE (' . $stanza . ', ' . $ristorante . ');';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -263,9 +281,9 @@
 
 	}
 
-	function addMenu(){
+	function addMenu($ristorante){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'INSERT INTO Menu (ristorante) VALUE (' . $ristorante . ');';
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -274,9 +292,14 @@
 
 	}
 
-	function addDish(){
+	function addDish($nome_piatto, $categoria, $prezzo, $ingredienti, $allergeni, $ristorante){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$nome_piatto = $trackMyMoviesDb->sqlInjectionFilter($nome_piatto);
+		$categoria = $trackMyMoviesDb->sqlInjectionFilter($categoria);
+		$prezzo = $trackMyMoviesDb->sqlInjectionFilter($prezzo);
+		$ingredienti = $trackMyMoviesDb->sqlInjectionFilter($ingredienti);
+		$allergeni = $trackMyMoviesDb->sqlInjectionFilter($allergeni);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'INSERT INTO Piatto (nome, categoria, prezzo, ingredienti, allergeni, ristorante) VALUE (\'' . $nome_piatto '\', \'' . $categoria . '\', ' . $prezzo . ', \'' . $ingredienti . '\', \'' . $allergeni . '\', ' . $ristorante . ');'; //TODO check for allergeni in set format
 						
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -285,9 +308,10 @@
 
 	}
 
-	function updateRoom(){
+	function updateRoom($nome_stanza, $stanza){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$nome_stanza = $trackMyMoviesDb->sqlInjectionFilter($nome_stanza);
+		$stanza = $trackMyMoviesDb->sqlInjectionFilter($stanza);
 		$queryText = 'UPDATE Stanza SET nome_stanza = \'' . $nome_stanza . '\' WHERE id_Stanza = ' . $stanza . ';';	
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -295,9 +319,11 @@
 
 	}
 
-	function updateTable(){
+	function updateTable($percentX, $percentY, $tavolo){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$percentX = $trackMyMoviesDb->sqlInjectionFilter($percentX);
+		$percentY = $trackMyMoviesDb->sqlInjectionFilter($percentY);
+		$tavolo = $trackMyMoviesDb->sqlInjectionFilter($tavolo);
 		$queryText = 'UPDATE Tavolo SET percentX = ' . $percentX . ', percentY = ' . $percentY . ' WHERE id_Tavolo = ' . $tavolo';';	
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -305,8 +331,10 @@
 
 	}
 
-	function updateMenu(){
+	function updateMenu($orario_inizio, $orario_fine, $menu){
 		global $trackMyMoviesDb;
+		$orario_inizio = $trackMyMoviesDb->sqlInjectionFilter($orario_inizio);
+		$orario_fine = $trackMyMoviesDb->sqlInjectionFilter($orario_fine);
 		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
 		$queryText = 'UPDATE Menu SET orarioInizio = \'' . $orario_inizio . '\', orarioFine = \'' . $orario_fine . '\' WHERE id_Menu = ' . $menu';';	
 		$result = $trackMyMoviesDb->performQuery($queryText);
@@ -315,9 +343,13 @@
 
 	}
 
-	function updateDish(){
+	function updateDish($nome_piatto, $prezzo, $ingredienti, $allergeni, $piatto){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$nome_piatto = $trackMyMoviesDb->sqlInjectionFilter($nome_piatto);
+		$prezzo = $trackMyMoviesDb->sqlInjectionFilter($prezzo);
+		$ingredienti = $trackMyMoviesDb->sqlInjectionFilter($ingredienti);
+		$allergeni = $trackMyMoviesDb->sqlInjectionFilter($allergeni);
+		$piatto = $trackMyMoviesDb->sqlInjectionFilter($piatto);
 		$queryText = 'UPDATE Piatto SET nome = \'' . $nome_piatto . '\', prezzo = ' . $prezzo . ', ingredienti = \'' . $ingredienti . '\', allergeni = \'' . $allergeni . '\' WHERE id_Piatto = ' . $piatto . ';';	
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -325,9 +357,9 @@
 
 	}
 
-	function getRoom(){
+	function getRoom($stanza){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$stanza = $trackMyMoviesDb->sqlInjectionFilter($stanza);
 		$queryText = 'SELECT * FROM Stanza WHERE id_Stanza = ' . $stanza . ';';	
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -335,9 +367,9 @@
 
 	}
 
-	function getTable(){
+	function getTable($tavolo){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$tavolo = $trackMyMoviesDb->sqlInjectionFilter($tavolo);
 		$queryText = 'SELECT * FROM Tavolo WHERE id_Tavolo = ' . $tavolo';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -345,9 +377,9 @@
 
 	}
 
-	function getMenu(){
+	function getMenu($menu){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$menu = $trackMyMoviesDb->sqlInjectionFilter($menu);
 		$queryText = 'SELECT * FROM Menu WHERE id_Menu = ' . $menu . ';'; // probably different: details on every dish, ordered by user-defined grouped categories (.. GROUP BY cat1 UNION .. GROUP BY cat2 ..)
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -355,9 +387,9 @@
 
 	}
 
-	function getDish(){
+	function getDish($piatto){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$piatto = $trackMyMoviesDb->sqlInjectionFilter($piatto);
 		$queryText = 'SELECT * FROM Piatto WHERE id_Piatto = ' . $piatto . ';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -365,9 +397,9 @@
 
 	}
 
-	function removeDish(){
+	function removeDish($piatto){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$piatto = $trackMyMoviesDb->sqlInjectionFilter($piatto);
 		$queryText = 'DELETE FROM Piatto WHERE id_Piatto = ' . $piatto . ';';	
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -375,9 +407,9 @@
 
 	}
 
-	function removeMenu(){
+	function removeMenu($menu){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$menu = $trackMyMoviesDb->sqlInjectionFilter($menu);
 		$queryText = 'DELETE FROM Menu WHERE id_Menu = ' . $menu . ';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -385,9 +417,9 @@
 
 	}
 
-	function removeTable(){
+	function removeTable($tavolo){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$tavolo = $trackMyMoviesDb->sqlInjectionFilter($tavolo);
 		$queryText = 'DELETE FROM Tavolo WHERE id_Tavolo = ' . $tavolo . ';'; /
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -395,9 +427,9 @@
 
 	}
 
-	function removeRoom(){
+	function removeRoom($stanza){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$stanza = $trackMyMoviesDb->sqlInjectionFilter($stanza);
 		$queryText = 'DELETE FROM Stanza WHERE id_Stanza = ' . $stanza . ';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -405,9 +437,10 @@
 
 	}
 
-	function addDishToMenu(id_menu, id_piatto){
+	function addDishToMenu($menu, $piatto){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$menu = $trackMyMoviesDb->sqlInjectionFilter($menu);
+		$piatto = $trackMyMoviesDb->sqlInjectionFilter($piatto);
 		$queryText = 'INSERT INTO ComposizioneMenu (menu, piatto) VALUE (' . $menu . ', ' . $piatto . ');';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -415,9 +448,10 @@
 
 	}
 	
-	function removeDishFromMenu(id_menu, id_piatto){
+	function removeDishFromMenu($menu, $piatto){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$menu = $trackMyMoviesDb->sqlInjectionFilter($menu);
+		$piatto = $trackMyMoviesDb->sqlInjectionFilter($piatto);
 		$queryText = 'DELETE FROM ComposizioneMenu WHERE menu = ' . $menu . ' AND piatto = ' . $piatto . ';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -426,9 +460,15 @@
 	}
 
 
-	function makeOrder(){
+	function makeOrder($utente_ordine, $piatto, $quantita, $note, $tavolo, $stanza, $ristorante){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$utente_ordine = $trackMyMoviesDb->sqlInjectionFilter($utente_ordine);
+		$piatto = $trackMyMoviesDb->sqlInjectionFilter($piatto);
+		$quantita = $trackMyMoviesDb->sqlInjectionFilter($quantita);
+		$note = $trackMyMoviesDb->sqlInjectionFilter($note);
+		$tavolo = $trackMyMoviesDb->sqlInjectionFilter($tavolo);
+		$stanza = $trackMyMoviesDb->sqlInjectionFilter($stanza);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
 		$queryText = 'CALL makeOrder(' . $utente_ordine . ', ' . $piatto . ', ' . $quantita . ', \'' . $note . '\', ' . $tavolo . ', ' . $stanza . ', ' . $ristorante . '); ';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -436,9 +476,9 @@
 
 	}
 
-	function getOrdersWaiting(id){
+	function getOrdersWaiting($user){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$user = $trackMyMoviesDb->sqlInjectionFilter($user);
 		$queryText = 'SELECT O.*, P.* ' . 
 		' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .
 		' WHERE ts_preparazione IS NULL' .
@@ -451,25 +491,26 @@
 
 	}
 
-	function getOrdersReady(id){
+	function getOrdersReady($user){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
-		$queryText = 'SELECT O.* , P.*
-		' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .'
+		$user = $trackMyMoviesDb->sqlInjectionFilter($user);
+		$queryText = 'SELECT O.* , P.* ' .
+		' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .
 		' WHERE ts_preparazione IS NOT NULL' .
 			' AND ts_consegna IS NULL' .
 			' AND C.ristorante = (SELECT U.ristorante ' .
 								' FROM Utente U '.
-								' WHERE id_utente = ' . $id . ');';
+								' WHERE id_utente = ' . $user . ');';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
 		return $result;
 
 	}
 
-	fuction setPrepared(id, order_id){
+	fuction setPrepared($utente_preparazione, $odine{
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$utente_preparazione = $trackMyMoviesDb->sqlInjectionFilter($utente_preparazione);
+		$odine = $trackMyMoviesDb->sqlInjectionFilter($odine);
 		$queryText = 'UPDATE Ordine SET ts_preparazione=CURRENT_TIMESTAMP, utente_preparazione = ' . $utente_preparazione . ' WHERE id_ordine = ' . $odine . ';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -477,9 +518,10 @@
 
 	}
 	
-	fuction setPrepared(id, order_id){
+	fuction setPrepared($utente_consegna, $odine){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$utente_consegna = $trackMyMoviesDb->sqlInjectionFilter($utente_consegna);
+		$odine = $trackMyMoviesDb->sqlInjectionFilter($odine);
 		$queryText = 'UPDATE Ordine SET ts_consegna=CURRENT_TIMESTAMP, utente_consegna = ' . $utente_consegna . ' WHERE id_ordine = ' . $odine . ';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -487,19 +529,24 @@
 
 	}
 
-	function review(check_id, valutazione, recensione, tipo_pagamento){
+	function review($valutazione, $recensione, $tipo_pagamento, $conto){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
-		$queryText = 'UPDATE Conto SET valutazione = ' . $valutazione . ', recensione = \'' . $valutazione . '\', tipo_pagamento = \'' . $tipo_pagamento . '\', ts_pagamento = CURRENT_TIMESTAMP WHERE id_conto = ' . $conto . ';';
+		$valutazione = $trackMyMoviesDb->sqlInjectionFilter($valutazione);
+		$recensione = $trackMyMoviesDb->sqlInjectionFilter($recensione);
+		$tipo_pagamento = $trackMyMoviesDb->sqlInjectionFilter($tipo_pagamento);
+		$conto = $trackMyMoviesDb->sqlInjectionFilter($conto);
+		$queryText = 'UPDATE Conto SET valutazione = ' . $valutazione . ', recensione = \'' . $recensione . '\', tipo_pagamento = \'' . $tipo_pagamento . '\', ts_pagamento = CURRENT_TIMESTAMP WHERE id_conto = ' . $conto . ';';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
 		return $result;
 
 	}
 
-	function getMaxTableWait(ristorante, stanza, table_id){
+	function getMaxTableWait($ristorante, $stanza, $tavolo){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
+		$stanza = $trackMyMoviesDb->sqlInjectionFilter($stanza);
+		$tavolo = $trackMyMoviesDb->sqlInjectionFilter($tavolo);
 		$queryText = 'SELECT MIN(ts_ordine) ' .
 		' FROM Ordine ' .
 		' WHERE conto = (SELECT id_conto ' .
@@ -514,9 +561,11 @@
 
 	}
                     
-	function getCheck(id, table_id){ // should be done after an update to calculate total
+	function getCheck($ristorante, $stanza, $tavolo){ // should be done after an update to calculate total
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
+		$stanza = $trackMyMoviesDb->sqlInjectionFilter($stanza);
+		$tavolo = $trackMyMoviesDb->sqlInjectionFilter($tavolo);
 		$queryText = 'SELECT * FROM Conto WHERE ristorante = ' . $ristorante . ' AND stanza = ' . $stanza . ' AND tavolo = ' . $tavolo . ' AND ts_pagamento IS NULL;';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -525,9 +574,11 @@
 	} 
 
 
-	function writeMessage(id, ...){
+	function writeMessage($from_user, $to_user, $msg){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$from_user = $trackMyMoviesDb->sqlInjectionFilter($from_user);
+		$to_user = $trackMyMoviesDb->sqlInjectionFilter($to_user);
+		$msg = $trackMyMoviesDb->sqlInjectionFilter($msg);
 		$queryText = 'INSERT INTO Messaggio (from_user, to_user, msg, ts) VALUE (' . $from_user . ', ' . $to_user . ', \'' . $msg . '\', CURRENT_TIMESTAMP);';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -535,9 +586,9 @@
 
 	} 
 
-	function getChats(id){
+	function getChats($user){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$user = $trackMyMoviesDb->sqlInjectionFilter($user);
 		$queryText = 'SELECT SUM(!M.is_read) AS unread_msgs, M.from_user, ' .
 						' (SELECT M2.msg ' .
 						' FROM Messaggio M2 '.
@@ -554,9 +605,10 @@
 
 	}
 
-	function readMessages(id, dest){
+	function readMessages($user, $dest){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$user = $trackMyMoviesDb->sqlInjectionFilter($user);
+		$dest = $trackMyMoviesDb->sqlInjectionFilter($dest);
 		$queryText = 'CALL readMessages(' . $user . ', ' . $dest . ');';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -564,9 +616,11 @@
 
 	}
 
-	function sendRequest(id, dest){
+	function sendRequest($user, $ristorante, $msg){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$user = $trackMyMoviesDb->sqlInjectionFilter($user);
+		$ristorante = $trackMyMoviesDb->sqlInjectionFilter($ristorante);
+		$msg = $trackMyMoviesDb->sqlInjectionFilter($msg);
 		$queryText = 'CALL sendRequest(' . $user . ', ' . $ristorante . ', \'' . $msg . '\');';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
@@ -574,9 +628,10 @@
 
 	}
 
-	function processRequest(id, dest){
+	function processRequest($req, $accepted){
 		global $trackMyMoviesDb;
-		$parameters = $trackMyMoviesDb->sqlInjectionFilter($parameters);
+		$req = $trackMyMoviesDb->sqlInjectionFilter($req);
+		$accepted = $trackMyMoviesDb->sqlInjectionFilter($accepted);
 		$queryText = 'CALL processRequest(' . $req . ', ' . $accepted . ');';
 		$result = $trackMyMoviesDb->performQuery($queryText);
 		$trackMyMoviesDb->closeConnection();
