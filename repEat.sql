@@ -49,6 +49,18 @@ CREATE TABLE `Licenza` (
   foreign key(`livello`) references Livello(`id_livello`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP PROCEDURE IF EXISTS `generateKey`;
+DELIMITER $$
+CREATE PROCEDURE `generateKey`
+	(IN _level int(11) UNSIGNED)
+BEGIN
+DECLARE rand_key int(11) UNSIGNED;
+SELECT FLOOR(RAND()*4294967295) INTO rand_key;
+INSERT INTO Licenza (chiave, data_acquisto, livello) VALUE (rand_key, CURRENT_DATE, _level); 
+SELECT rand_key;
+END $$
+DELIMITER ;
+
 DROP TABLE IF EXISTS `Ristorante`;
 CREATE TABLE `Ristorante` (
   `id_ristorante` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
