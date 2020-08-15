@@ -1,15 +1,17 @@
 <?php
 	require_once __DIR__ . "/../config.php";
     require_once DIR_UTIL . "repEatDbManager.php"; //includes Database Class
+	require_once DIR_UTIL . "sessionUtil.php"; //includes session login
 
-
-	function login ($username, $password){   
+	function login ($param){   
+        $username = $param['username'];
+        $password = $param['password'];
 		if ($username != null && $password != null){
 			$user = authenticate($username, $password);
     		if ($user[0] > 0){
     			session_start();
     			setSession($username, $user[0], $user[1]);
-    			return null;
+    			return $user;
     		}
 
     	} else
@@ -18,10 +20,13 @@
     	return 'Username and password not valid.';
 	}
 
-	function register ($mail, $username, $password){   
+	function register ($param){   //TODO: sqlInjectionFiltet
+        $mail = $param['mail'];
+        $username = $param['username'];
+        $password = $param['password'];
 		if ($mail != null && $username != null && $password != null){
 			global $repEatDb;
-			$queryText = "insert into user (username, mail, password) VALUES ('" . $username . "', '" . $mail . "', '" . password_hash($password, PASSWORD_DEFAULT) . "'); -- select id from user where ;";
+			$queryText = "insert into Utente (username, mail, password) VALUES ('" . $username . "', '" . $mail . "', '" . password_hash($password, PASSWORD_DEFAULT) . "');";
 			$insertResult =$repEatDb->performQuery($queryText);
 			$repEatDb->closeConnection();
 			if (!is_null($insertResult))
@@ -40,7 +45,7 @@
 		$username =$repEatDb->sqlInjectionFilter($username);
 		$password =$repEatDb->sqlInjectionFilter($password);
 
-		$queryText = "select userId, password, privilegi from user where username='" . $username . /*"' AND password='" . $password . */"'";
+		$queryText = "select id_utente, password, privilegi from Utente where username='" . $username . /*"' AND password='" . $password . */"'";
 
 		$result = $repEatDb->performQuery($queryText);
 		$numRow = mysqli_num_rows($result);
@@ -52,7 +57,7 @@
 		$repEatDb->closeConnection();
 		if (!password_verify($password, $userRow['password']))
 			return [-1, null];
-		return [$userRow['userId'], $userRow['privilegi']];
+		return [$userRow['id_utente'], $userRow['privilegi']];
 	}
 
 	function signin ($mail, $username, $password){  
@@ -79,7 +84,7 @@
 			echo "\nrepEat is null!: ";
 		$value = $repEatDb->sqlInjectionFilter($param['value']);
 
-		$queryText = "select * from user where " . $field . " = '" . $value . "'";
+		$queryText = "select * from Utente where " . $field . " = '" . $value . "'";
 
 		$result = $repEatDb->performQuery($queryText);
 		$numRow = mysqli_num_rows($result);
