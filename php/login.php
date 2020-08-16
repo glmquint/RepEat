@@ -1,4 +1,4 @@
-<?php
+    <?php
         require_once __DIR__ . "/config.php";
         require_once DIR_UTIL . 'userAuth.php';
         require_once DIR_UTIL . "sessionUtil.php";
@@ -33,6 +33,7 @@
     </form>
 
     <p>Don't have an account? Register <a href="./register.php">here</a></p>
-
+    <p>Back to <a href="../index.php">index</a></p>
+ 
 </body>
 </html>

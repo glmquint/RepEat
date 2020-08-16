@@ -9,7 +9,7 @@
 								$data = null){
 			$this->responseCode = $responseCode;
 			$this->message = $message;
-			$this->data = null;
+			$this->data = $data;
 		}
 	
 	}

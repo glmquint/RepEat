@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>repEat</title>
 </head>
 <body>
     <h1>RepEat</h1>
@@ -21,5 +21,6 @@
         }
 
     ?></p>
+    <p>Explore our <a href="./php/license.php">offers</a>!</p>
 </body>
 </html>

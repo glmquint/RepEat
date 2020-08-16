@@ -9,12 +9,9 @@
         session_start();
     }
 
-    $response = new AjaxResponse();
     
-    $available_post_functions = [
-        'login', 
-        'register'];
-    $available_get_functions = [
+
+    $available_functions = [
         'addLicenseLevel',
         'listLevels',
         'generateKey',
@@ -59,37 +56,41 @@
         'sendRequest',
         'processRequest'];
 
-    echo '<br>begin SESSION: ';
+    /*echo '<br>begin SESSION: ';
     if (isset($_SESSION)) print_r($_SESSION);
     echo '<br>begin REQUEST: ';
     if (isset($_REQUEST)) print_r($_REQUEST);
     echo '<br>begin POST: ';
     if (isset($_POST)) print_r($_POST);
-    echo '<br> <br>';
+    echo '<br> <br>';*/
 
     if (isset($_REQUEST['function'])) {
-        if (!in_array($_REQUEST['function'], $available_get_functions) && !in_array($_REQUEST['function'], $available_post_functions)) {
-            die('This function does not exists');
-        }
-        if ((isset($_GET['function']) && !in_array($_GET['function'], $available_get_functions)) || (isset($_POST['function']) && !in_array($_POST['function'], $available_post_functions))) {
-            die('Wrong method for this function');
+        if (!in_array($_REQUEST['function'], $available_functions)) {
+            $response = new AjaxResponse(1, 'This function does not exists');
+            echo json_encode($response);
+            die();
         }
 
-        $result = $_REQUEST['function']($_REQUEST);
-        if (is_bool($result) || is_array($result) || is_string($result)) {
-            print_r($result);
-         } else 
-            print_r(mysqli_fetch_all($result));
-        
+        $raw_result = $_REQUEST['function']($_REQUEST);
+        if (is_bool($raw_result) || is_array($raw_result) || is_string($raw_result)) {
+            print_r($raw_result);
+         } else {
+            //echo json_encode((mysqli_fetch_fields($raw_result)[0]));
+            //die(print_r(mysqli_fetch_fields($raw_result)));
+
+            $result = Array();
+            foreach (mysqli_fetch_all($raw_result) as $row ) {
+                $arr_row = Array();
+                foreach (mysqli_fetch_fields($raw_result) as $key => $value) {
+                    //echo $value->name . '=' . $row[$key] . ' , ';
+                    $arr_row[$value->name] = $row[$key];
+                }
+                array_push($result, $arr_row);
+            }
+            $response = new AjaxResponse(0, '', $result);
+            echo json_encode($response);
+         }
     }
     
 ?>
 
-<form action="../util/dbProcedures.php" method="post">
-<input type="text" name="function" id="function" value='login' readonly>
-<input type="text" name="username" id="username">
-<input type="password" name="password" id="password">
-<button type="submit">Invia</button>
-</form>
-
-<p><a href="../logout.php">Logout</a></p>

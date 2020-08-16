@@ -35,6 +35,7 @@
     </form>
 
     <p>Already have an account? <a href="./login.php">here</a></p>
-
+    <p>Back to <a href="../index.php">index</a></p>
+    
 </body>
 </html>
