@@ -1,0 +1,1 @@
+<nav><button onclick="document.getElementById('main-iframe').src = './layout/messages.php'"> Messages </button><button onclick="document.getElementById('main-iframe').src = './layout/mainHome.php'"> Home </button><button onclick="document.getElementById('main-iframe').src = './layout/preferences.php'"> Preferences </button></nav>
