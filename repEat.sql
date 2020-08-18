@@ -366,7 +366,9 @@ DELIMITER ;
 -- Popolamento
 --
 
-
+INSERT INTO Livello (id_livello, max_dipendenti, max_tavoli, max_menu, max_stanze, durata_validita, prezzo) VALUES (1, 5, 10, 1, 1, 30, 0),
+																													(2, 15, 30, 2, 3, 365, 0),
+																													(3, 0, 0, 0, 0, 0, 0);
 
 
 /*INSERT INTO Ristorante (nome_ristorante, indirizzo) VALUES ('Pesce Rosso', 'via Rossi 34'), -- id 1

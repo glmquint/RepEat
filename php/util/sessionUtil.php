@@ -1,10 +1,12 @@
 <?php
 	
 	//setSession: set $_SESSION properly
-	function setSession($username, $user_id, $privilegi){
-		$_SESSION['username'] = $username;
+	function setSession($user_id, $username, $pref_theme, $privilegi, $ristorante){
 		$_SESSION['user_id'] = $user_id;
-		$_SESSION['privilegi'] = $privilegi;		
+		$_SESSION['username'] = $username;
+		$_SESSION['pref_theme'] = $pref_theme;		
+		$_SESSION['privilegi'] = $privilegi;
+		$_SESSION['ristorante'] = $ristorante;
 	}
 
 	//isLogged: check if user has logged in and, if it is the case, returns the username

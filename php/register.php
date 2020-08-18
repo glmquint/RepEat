@@ -22,9 +22,6 @@
     <title>repEat</title>
 </head>
 <body>
-    <?php
-
-    ?>
 
     <form action="" method="post">
     <input type="text" name="function" id="function" value='register' readonly hidden>

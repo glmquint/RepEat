@@ -15,7 +15,7 @@
         $user = authenticate($username, $password);
         if ($user[0] > 0){
             session_start();
-            setSession($username, $user[0], $user[1]);
+            setSession($user[0], $user[1], $user[2], $user[3], $user[4]);
             return null;
         }
 
@@ -55,19 +55,19 @@
         $username = $repEatDb->sqlInjectionFilter($username);
         $password = $repEatDb->sqlInjectionFilter($password);
 
-        $queryText = "select id_utente, password, privilegi from Utente where username='" . $username . /*"' AND password='" . $password . */"'";
+        $queryText = "select id_utente, username, password, pref_theme, privilegi, ristorante from Utente where username='" . $username . /*"' AND password='" . $password . */"'";
 
         $result = $repEatDb->performQuery($queryText);
         $numRow = mysqli_num_rows($result);
         if ($numRow != 1)
-            return [-1, null];
+            return [-1, null, null, null, null];
         
         $repEatDb->closeConnection();
         $userRow = $result->fetch_assoc();
         $repEatDb->closeConnection();
         if (!password_verify($password, $userRow['password']))
-            return [-1, null];
-        return [$userRow['id_utente'], $userRow['privilegi']];
+            return [-1, null, null, null, null];
+        return [$userRow['id_utente'], $userRow['username'], $userRow['pref_theme'], $userRow['privilegi'], $userRow['ristorante']];
     }
 
     /*function signin ($mail, $username, $password){  

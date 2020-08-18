@@ -149,7 +149,7 @@
 
 	function listRestaurants(){
 		global $repEatDb;
-		$queryText = 'SELECT nome_ristorante FROM Ristorante';
+		$queryText = 'SELECT id_ristorante, nome_ristorante FROM Ristorante';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
