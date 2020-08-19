@@ -129,7 +129,7 @@ BEGIN
 DECLARE new_restaurant int(11) UNSIGNED;
 INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE (_nome_ristorante, _indirizzo, _license_key);
 SELECT last_insert_id() INTO new_restaurant;
-UPDATE Utente SET ristorante = new_restaurant WHERE id_utente = _user;
+UPDATE Utente SET ristorante = new_restaurant, privilegi = 7 WHERE id_utente = _user;
 SELECT new_restaurant;
 END $$
 DELIMITER ;

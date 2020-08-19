@@ -74,10 +74,10 @@
 
         $raw_result = $_REQUEST['function']($_REQUEST);
         if (is_bool($raw_result)){
-            $response = new AjaxResponse(!$raw_result, '', '');
+            $response = new AjaxResponse(!$raw_result);
             echo json_encode($response);
         } else if(is_string($raw_result)) { //is_array($raw_result) || 
-            $response = new AjaxResponse(-1, $raw_result, '');
+            $response = new AjaxResponse(-1, $raw_result);
             echo json_encode($response);
         } else {
             //echo json_encode((mysqli_fetch_fields($raw_result)[0]));

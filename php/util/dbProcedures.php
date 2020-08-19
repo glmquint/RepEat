@@ -769,16 +769,18 @@
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		$queryText = 'SELECT SUM(!M.is_read) AS unread_msgs, M.from_user, ' .
+		$queryText = 'SELECT SUM(M.to_user = ' . $user . ' AND !M.is_read) AS unread_msgs, M.to_user, U.username AS to_user_name, ' .
 						' (SELECT M2.msg ' .
 						' FROM Messaggio M2 '.
 						' WHERE M2.id_msg = (SELECT MAX(M3.id_msg) ' .
 											' FROM Messaggio M3 ' .
-											' WHERE M3.from_user = M.from_user ' .
-												' AND M3.to_user = ' . $user . ')) AS last_msg ' .
-						' FROM Messaggio M ' .
+											' WHERE M3.to_user = M.to_user ' .
+												' AND M3.to_user = ' . $user . 
+													' OR M3.from_user = ' . $user . ')) AS last_msg ' .
+						' FROM Messaggio M INNER JOIN Utente U ON M.to_user = U.id_utente ' .
 						' WHERE M.to_user = ' . $user .
-						' GROUP BY M.from_user;';
+							' OR M.from_user = ' . $user .
+						' GROUP BY M.to_user;';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
