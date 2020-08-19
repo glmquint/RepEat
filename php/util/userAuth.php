@@ -70,6 +70,24 @@
         return [$userRow['id_utente'], $userRow['username'], $userRow['pref_theme'], $userRow['privilegi'], $userRow['ristorante']];
     }
 
+    function updateSessionVars ($user){
+        global $repEatDb;
+        if (isset($user) && $user != null){
+            $user = $repEatDb->sqlInjectionFilter($user);
+        } else  return 'Missing argument: user';
+
+        $queryText = "select id_utente, username, password, pref_theme, privilegi, ristorante from Utente where id_utente=" . $user;
+        $result = $repEatDb->performQuery($queryText);
+        $numRow = mysqli_num_rows($result);
+        if ($numRow != 1)
+            return -1;
+        $userRow = $result->fetch_assoc();
+        $repEatDb->closeConnection();
+        setSession($userRow['id_utente'], $userRow['username'], $userRow['pref_theme'], $userRow['privilegi'], $userRow['ristorante']);
+        return null;
+
+    }
+
     /*function signin ($mail, $username, $password){  
         $uniq_fields = array("username", "mail"); 
         if ($mail != null && $username != null && $password != null){

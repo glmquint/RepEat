@@ -1,7 +1,7 @@
 <?php
 	session_start();
     require_once __DIR__ . "/config.php";
-    include DIR_UTIL . "sessionUtil.php";
+    require_once DIR_UTIL . "/sessionUtil.php";
 
     if (!isLogged()){
 		    header('Location: ./../index.php');
@@ -20,10 +20,7 @@
 <body>
     <h1>Welcome home</h1>
     <?php
-        if (isset($_SESSION)) {
-            print_r($_SESSION);
-        }
-        echo '<iframe id="main-iframe" src="./layout/mainHome.php" frameborder="0" title = "main iframe"></iframe>';
+        echo '<iframe id="main-iframe" src="./layout/mainHome.php" frameborder="0" title = "main iframe" width=100% height=500px></iframe>';
         include DIR_LAYOUT . "mainNavBar.php";
     ?>
     <p>You can logout <a href="../php/logout.php">here</a></p>

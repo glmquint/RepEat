@@ -116,6 +116,24 @@ CREATE TABLE `Utente` (
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP PROCEDURE IF EXISTS `registerRestaurant`;
+DELIMITER $$
+CREATE PROCEDURE `registerRestaurant`
+	(/* il ristorante */
+    IN _nome_ristorante varchar(255), 
+    IN _indirizzo varchar(255),
+    IN _license_key int(11) UNSIGNED,
+    /* l'amministratore creatore */
+    IN _user int(11) UNSIGNED)
+BEGIN
+DECLARE new_restaurant int(11) UNSIGNED;
+INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE (_nome_ristorante, _indirizzo, _license_key);
+SELECT last_insert_id() INTO new_restaurant;
+UPDATE Utente SET ristorante = new_restaurant WHERE id_utente = _user;
+SELECT new_restaurant;
+END $$
+DELIMITER ;
+
 DROP TABLE IF EXISTS `Messaggio`;
 CREATE TABLE `Messaggio` (
   `id_msg` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -185,6 +203,7 @@ BEGIN
 			LEAVE preleva;
 		END IF;
         INSERT INTO Messaggio (from_user, to_user, msg, is_req, ts) VALUE (_user, this_admin, _msg, 1, CURRENT_TIMESTAMP);
+        SELECT last_insert_id();
 	END LOOP preleva;
 	CLOSE cursore;
 END $$
@@ -368,7 +387,18 @@ DELIMITER ;
 
 INSERT INTO Livello (id_livello, max_dipendenti, max_tavoli, max_menu, max_stanze, durata_validita, prezzo) VALUES (1, 5, 10, 1, 1, 30, 0),
 																													(2, 15, 30, 2, 3, 365, 0),
-																													(3, 0, 0, 0, 0, 0, 0);
+																												(3, 0, 0, 0, 0, 0, 0);
+INSERT INTO Licenza (chiave, data_acquisto, livello) VALUE (1, '2020-07-10', 1); -- FLOOR(RAND()*4294967295)
+INSERT INTO Licenza (chiave, data_acquisto, livello) VALUE (2, CURRENT_DATE, 2); -- FLOOR(RAND()*4294967295)
+INSERT INTO Licenza (chiave, data_acquisto, livello) VALUE (3, CURRENT_DATE, 3); -- FLOOR(RAND()*4294967295)
+
+
+-- INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE ('Sorcio Verde', 'via Verdi 76', 3); 
+INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE ('Pesce Rosso', 'via Rossi 34', 1);
+INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE ('Gatto Blu', 'via Blu 82', 2);
+
+INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin1','admin1@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 7, 1); -- password: test 
+INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin2','admin2@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 7, 2); -- password: test 
 
 
 /*INSERT INTO Ristorante (nome_ristorante, indirizzo) VALUES ('Pesce Rosso', 'via Rossi 34'), -- id 1

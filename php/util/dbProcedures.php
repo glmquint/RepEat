@@ -79,7 +79,11 @@
 			$license_key = $repEatDb->sqlInjectionFilter($param['license_key']);
 		} else  return 'Missing argument: license_key';
 
-		$queryText = 'INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE (\'' . $nome_ristorante . '\', \'' . $indirizzo . '\', ' . $license_key .');';
+		if (isset($param['user'])){
+			$user = $repEatDb->sqlInjectionFilter($param['user']);
+		} else  return 'Missing argument: user';
+
+		$queryText = 'CALL registerRestaurant(\'' . $nome_ristorante . '\', \'' . $indirizzo . '\', ' . $license_key . ', ' . $user .');';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -182,11 +186,11 @@
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		if (isset($param['utente'])){
-			$utente = $repEatDb->sqlInjectionFilter($param['utente']);
-		} else  return 'Missing argument: utente';
+		if (isset($param['user'])){
+			$user = $repEatDb->sqlInjectionFilter($param['user']);
+		} else  return 'Missing argument: user';
 
-		$queryText = 'UPDATE Utente SET username = \'' . $username . '\', mail = \'' . $mail . '\', password = \'' . password_hash($password, PASSWORD_DEFAULT) . '\', pref_theme = \'' . $pref_theme . '\', ristorante = ' . $ristorante . ' WHERE id_utente = ' . $utente . ';';
+		$queryText = 'UPDATE Utente SET username = \'' . $username . '\', mail = \'' . $mail . '\', password = \'' . password_hash($password, PASSWORD_DEFAULT) . '\', pref_theme = \'' . $pref_theme . '\', ristorante = ' . $ristorante . ' WHERE id_utente = ' . $user . ';';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -834,6 +838,18 @@
 		$repEatDb->closeConnection();
 		return $result;
 
+	}
+
+	function existsRequest($param){
+		global $repEatDb;
+		if (isset($param['user'])){
+			$user = $repEatDb->sqlInjectionFilter($param['user']);
+		} else  return 'Missing argument: user';
+
+		$queryText = 'SELECT COUNT(*) AS num_requests FROM Messaggio WHERE from_user = ' . $user . ' AND is_req = 1 AND is_read = 0;';
+		$result = $repEatDb->performQuery($queryText);
+		$repEatDb->closeConnection();
+		return $result;
 	}
 
 

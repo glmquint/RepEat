@@ -54,7 +54,8 @@
         'getChats',
         'readMessages',
         'sendRequest',
-        'processRequest'];
+        'processRequest',
+        'existsRequest'];
 
     /*echo '<br>begin SESSION: ';
     if (isset($_SESSION)) print_r($_SESSION);
@@ -66,15 +67,19 @@
 
     if (isset($_REQUEST['function'])) {
         if (!in_array($_REQUEST['function'], $available_functions)) {
-            $response = new AjaxResponse(1, 'This function does not exists');
+            $response = new AjaxResponse(1, 'The function ' . $_REQUEST['function'] . ' does not exists');
             echo json_encode($response);
             die();
         }
 
         $raw_result = $_REQUEST['function']($_REQUEST);
-        if (is_bool($raw_result) || is_array($raw_result) || is_string($raw_result)) {
-            print_r($raw_result);
-         } else {
+        if (is_bool($raw_result)){
+            $response = new AjaxResponse(!$raw_result, '', '');
+            echo json_encode($response);
+        } else if(is_string($raw_result)) { //is_array($raw_result) || 
+            $response = new AjaxResponse(-1, $raw_result, '');
+            echo json_encode($response);
+        } else {
             //echo json_encode((mysqli_fetch_fields($raw_result)[0]));
             //die(print_r(mysqli_fetch_fields($raw_result)));
 
