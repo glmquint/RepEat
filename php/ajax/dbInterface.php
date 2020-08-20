@@ -73,20 +73,20 @@
         }
 
         $raw_result = $_REQUEST['function']($_REQUEST);
-        if (is_bool($raw_result)){
-            $response = new AjaxResponse(!$raw_result);
+        if (is_bool($raw_result[0])){
+            $response = new AjaxResponse(!$raw_result[0], $raw_result[1]);
             echo json_encode($response);
-        } else if(is_string($raw_result)) { //is_array($raw_result) || 
-            $response = new AjaxResponse(-1, $raw_result);
+        } else if(is_string($raw_result[0])) { //is_array($raw_result) || 
+            $response = new AjaxResponse(-1, $raw_result[0]);
             echo json_encode($response);
         } else {
             //echo json_encode((mysqli_fetch_fields($raw_result)[0]));
             //die(print_r(mysqli_fetch_fields($raw_result)));
 
             $result = Array();
-            foreach (mysqli_fetch_all($raw_result) as $row ) {
+            foreach (mysqli_fetch_all($raw_result[0]) as $row ) {
                 $arr_row = Array();
-                foreach (mysqli_fetch_fields($raw_result) as $key => $value) {
+                foreach (mysqli_fetch_fields($raw_result[0]) as $key => $value) {
                     //echo $value->name . '=' . $row[$key] . ' , ';
                     $arr_row[$value->name] = $row[$key];
                 }

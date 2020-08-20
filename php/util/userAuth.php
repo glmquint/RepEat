@@ -38,7 +38,7 @@
         } else  return 'Missing argument: password';
 
         $queryText = "insert into Utente (username, mail, password) VALUES ('" . $username . "', '" . $mail . "', '" . password_hash($password, PASSWORD_DEFAULT) . "');";
-        $insertResult =$repEatDb->performQuery($queryText);
+        $insertResult =$repEatDb->performQuery($queryText)[0];
         $repEatDb->closeConnection();
         if (!$insertResult) return 'A problem occured while inserting the user. Try again later!';
 
@@ -57,7 +57,7 @@
 
         $queryText = "select id_utente, username, password, pref_theme, privilegi, ristorante from Utente where username='" . $username . /*"' AND password='" . $password . */"'";
 
-        $result = $repEatDb->performQuery($queryText);
+        $result = $repEatDb->performQuery($queryText)[0];
         $numRow = mysqli_num_rows($result);
         if ($numRow != 1)
             return [-1, null, null, null, null];
@@ -77,7 +77,7 @@
         } else  return 'Missing argument: user';
 
         $queryText = "select id_utente, username, password, pref_theme, privilegi, ristorante from Utente where id_utente=" . $user;
-        $result = $repEatDb->performQuery($queryText);
+        $result = $repEatDb->performQuery($queryText)[0];
         $numRow = mysqli_num_rows($result);
         if ($numRow != 1)
             return -1;

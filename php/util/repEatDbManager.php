@@ -37,7 +37,7 @@
 			if (!$this->isOpened())
 				$this->openConnection();
 			
-			return $this->mysqli_conn->query($queryText);
+			return [$this->mysqli_conn->query($queryText), $this->mysqli_conn->error];
 		}
 		
 		function sqlInjectionFilter($parameter){
