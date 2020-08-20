@@ -176,7 +176,7 @@ CREATE PROCEDURE `readMessages`
     IN _other int(11) UNSIGNED)
 BEGIN
 UPDATE Messaggio SET is_read = 1 WHERE from_user = _other AND to_user = _user AND is_read = 0 AND is_req = 0;
-SELECT * FROM Messaggio WHERE (from_user = _other AND to_user = _user) OR (from_user = _user AND to_user = _other);
+SELECT *, (SELECT username FROM Utente WHERE id_utente = _other) AS other_name FROM Messaggio WHERE (from_user = _other AND to_user = _user) OR (from_user = _user AND to_user = _other);
 END $$
 DELIMITER ;
 
