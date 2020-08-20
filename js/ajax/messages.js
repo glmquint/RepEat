@@ -61,7 +61,17 @@ function readMessages(user, dest){
             this_btn = document.createElement('button');
             this_btn.addEventListener("click", function(){loadMessages(user)});
             this_btn.appendChild(document.createTextNode('Torna alle chat'));
+            msg_bar = document.createElement('div');
+            msg_bar.classList.add('message-bar');
+            msg_box = document.createElement('textarea');
+            msg_box.id = 'msg-box';
+            msg_send = document.createElement('button');
+            msg_send.appendChild(document.createTextNode('Invia'))
+            msg_send.addEventListener("click", function () { writeMessage(user, dest, document.getElementById('msg-box').value)});
+            msg_bar.appendChild(msg_box);
+            msg_bar.appendChild(msg_send);
             body.appendChild(this_btn);
+            body.appendChild(msg_bar);
 
         }
     })
@@ -74,6 +84,17 @@ function processRequest(request, accepted) {
             alert('qualcosa è andato storto: ' + response['message']);
         } else {
             alert('La richiesta è stata ' + ((accepted)?'accettata':'rifiutata') + ' con successo');
+        }
+    });
+};
+
+function writeMessage(from_user, to_user, msg) {
+    AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=writeMessage&from_user='+from_user+'&to_user='+to_user+'&msg='+msg, true, null,
+    function(response){
+        if(response['responseCode'] != 0) {
+            alert('qualcosa è andato storto: ' + response['message']);
+        } else {
+            readMessages(from_user, to_user);
         }
     });
 }
