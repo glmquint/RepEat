@@ -768,19 +768,22 @@
 		if (isset($param['user'])){
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
-
-		$queryText = 'SELECT SUM(M.to_user = ' . $user . ' AND !M.is_read) AS unread_msgs, M.to_user, U.username AS to_user_name, ' .
-						' (SELECT M2.msg ' .
-						' FROM Messaggio M2 '.
-						' WHERE M2.id_msg = (SELECT MAX(M3.id_msg) ' .
-											' FROM Messaggio M3 ' .
-											' WHERE M3.to_user = M.to_user ' .
-												' AND M3.to_user = ' . $user . 
-													' OR M3.from_user = ' . $user . ')) AS last_msg ' .
-						' FROM Messaggio M INNER JOIN Utente U ON M.to_user = U.id_utente ' .
-						' WHERE M.to_user = ' . $user .
-							' OR M.from_user = ' . $user .
-						' GROUP BY M.to_user;';
+		
+		$queryText = 'SELECT V.*, U.username AS other_name, (SELECT M2.msg   '.
+							' FROM Messaggio M2  '.
+							' WHERE M2.id_msg =  '.
+								' (SELECT MAX(M3.id_msg)  '.
+								' FROM Messaggio M3   '.
+								' WHERE (M3.to_user = ' . $user . ' '.
+									' AND M3.from_user = V.other) '.
+									' OR (M3.from_user = ' . $user . ' '.
+										' AND M3.to_user = V.other))) AS last_msg   '.
+						' FROM (SELECT SUM(num) AS unread_msgs, IF (SUBSTRING_INDEX(speakers, "-", 1) <> ' . $user . ', SUBSTRING_INDEX(speakers, "-", 1), SUBSTRING_INDEX(SUBSTRING_INDEX(speakers, "-", -1), "-", 1)) AS other '.
+							' FROM (SELECT SUM(if(to_user = ' . $user . ', !is_read, 0)) AS num, CONCAT(IF(from_user < to_user, from_user, to_user), "-", IF(from_user > to_user, from_user, to_user)) AS speakers '.
+								' FROM Messaggio '.
+								' GROUP BY from_user, to_user '.
+								' HAVING from_user = ' . $user . ' OR to_user = ' . $user . ') AS T '.
+							' GROUP BY speakers) AS V INNER JOIN Utente U ON V.other = U.id_utente';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
