@@ -1,5 +1,4 @@
 function loadMessages(user, ristorante) {
-    console.log('loadMessages: '+ristorante);
     AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=getChats&user='+ user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -83,7 +82,6 @@ function readMessages(user, dest, ristorante){
                 
             });
             this_btn = document.createElement('button');
-            console.log('readMessages: '+ristorante);
             this_btn.addEventListener("click", function(){loadMessages(user, ristorante)});
             this_btn.appendChild(document.createTextNode('Torna alle chat'));
             msg_bar = document.createElement('div');
@@ -114,7 +112,6 @@ function processRequest(request, accepted) {
 };
 
 function writeMessage(from_user, to_user, msg, ristorante) {
-    console.log('writeMessages: '+ristorante);
     AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=writeMessage&from_user='+from_user+'&to_user='+to_user+'&msg='+msg, true, null,
     function(response){
         if(response['responseCode'] != 0) {

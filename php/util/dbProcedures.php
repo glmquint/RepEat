@@ -164,33 +164,34 @@
 //get_restaurant_detailed(id), TODO AS COMPOSITE FUNCTION IN PHP
 
 
-	function updateUser($param){ //TODO: check isset($var) to make dynamic query
+	function updateUser($param){ //TODO: check if working isset($var) to make dynamic query
 		global $repEatDb;
+		$dynamic_set = "id_utente = id_utente";
 		if (isset($param['username'])){
 			$username = $repEatDb->sqlInjectionFilter($param['username']);
-		} else  return 'Missing argument: username';
+			$dynamic_set = $dynamic_set . ', username = \'' . $username . '\'';
+		};
 
 		if (isset($param['mail'])){
 			$mail = $repEatDb->sqlInjectionFilter($param['mail']);
-		} else  return 'Missing argument: mail';
+			$dynamic_set = $dynamic_set . ', mail = \'' . $mail . '\'';
+		};
 
 		if (isset($param['password'])){
 			$password = $repEatDb->sqlInjectionFilter($param['password']);
-		} else  return 'Missing argument: password';
+			$dynamic_set = $dynamic_set . ', password = \'' . password_hash($password, PASSWORD_DEFAULT) . '\'';
+		};
 
 		if (isset($param['pref_theme'])){
 			$pref_theme = $repEatDb->sqlInjectionFilter($param['pref_theme']);
-		} else  return 'Missing argument: pref_theme';
-
-		if (isset($param['ristorante'])){
-			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
-		} else  return 'Missing argument: ristorante';
+			$dynamic_set = $dynamic_set . ', pref_theme = \'' . $pref_theme . '\'';
+		};
 
 		if (isset($param['user'])){
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		$queryText = 'UPDATE Utente SET username = \'' . $username . '\', mail = \'' . $mail . '\', password = \'' . password_hash($password, PASSWORD_DEFAULT) . '\', pref_theme = \'' . $pref_theme . '\', ristorante = ' . $ristorante . ' WHERE id_utente = ' . $user . ';';
+		$queryText = 'UPDATE Utente SET ' . $dynamic_set . ' WHERE id_utente = ' . $user . ';';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -223,7 +224,7 @@
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		$queryText = 'SELECT * FROM Utente WHERE id_utente = ' . $user . ';';
+		$queryText = 'SELECT id_utente, username, mail, pref_theme, privilegi, ristorante FROM Utente WHERE id_utente = ' . $user . ';';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -768,7 +769,7 @@
 		if (isset($param['user'])){
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
-		
+
 		$queryText = 'SELECT V.*, U.username AS other_name, (SELECT M2.msg   '.
 							' FROM Messaggio M2  '.
 							' WHERE M2.id_msg =  '.
