@@ -1,4 +1,5 @@
-function loadMessages(user) {
+function loadMessages(user, ristorante) {
+    console.log('loadMessages: '+ristorante);
     AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=getChats&user='+ user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -14,17 +15,40 @@ function loadMessages(user) {
                 this_div.classList.add('chat-picker');
                 this_div.appendChild(document.createTextNode('(' + row['unread_msgs'] + ') ' + row['other_name'] + '::::::::' + row['last_msg']));
                 //this_btn = document.createElement('button');
-                this_div.addEventListener("click", function(){readMessages(user, row['other'])});
+                this_div.addEventListener("click", function(){readMessages(user, row['other'], ristorante)});
                 //this_btn.appendChild(document.createTextNode('Vai alla chat'));
                 //this_div.appendChild(this_btn);
                 body.appendChild(this_div);
 
-            })
+            });
+            AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=listUsers&ristorante='+ristorante, true, null,
+            function (response) {
+                if (response['responseCode'] != 0) {
+                    alert('qualcosa è andato storto: ' + response['message']);
+                } else {
+                    body.appendChild(document.createTextNode('Inizia una chat con un tuo collega:'));
+                    select_user = document.createElement('select');
+                    select_user.name = 'user-select';
+                    select_user.id = 'user-select';
+                    response['data'].forEach(row => {
+                        this_option = document.createElement('option');
+                        this_option.value = row['id_utente'];
+                        this_option.appendChild(document.createTextNode(row['username']));
+                        select_user.appendChild(this_option);
+                        
+                    });
+                    go_to_chat = document.createElement('button');
+                    go_to_chat.appendChild(document.createTextNode('Vai alla chat'));
+                    go_to_chat.addEventListener("click", function () {readMessages(user, document.getElementById('user-select').value, ristorante);})
+                    body.appendChild(select_user);
+                    body.appendChild(go_to_chat);
+                }
+            });
         }
     })
 };
 
-function readMessages(user, dest){
+function readMessages(user, dest, ristorante){
     AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=readMessages&user=' + user + '&dest=' + dest, true, null,
     function(response){
         if(response['responseCode'] != 0) {
@@ -59,7 +83,8 @@ function readMessages(user, dest){
                 
             });
             this_btn = document.createElement('button');
-            this_btn.addEventListener("click", function(){loadMessages(user)});
+            console.log('readMessages: '+ristorante);
+            this_btn.addEventListener("click", function(){loadMessages(user, ristorante)});
             this_btn.appendChild(document.createTextNode('Torna alle chat'));
             msg_bar = document.createElement('div');
             msg_bar.classList.add('message-bar');
@@ -67,7 +92,7 @@ function readMessages(user, dest){
             msg_box.id = 'msg-box';
             msg_send = document.createElement('button');
             msg_send.appendChild(document.createTextNode('Invia'))
-            msg_send.addEventListener("click", function () { writeMessage(user, dest, document.getElementById('msg-box').value)});
+            msg_send.addEventListener("click", function () { writeMessage(user, dest, document.getElementById('msg-box').value, ristorante)});
             msg_bar.appendChild(msg_box);
             msg_bar.appendChild(msg_send);
             body.appendChild(this_btn);
@@ -88,13 +113,14 @@ function processRequest(request, accepted) {
     });
 };
 
-function writeMessage(from_user, to_user, msg) {
+function writeMessage(from_user, to_user, msg, ristorante) {
+    console.log('writeMessages: '+ristorante);
     AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=writeMessage&from_user='+from_user+'&to_user='+to_user+'&msg='+msg, true, null,
     function(response){
         if(response['responseCode'] != 0) {
             alert('qualcosa è andato storto: ' + response['message']);
         } else {
-            readMessages(from_user, to_user);
+            readMessages(from_user, to_user, ristorante);
         }
     });
 }
