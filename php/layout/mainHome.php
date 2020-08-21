@@ -34,16 +34,22 @@
         } else {
             echo '<p>This is the main home!</p>';
             if ($_SESSION['privilegi'] == null) {
-                echo '<p>Sembra che tu non abbia alcun ruolo assegnato. Chiedi ad un amministratore di cambiare il tuo ruolo</p>';
+                echo '<p>Sembra che tu non abbia alcun ruolo assegnato. Chiedi ad un amministratore di cambiare i tuoi privilegi</p>';
             } else {
                 if ($_SESSION['privilegi'] == 0) {
-                    echo '<p>Sei un amministratore: puoi fare quello che vuoi';
+                    $privs = 15;
                 } else {
-                    echo '<p>Ecco i tuoi roli disponibili: </p>';
-                    echo ($_SESSION['privilegi'] & 1)?'cameriere ':'';
-                    echo ($_SESSION['privilegi'] & 2)?'cuoco ':'';
-                    echo ($_SESSION['privilegi'] & 4)?'cassa ':'';
+                    $privs = $_SESSION['privilegi'];
                 }
+                echo '<p>Seleziona il tuo ruolo tra quelli disponibili: </p>';
+                echo '<select name="select-role" id="select-role" onChange = "document.getElementById(\'role-iframe\').src = \'./role/\'+this.value+\'.php\'">';
+                echo ($privs & 8)?'<option value="admin">admin</option> ':'';
+                echo ($privs & 1)?'<option value="cameriere">cameriere</option> ':'';
+                echo ($privs & 2)?'<option value="cuoco">cuoco</option> ':'';
+                echo ($privs & 4)?'<option value="cassa">cassa</option> ':'';
+                echo '</select>';
+
+                echo '<iframe id="role-iframe" src="./role/' . (($privs & 8)?'admin':(($privs & 1)?'cameriere':(($privs & 2)?'cuoco':'cassa'))) . '.php" frameborder="0" title = "role iframe" width=100% height=250px ></iframe>';
             }
         }
 ?>
@@ -51,7 +57,8 @@
 <input type="number" name="user" id="" value = $_SESSION['user_id'] readonly hidden>
 <select name="ristorante" id="" value="1">primo rist</select>
 <textarea name="note" cols="30" rows="10" form="send-req-form"></textarea><label for="note">note</label>
-<input type="submit" value="Invia">
-</div-->
+<input type="submit" value="Invia"-->
+
+</div>
 
 
