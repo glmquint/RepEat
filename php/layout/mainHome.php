@@ -33,6 +33,18 @@
             include DIR_LAYOUT . "missingRestaurants.php";
         } else {
             echo '<p>This is the main home!</p>';
+            if ($_SESSION['privilegi'] == null) {
+                echo '<p>Sembra che tu non abbia alcun ruolo assegnato. Chiedi ad un amministratore di cambiare il tuo ruolo</p>';
+            } else {
+                if ($_SESSION['privilegi'] == 0) {
+                    echo '<p>Sei un amministratore: puoi fare quello che vuoi';
+                } else {
+                    echo '<p>Ecco i tuoi roli disponibili: </p>';
+                    echo ($_SESSION['privilegi'] & 1)?'cameriere ':'';
+                    echo ($_SESSION['privilegi'] & 2)?'cuoco ':'';
+                    echo ($_SESSION['privilegi'] & 4)?'cassa ':'';
+                }
+            }
         }
 ?>
 <!--input type="text" name="function" id="function" value="sendRequest" readonly hidden>
