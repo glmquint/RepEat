@@ -20,29 +20,31 @@ function loadMessages(user, ristorante) {
                 body.appendChild(this_div);
 
             });
-            AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=listUsers&ristorante='+ristorante, true, null,
-            function (response) {
-                if (response['responseCode'] != 0) {
-                    alert('qualcosa è andato storto: ' + response['message']);
-                } else {
-                    body.appendChild(document.createTextNode('Inizia una chat con un tuo collega:'));
-                    select_user = document.createElement('select');
-                    select_user.name = 'user-select';
-                    select_user.id = 'user-select';
-                    response['data'].forEach(row => {
-                        this_option = document.createElement('option');
-                        this_option.value = row['id_utente'];
-                        this_option.appendChild(document.createTextNode(row['username']));
-                        select_user.appendChild(this_option);
-                        
-                    });
-                    go_to_chat = document.createElement('button');
-                    go_to_chat.appendChild(document.createTextNode('Vai alla chat'));
-                    go_to_chat.addEventListener("click", function () {readMessages(user, document.getElementById('user-select').value, ristorante);})
-                    body.appendChild(select_user);
-                    body.appendChild(go_to_chat);
-                }
-            });
+            if (ristorante != '-1') {
+                AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=listUsers&ristorante='+ristorante, true, null,
+                function (response) {
+                    if (response['responseCode'] != 0) {
+                        alert('qualcosa è andato storto: ' + response['message']);
+                    } else {
+                        body.appendChild(document.createTextNode('Inizia una chat con un tuo collega:'));
+                        select_user = document.createElement('select');
+                        select_user.name = 'user-select';
+                        select_user.id = 'user-select';
+                        response['data'].forEach(row => {
+                            this_option = document.createElement('option');
+                            this_option.value = row['id_utente'];
+                            this_option.appendChild(document.createTextNode(row['username']));
+                            select_user.appendChild(this_option);
+                            
+                        });
+                        go_to_chat = document.createElement('button');
+                        go_to_chat.appendChild(document.createTextNode('Vai alla chat'));
+                        go_to_chat.addEventListener("click", function () {readMessages(user, document.getElementById('user-select').value, ristorante);})
+                        body.appendChild(select_user);
+                        body.appendChild(go_to_chat);
+                    }
+                });
+            }
         }
     })
 };
@@ -66,7 +68,7 @@ function readMessages(user, dest, ristorante){
             response['data'].forEach(row => {
                 this_div = document.createElement('div');
                 this_div.classList.add('message');
-                this_content = document.createTextNode('(' + ((row['from_user'] == user)?'io':row['other_name']) + ') ' + row['ts'] + '[' + row['msg'] + ']' + ((row['is_req'] == 1)?((row['is_read'] == 1)?'Accettata':'Non accettata'):((row['is_read'] == 1)?'Letto':'Non letto')));                
+                this_content = document.createTextNode('(' + ((row['from_user'] == user)?'io':row['other_name']) + ') ' + row['ts'] + '[' + row['msg'] + ']' + ((row['is_req'] == 1)?((row['is_read'] == 1)?'Processata':'Non processata'):((row['is_read'] == 1)?'Letto':'Non letto')));                
                 this_div.appendChild(this_content);
                 if (row['is_req']) {
                     this_div.classList.add('request-msg');

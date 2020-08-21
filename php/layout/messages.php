@@ -12,5 +12,5 @@
 ?>
 
 <p>Here are your messages!</p>
-<body id="messages-body" onload ="loadMessages(<?php echo $_SESSION['user_id'] . ', ' . $_SESSION['ristorante'] ?>)">
+<body id="messages-body" onload ="loadMessages(<?php echo $_SESSION['user_id'] . ', ' . (isset($_SESSION['ristorante'])?$_SESSION['ristorante']:'-1') ?>)">
 </body>

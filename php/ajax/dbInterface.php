@@ -72,6 +72,12 @@
             die();
         }
 
+        if (in_array('user', $_REQUEST) && $_SESSION['id_utente'] != $_REQUEST['user']) {
+            $response = new AjaxResponse(1, 'You don\'t have permission to operate on this user');
+            echo json_encode($response);
+            die();
+        }
+
         $raw_result = $_REQUEST['function']($_REQUEST);
         if (is_bool($raw_result[0])){
             $response = new AjaxResponse(!$raw_result[0], $raw_result[1]);

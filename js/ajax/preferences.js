@@ -104,7 +104,7 @@ function updateUser(){
         mail = document.getElementById('Mail').value;
         pref_theme = document.getElementById('pref-theme').value;
         url += '&username=' + username + '&mail=' + mail + '&pref_theme=' + pref_theme;
-        //console.log(url);
+        console.log(url);
         AjaxManager.performAjaxRequest('POST', url , true, null, 
         function (response){
             if (response['responseCode'] != 0) {

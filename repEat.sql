@@ -109,6 +109,7 @@ CREATE TABLE `Utente` (
   `surname` varchar(32) NOT NULL,*/
   `pref_theme` enum('light', 'dark') DEFAULT 'light',
   `privilegi` bit(3) DEFAULT 0, -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
+								-- bit_cassa (b1xx) - bit_cucina (bx1x) - bit_cameriere (bxx1)
   `ristorante` int(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username_UNIQUE` (`username`),
