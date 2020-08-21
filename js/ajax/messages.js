@@ -58,6 +58,11 @@ function readMessages(user, dest, ristorante){
             while (body.firstChild) {
                 body.removeChild(body.lastChild);
             }
+            this_btn = document.createElement('button');
+            this_btn.addEventListener("click", function(){loadMessages(user, ristorante)});
+            this_btn.appendChild(document.createTextNode('Torna alle chat'));
+            body.appendChild(this_btn);
+
             response['data'].forEach(row => {
                 this_div = document.createElement('div');
                 this_div.classList.add('message');
@@ -81,9 +86,6 @@ function readMessages(user, dest, ristorante){
                 body.appendChild(this_div);
                 
             });
-            this_btn = document.createElement('button');
-            this_btn.addEventListener("click", function(){loadMessages(user, ristorante)});
-            this_btn.appendChild(document.createTextNode('Torna alle chat'));
             msg_bar = document.createElement('div');
             msg_bar.classList.add('message-bar');
             msg_box = document.createElement('textarea');
@@ -93,7 +95,6 @@ function readMessages(user, dest, ristorante){
             msg_send.addEventListener("click", function () { writeMessage(user, dest, document.getElementById('msg-box').value, ristorante)});
             msg_bar.appendChild(msg_box);
             msg_bar.appendChild(msg_send);
-            body.appendChild(this_btn);
             body.appendChild(msg_bar);
 
         }
