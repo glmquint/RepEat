@@ -92,6 +92,8 @@ function readMessages(user, dest, ristorante){
             msg_bar.classList.add('message-bar');
             msg_box = document.createElement('textarea');
             msg_box.id = 'msg-box';
+            msg_box.addEventListener("keydown", function(e){if(e.keyCode == 13 && e.ctrlKey){writeMessage(user, dest, document.getElementById('msg-box').value, ristorante)}})
+            msg_box.placeholder = '(anche Ctrl+Enter per inviare)'
             msg_send = document.createElement('button');
             msg_send.appendChild(document.createTextNode('Invia'))
             msg_send.addEventListener("click", function () { writeMessage(user, dest, document.getElementById('msg-box').value, ristorante)});
