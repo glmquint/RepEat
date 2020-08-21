@@ -5,9 +5,8 @@
     require_once DIR_UTIL . "dbProcedures.php";
     require_once DIR_AJAX_UTIL . "AjaxResponse.php";
 
-    if (isLogged()) {
-        session_start();
-    }
+    session_start();
+
 
     
 
@@ -72,7 +71,7 @@
             die();
         }
 
-        if (in_array('user', $_REQUEST) && $_SESSION['id_utente'] != $_REQUEST['user']) {
+        if (array_key_exists('user', $_REQUEST) && (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != $_REQUEST['user'])) {
             $response = new AjaxResponse(1, 'You don\'t have permission to operate on this user');
             echo json_encode($response);
             die();
