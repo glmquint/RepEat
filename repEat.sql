@@ -108,7 +108,7 @@ CREATE TABLE `Utente` (
   `name` varchar(32) NOT NULL,
   `surname` varchar(32) NOT NULL,*/
   `pref_theme` enum('light', 'dark') DEFAULT 'light',
-  `privilegi` bit(3) DEFAULT 0, -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
+  `privilegi` bit(3) DEFAULT NULL, -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
 								-- bit_cassa (b1xx) - bit_cucina (bx1x) - bit_cameriere (bxx1)
   `ristorante` int(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
@@ -130,7 +130,7 @@ BEGIN
 DECLARE new_restaurant int(11) UNSIGNED;
 INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE (_nome_ristorante, _indirizzo, _license_key);
 SELECT last_insert_id() INTO new_restaurant;
-UPDATE Utente SET ristorante = new_restaurant, privilegi = 7 WHERE id_utente = _user;
+UPDATE Utente SET ristorante = new_restaurant, privilegi = 0 WHERE id_utente = _user;
 SELECT new_restaurant;
 END $$
 DELIMITER ;
@@ -193,7 +193,7 @@ BEGIN
 	DECLARE cursore CURSOR FOR
 		SELECT id_utente
         FROM Utente
-        WHERE privilegi = 7
+        WHERE privilegi = 0
 			AND ristorante = _ristorante;
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET finito = 1;
 	OPEN cursore;
@@ -398,8 +398,8 @@ INSERT INTO Licenza (chiave, data_acquisto, livello) VALUE (3, CURRENT_DATE, 3);
 INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE ('Pesce Rosso', 'via Rossi 34', 1);
 INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE ('Gatto Blu', 'via Blu 82', 2);
 
-INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin1','admin1@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 7, 1); -- password: test 
-INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin2','admin2@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 7, 2); -- password: test 
+INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin1','admin1@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 0, 1); -- password: test 
+INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin2','admin2@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 0, 2); -- password: test 
 
 
 /*INSERT INTO Ristorante (nome_ristorante, indirizzo) VALUES ('Pesce Rosso', 'via Rossi 34'), -- id 1

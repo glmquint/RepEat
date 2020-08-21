@@ -75,7 +75,7 @@
             echo json_encode($response);
             die();
         }
-        if (array_key_exists('ristorante', $_REQUEST) && (!isset($_SESSION['ristorante']) || $_SESSION['ristorante'] != $_REQUEST['ristorante'])) {
+        if (array_key_exists('ristorante', $_REQUEST) && $_REQUEST['function'] != 'sendRequest' && (!isset($_SESSION['ristorante']) || $_SESSION['ristorante'] != $_REQUEST['ristorante'])) {
             $response = new AjaxResponse(1, 'You don\'t have permission to operate on this restaurant');
             echo json_encode($response);
             die();

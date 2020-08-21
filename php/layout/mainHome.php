@@ -9,7 +9,7 @@
         AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=sendRequest&user=' + user + '&ristorante=' + ristorante + '&msg=' + msg, true, null, 
         function(response){
             if (response['responseCode'] != 0) {
-                console.log(response)
+                alert('qualcosa è andato storto: ' + response['message']);
             } else {
                 alert('Richiesta inviata con successo. Attendere che questa venga accettata da un amministratore');
                 window.location.reload();
