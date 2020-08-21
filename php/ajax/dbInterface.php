@@ -7,7 +7,6 @@
 
     session_start();
 
-
     
 
     $available_functions = [
@@ -73,6 +72,11 @@
 
         if (array_key_exists('user', $_REQUEST) && (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != $_REQUEST['user'])) {
             $response = new AjaxResponse(1, 'You don\'t have permission to operate on this user');
+            echo json_encode($response);
+            die();
+        }
+        if (array_key_exists('ristorante', $_REQUEST) && (!isset($_SESSION['ristorante']) || $_SESSION['ristorante'] != $_REQUEST['ristorante'])) {
+            $response = new AjaxResponse(1, 'You don\'t have permission to operate on this restaurant');
             echo json_encode($response);
             die();
         }
