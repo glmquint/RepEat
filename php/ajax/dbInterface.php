@@ -4,8 +4,11 @@
     require_once __DIR__ . "/../config.php";
     require_once DIR_UTIL . "dbProcedures.php";
     require_once DIR_AJAX_UTIL . "AjaxResponse.php";
+    require_once DIR_UTIL . "/userAuth.php";
+
 
     session_start();
+    updateSessionVars($_SESSION['user_id']);
 
     
 
@@ -34,6 +37,9 @@
         'getTable',
         'getMenu',
         'getDish',
+        'listRooms',
+        'listDishes',
+        'listMenus',
         'removeDish',
         'removeMenu',
         'removeTable',
@@ -75,18 +81,22 @@
             echo json_encode($response);
             die();
         }
-        if (array_key_exists('ristorante', $_REQUEST) && $_REQUEST['function'] != 'sendRequest' && (!isset($_SESSION['ristorante']) || $_SESSION['ristorante'] != $_REQUEST['ristorante'])) {
+        if (array_key_exists('ristorante', $_REQUEST) && (!isset($_SESSION['ristorante']) || $_SESSION['ristorante'] != $_REQUEST['ristorante'])) {
             $response = new AjaxResponse(1, 'You don\'t have permission to operate on this restaurant');
             echo json_encode($response);
             die();
         }
 
+        
         $raw_result = $_REQUEST['function']($_REQUEST);
+        /*if($raw_result[0] == null){
+            die(print_r($raw_result));
+        }*/
         if (is_bool($raw_result[0])){
             $response = new AjaxResponse(!$raw_result[0], $raw_result[1]);
             echo json_encode($response);
-        } else if(is_string($raw_result[0])) { //is_array($raw_result) || 
-            $response = new AjaxResponse(-1, $raw_result[0]);
+        }else if(is_string($raw_result)) { //is_array($raw_result) || 
+            $response = new AjaxResponse(-1, $raw_result);
             echo json_encode($response);
         } else {
             //echo json_encode((mysqli_fetch_fields($raw_result)[0]));

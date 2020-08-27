@@ -93,14 +93,14 @@
 
 	function checkLicenseValidity($param){
 		global $repEatDb;
-		if (isset($param['restaurant'])){
-			$restaurant = $repEatDb->sqlInjectionFilter($param['restaurant']);
-		} else  return 'Missing argument: restaurant';
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
 
 		$queryText = 'SELECT IFNULL((SELECT CURRENT_DATE) < '.
 						'(SELECT L.data_attivazione + INTERVAL (IF(Lv.durata_validita = 0, NULL, Lv.durata_validita)) DAY ' .
 						'FROM Licenza L INNER JOIN Ristorante R ON L.chiave = R.license_key INNER JOIN Livello Lv ON L.livello = Lv.id_livello ' .
-						'WHERE R.id_ristorante = '. $restaurant . '), 1);';
+						'WHERE R.id_ristorante = '. $ristorante . '), 1) AS is_valid;';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -238,7 +238,7 @@
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'SELECT id_utente, username FROM Utente WHERE ristorante = ' . $ristorante . ';';
+		$queryText = 'SELECT id_utente, username, privilegi FROM Utente WHERE ristorante = ' . $ristorante . ';';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -251,15 +251,12 @@
 
 	function addRoom($param){
 		global $repEatDb;
-		if (isset($param['nome_stanza'])){
-			$nome_stanza = $repEatDb->sqlInjectionFilter($param['nome_stanza']);
-		} else  return 'Missing argument: nome_stanza';
 
 		if (isset($param['ristorante'])){
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'INSERT INTO Stanza (nome_stanza, ristorante) VALUE (\'' . $nome_stanza . '\', ' . $ristorante . ');';
+		$queryText = 'INSERT INTO Stanza (ristorante) VALUE (' . $ristorante . ');';
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -278,7 +275,7 @@
 		} else  return 'Missing argument: ristorante';
 
 		$queryText = 'INSERT INTO Tavolo (stanza, ristorante) VALUE (' . $stanza . ', ' . $ristorante . ');';
-						
+		
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -301,6 +298,7 @@
 
 	function addDish($param){
 		global $repEatDb;
+		/*
 		if (isset($param['nome_piatto'])){
 			$nome_piatto = $repEatDb->sqlInjectionFilter($param['nome_piatto']);
 		} else  return 'Missing argument: nome_piatto';
@@ -320,12 +318,13 @@
 		if (isset($param['allergeni'])){
 			$allergeni = $repEatDb->sqlInjectionFilter($param['allergeni']);
 		} else  return 'Missing argument: allergeni';
+		*/
 
 		if (isset($param['ristorante'])){
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'INSERT INTO Piatto (nome, categoria, prezzo, ingredienti, allergeni, ristorante) VALUE (\'' . $nome_piatto . '\', \'' . $categoria . '\', ' . $prezzo . ', \'' . $ingredienti . '\', \'' . $allergeni . '\', ' . $ristorante . ');'; //TODO check for allergeni in set format
+		$queryText = 'INSERT INTO Piatto (ristorante) VALUE (' . $ristorante . ');'; //TODO check for allergeni in set format
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -343,7 +342,11 @@
 			$stanza = $repEatDb->sqlInjectionFilter($param['stanza']);
 		} else  return 'Missing argument: stanza';
 
-		$queryText = 'UPDATE Stanza SET nome_stanza = \'' . $nome_stanza . '\' WHERE id_Stanza = ' . $stanza . ';';	
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'UPDATE Stanza SET nome_stanza = \'' . $nome_stanza . '\' WHERE id_stanza = ' . $stanza . ' AND ristorante = ' . $ristorante . ';';	
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -364,7 +367,15 @@
 			$tavolo = $repEatDb->sqlInjectionFilter($param['tavolo']);
 		} else  return 'Missing argument: tavolo';
 
-		$queryText = 'UPDATE Tavolo SET percentX = ' . $percentX . ', percentY = ' . $percentY . ' WHERE id_Tavolo = ' . $tavolo . ';';	
+		if (isset($param['stanza'])){
+			$stanza = $repEatDb->sqlInjectionFilter($param['stanza']);
+		} else  return 'Missing argument: stanza';
+
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'UPDATE Tavolo SET percentX = ' . $percentX . ', percentY = ' . $percentY . ' WHERE id_Tavolo = ' . $tavolo . ' AND stanza = ' . $stanza . ' AND ristorante = ' . $ristorante . ';';	
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -467,6 +478,56 @@
 		} else  return 'Missing argument: piatto';
 
 		$queryText = 'SELECT * FROM Piatto WHERE id_Piatto = ' . $piatto . ';';
+		$result = $repEatDb->performQuery($queryText);
+		$repEatDb->closeConnection();
+		return $result;
+
+	}
+
+	function listRooms($param){
+		global $repEatDb;
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'SELECT id_stanza, nome_stanza, GROUP_CONCAT(id_tavolo, ":", percentX, ":", percentY, ":", stato) AS tavoli ' . 
+						' FROM Stanza S LEFT OUTER JOIN Tavolo T ON T.stanza = S.id_stanza AND T.ristorante = S.ristorante ' . 
+						' WHERE S.ristorante = ' . $ristorante . 
+						' GROUP BY S.id_stanza;';
+
+		$result = $repEatDb->performQuery($queryText);
+		$repEatDb->closeConnection();
+		return $result;
+
+	}
+
+	function listDishes($param){
+		global $repEatDb;
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'SELECT * ' . 
+						' FROM Piatto P ' .
+						' WHERE P.ristorante = ' . $ristorante .
+						' ORDER BY P.categoria;';
+
+		$result = $repEatDb->performQuery($queryText);
+		$repEatDb->closeConnection();
+		return $result;
+
+	}
+
+	function listMenus($param){
+		global $repEatDb;
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'SELECT M.id_menu, M.orarioInizio, M.orarioFine, P.nome ' .
+						' FROM Menu M LEFT OUTER JOIN ComposizioneMenu CM ON M.id_menu = CM.menu LEFT OUTER JOIN Piatto P ON CM.piatto = P.id_piatto ' .
+						' WHERE M.ristorante = ' . $ristorante . ';';
+
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -814,9 +875,9 @@
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		if (isset($param['ristorante'])){
-			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
-		} else  return 'Missing argument: ristorante';
+		if (isset($param['target_restaurant'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['target_restaurant']);
+		} else  return 'Missing argument: target_restaurant';
 
 		if (isset($param['msg'])){
 			$msg = $repEatDb->sqlInjectionFilter($param['msg']);

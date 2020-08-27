@@ -1,11 +1,11 @@
 function loadMessages(user, ristorante) {
-    AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=getChats&user='+ user, true, null, 
+    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getChats&user='+ user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
             alert('qualcosa è andato storto: ' + response['message']);
         } else {
-            //console.log(response);
-            body = document.getElementsByTagName('body')[0];
+            console.log(response);
+            body = document.getElementById('main-container');
             while (body.firstChild) {
                 body.removeChild(body.lastChild);
             }
@@ -21,7 +21,7 @@ function loadMessages(user, ristorante) {
 
             });
             if (ristorante != '-1') {
-                AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=listUsers&ristorante='+ristorante, true, null,
+                AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listUsers&ristorante='+ristorante, true, null,
                 function (response) {
                     if (response['responseCode'] != 0) {
                         alert('qualcosa è andato storto: ' + response['message']);
@@ -50,13 +50,13 @@ function loadMessages(user, ristorante) {
 };
 
 function readMessages(user, dest, ristorante){
-    AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=readMessages&user=' + user + '&dest=' + dest, true, null,
+    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=readMessages&user=' + user + '&dest=' + dest, true, null,
     function(response){
         if(response['responseCode'] != 0) {
             alert('qualcosa è andato storto: ' + response['message']);
         } else {
             console.log(response);
-            body = document.getElementsByTagName('body')[0];
+            body = document.getElementById('main-container');
             while (body.firstChild) {
                 body.removeChild(body.lastChild);
             }
@@ -106,7 +106,7 @@ function readMessages(user, dest, ristorante){
 };
 
 function processRequest(request, accepted) {
-    AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=processRequest&req='+request+'&accepted='+accepted, true, null,
+    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=processRequest&req='+request+'&accepted='+accepted, true, null,
     function(response){
         if(response['responseCode'] != 0) {
             alert('qualcosa è andato storto: ' + response['message']);
@@ -117,7 +117,7 @@ function processRequest(request, accepted) {
 };
 
 function writeMessage(from_user, to_user, msg, ristorante) {
-    AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=writeMessage&from_user='+from_user+'&to_user='+to_user+'&msg='+msg, true, null,
+    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=writeMessage&from_user='+from_user+'&to_user='+to_user+'&msg='+msg, true, null,
     function(response){
         if(response['responseCode'] != 0) {
             alert('qualcosa è andato storto: ' + response['message']);

@@ -1,11 +1,14 @@
 function loadPreferences(user){
-    AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=getUser&user='+ user, true, null, 
+    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getUser&user='+ user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
             alert('qualcosa è andato storto: ' + response['message']);
         } else {
             console.log(response);
-            body = document.getElementById('preferences-body');
+            body = document.getElementById('main-container');
+            while (body.firstChild) {
+                body.removeChild(body.firstChild);
+            }
             row = response['data'][0];
 
             this_user = document.createElement('input');
@@ -96,7 +99,7 @@ function updateUser(){
     if (pwd != conf_pwd) {
         alert("La password non coincide tra i due campi Password e Conferma Password");
     } else {
-        url = '../ajax/dbInterface.php?function=updateUser&user='+ user;
+        url = './ajax/dbInterface.php?function=updateUser&user='+ user;
         if (pwd != '') {
             url += '&password=' + pwd 
         }

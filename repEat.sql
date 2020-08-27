@@ -86,11 +86,13 @@ END IF;
 END $$
 DELIMITER ;
 
+-- DROP TRIGGER `activate_key_upd`;
 DELIMITER $$
 CREATE TRIGGER `activate_key_upd` BEFORE UPDATE ON `Ristorante`
 FOR EACH ROW
 BEGIN
-IF EXISTS (SELECT chiave FROM Licenza WHERE chiave = NEW.license_key AND active = 0) THEN
+IF (SELECT license_key FROM Ristorante WHERE id_ristorante = NEW.id_ristorante) = New.license_key
+	OR EXISTS (SELECT chiave FROM Licenza WHERE chiave = NEW.license_key AND active = 0) THEN
 UPDATE `Licenza` SET active = 1, data_attivazione = CURRENT_DATE  WHERE chiave = NEW.license_key;
 ELSE
 SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The key is invalid or inactive';
@@ -108,8 +110,8 @@ CREATE TABLE `Utente` (
   `name` varchar(32) NOT NULL,
   `surname` varchar(32) NOT NULL,*/
   `pref_theme` enum('light', 'dark') DEFAULT 'light',
-  `privilegi` bit(3) DEFAULT NULL, -- ispirato ad UNIX (b000 è amministratore, b111 è visibilità completa), NULL è assenza di privilegi
-								-- bit_cassa (b1xx) - bit_cucina (bx1x) - bit_cameriere (bxx1)
+  `privilegi` bit(4) DEFAULT 0, -- ispirato ad UNIX (b1xxx è amministratore, bx111 è visibilità completa), 
+								-- bit_cassa (bx1xx) - bit_cucina (bxx1x) - bit_cameriere (bxxx1)
   `ristorante` int(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username_UNIQUE` (`username`),
@@ -130,7 +132,7 @@ BEGIN
 DECLARE new_restaurant int(11) UNSIGNED;
 INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE (_nome_ristorante, _indirizzo, _license_key);
 SELECT last_insert_id() INTO new_restaurant;
-UPDATE Utente SET ristorante = new_restaurant, privilegi = 0 WHERE id_utente = _user;
+UPDATE Utente SET ristorante = new_restaurant, privilegi = 15 WHERE id_utente = _user;
 SELECT new_restaurant;
 END $$
 DELIMITER ;
@@ -193,7 +195,7 @@ BEGIN
 	DECLARE cursore CURSOR FOR
 		SELECT id_utente
         FROM Utente
-        WHERE privilegi = 0
+        WHERE (privilegi & 8) = 8
 			AND ristorante = _ristorante;
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET finito = 1;
 	OPEN cursore;
@@ -216,9 +218,20 @@ CREATE PROCEDURE `processRequest`
 	(IN _req int(11) UNSIGNED,
     IN _accepted bit(1))
 BEGIN
-	IF _accepted THEN
-	UPDATE Utente SET ristorante = (SELECT * FROM (SELECT ristorante FROM Utente WHERE id_utente = (SELECT to_user FROM Messaggio WHERE id_msg = _req)) tmp) 
-		WHERE id_utente = (SELECT from_user FROM Messaggio WHERE id_msg = _req);
+	DECLARE msg_txt_ varchar(128);
+
+	IF _accepted  
+    THEN
+    IF (SELECT IF(Lv.max_dipendenti = 0, 1, COUNT(U.id_utente) < Lv.max_dipendenti)
+					FROM Ristorante R INNER JOIN Licenza L ON R.license_key = L.chiave INNER JOIN Livello Lv ON L.livello = Lv.id_livello INNER JOIN Utente U ON R.id_ristorante = U.ristorante
+					WHERE R.id_ristorante = (SELECT * FROM (SELECT U2.ristorante FROM Utente U2 WHERE U2.id_utente = (SELECT M2.to_user FROM Messaggio M2 WHERE M2.id_msg = _req)) tmp))
+	THEN
+		UPDATE Utente SET ristorante = (SELECT * FROM (SELECT ristorante FROM Utente WHERE id_utente = (SELECT to_user FROM Messaggio WHERE id_msg = _req)) tmp) 
+			WHERE id_utente = (SELECT from_user FROM Messaggio WHERE id_msg = _req);
+	ELSE 
+    	SELECT CONCAT('Limite dipendenti raggiunto. Aggiornare la licenza in uso per aggiungere piu\' dipendenti') INTO msg_txt_;
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = msg_txt_;
+	END IF;
 	END IF;
 	UPDATE Messaggio SET is_read = 1 WHERE id_msg = _req AND is_read = 0 AND is_req = 1;
 END $$
@@ -227,16 +240,33 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `Stanza`;
 CREATE TABLE `Stanza` (
-  `id_stanza` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, -- TODO: make manual auto-increment per restaurant 
-  `nome_stanza` varchar(32) NOT NULL,
+  `id_stanza` int(11) UNSIGNED NOT NULL, 
+  `nome_stanza` varchar(32) NOT NULL DEFAULT 'senza-nome',
   `ristorante` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_stanza`, `ristorante`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TRIGGER IF EXISTS `manual_autoincrement_room_and_check_limit_room`;
+DELIMITER $$
+CREATE TRIGGER `manual_autoincrement_room_and_check_limit_room` BEFORE INSERT ON `Stanza`
+FOR EACH ROW
+BEGIN
+DECLARE msg_txt_ varchar(128);
+SET NEW.id_stanza = (SELECT IFNULL((SELECT MAX(id_stanza)+1 FROM Stanza WHERE ristorante = NEW.ristorante), 0));
+IF NOT (SELECT IF(Lv.max_stanze = 0, 1, COUNT(S.id_stanza) < Lv.max_stanze)
+	FROM Ristorante R INNER JOIN Licenza L ON R.license_key = L.chiave INNER JOIN Livello Lv ON L.livello = Lv.id_livello INNER JOIN Stanza S ON R.id_ristorante = S.ristorante
+	WHERE R.id_ristorante = NEW.ristorante)
+THEN 
+	SELECT CONCAT('Limite stanze raggiunto. Aggiornare la licenza in uso per aggiungere piu\' stanze') INTO msg_txt_;
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = msg_txt_;
+END IF;
+END $$
+DELIMITER ;
+
 DROP TABLE IF EXISTS `Tavolo`;
 CREATE TABLE `Tavolo` (
-  `id_tavolo` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, -- TODO: make manual auto-increment per room per restaurant 
+  `id_tavolo` int(11) UNSIGNED NOT NULL, 
   `percentX` tinyint UNSIGNED NOT NULL DEFAULT 0,
   `percentY` tinyint UNSIGNED NOT NULL DEFAULT 0,
   `stato` enum('libero', 'ordinato', 'pronto', 'servito') NOT NULL DEFAULT 'libero',
@@ -246,6 +276,23 @@ CREATE TABLE `Tavolo` (
   foreign key(`stanza`) references Stanza(`id_stanza`),
   foreign key(`ristorante`) references Stanza(`ristorante`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TRIGGER IF EXISTS `manual_autoincrement_table_and_check_limit_table`;
+DELIMITER $$
+CREATE TRIGGER `manual_autoincrement_table_and_check_limit_table` BEFORE INSERT ON `Tavolo`
+FOR EACH ROW
+BEGIN
+DECLARE msg_txt_ varchar(128);
+SET NEW.id_tavolo = (SELECT IFNULL((SELECT MAX(id_tavolo)+1 FROM Tavolo WHERE ristorante = NEW.ristorante AND stanza = NEW.stanza), 0));
+IF NOT (SELECT IF(Lv.max_tavoli = 0, 1, COUNT(T.id_tavolo) < Lv.max_tavoli)
+	FROM Ristorante R INNER JOIN Licenza L ON R.license_key = L.chiave INNER JOIN Livello Lv ON L.livello = Lv.id_livello INNER JOIN Tavolo T ON R.id_ristorante = T.ristorante
+	WHERE R.id_ristorante = NEW.ristorante)
+THEN 
+	SELECT CONCAT('Limite tavoli raggiunto. Aggiornare la licenza in uso per aggiungere piu\' tavoli') INTO msg_txt_;
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = msg_txt_;
+END IF;
+END $$
+DELIMITER ;
 
 DROP TABLE IF EXISTS `Menu`;
 CREATE TABLE `Menu` (
@@ -398,8 +445,8 @@ INSERT INTO Licenza (chiave, data_acquisto, livello) VALUE (3, CURRENT_DATE, 3);
 INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE ('Pesce Rosso', 'via Rossi 34', 1);
 INSERT INTO Ristorante (nome_ristorante, indirizzo, license_key) VALUE ('Gatto Blu', 'via Blu 82', 2);
 
-INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin1','admin1@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 0, 1); -- password: test 
-INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin2','admin2@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 0, 2); -- password: test 
+INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin1','admin1@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 15, 1); -- password: test 
+INSERT INTO Utente (username, mail, password, privilegi, ristorante) VALUE('admin2','admin2@test.com','$2y$10$sdL8QG/QCDArDgoWH2Gj8Oq5oiYF2N49m8rmcDmJGegYICbSKRrCS', 15, 2); -- password: test 
 
 
 /*INSERT INTO Ristorante (nome_ristorante, indirizzo) VALUES ('Pesce Rosso', 'via Rossi 34'), -- id 1

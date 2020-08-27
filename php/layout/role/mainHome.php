@@ -5,7 +5,7 @@
 <script>
 
 
-    function sendRequest(user, ristorante, msg) {
+    /*function sendRequest(user, ristorante, msg) {
         AjaxManager.performAjaxRequest('GET', '../ajax/dbInterface.php?function=sendRequest&user=' + user + '&ristorante=' + ristorante + '&msg=' + msg, true, null, 
         function(response){
             if (response['responseCode'] != 0) {
@@ -15,7 +15,7 @@
                 window.location.reload();
             }
         })
-    };
+    };*/
 
 </script>
 <div id="main-container">

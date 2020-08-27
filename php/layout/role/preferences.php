@@ -11,6 +11,6 @@
 
 ?>
 <p>Here are your preferences!</p>
-<body id="preferences-body" onload ="loadPreferences(<?php echo $_SESSION['user_id'] ?>)">
+<span id="preferences-body" onload ="loadPreferences(<?php echo $_SESSION['user_id'] ?>)">
 
-</body>
+</span>
