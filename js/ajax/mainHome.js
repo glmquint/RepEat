@@ -372,6 +372,11 @@ function loadRoomSettings(parentDiv, ristorante){
     });
 }
 
+allergeni = ['pesce', 'molluschi', 'latticini', 'glutine', 
+    'frutta a guscio', 'crostacei', 'arachidi', 
+    'lupini', 'uova', 'solfiti', 'soia', 'sesamo', 
+    'senape', 'sedano', 'piccante', 'surgelato'];
+
 function loadDishSettings(parentDiv, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listDishes&ristorante='+ ristorante, true, null, 
     function(response){
@@ -385,7 +390,84 @@ function loadDishSettings(parentDiv, ristorante){
             parentDiv.appendChild(h3Piatti);
             
             response['data'].forEach((piatto, index_piatto) => {
-                //console.log(piatto);
+                this_div = document.createElement('div');
+                this_div.classList.add('piatto');
+                /*for (property in piatto){
+                    this_div.innerHTML += property + '=' + piatto[property] + ', ';
+                }*/
+
+                iindex_piatto = document.createElement('input');
+                iindex_piatto.type = 'number';
+                iindex_piatto.id = 'indexpiatto-'+index_piatto;
+                iindex_piatto.value = piatto['id_piatto'];
+                iindex_piatto.hidden = true;
+                iindex_piatto.readOnly = true;
+
+                this_div.appendChild(iindex_piatto);
+
+                inome_piatto = document.createElement('input');
+                inome_piatto.type = "text";
+                inome_piatto.id = 'nomepiatto-' + index_piatto;
+                inome_piatto.value = piatto['nome'];
+                linome_piatto = document.createElement('label');
+                linome_piatto.htmlFor = 'nomepiatto-' + index_piatto;
+                linome_piatto.appendChild(document.createTextNode('nome piatto'))
+
+                this_div.appendChild(inome_piatto);
+                this_div.appendChild(linome_piatto);
+
+                icategoria_piatto = document.createElement('input');
+                icategoria_piatto.type = "text";
+                icategoria_piatto.id = 'categoriapiatto-' + index_piatto;
+                icategoria_piatto.placeholder = '(primi, bevande, dessert...)'
+                icategoria_piatto.value = piatto['categoria'];
+                licategoria_piatto = document.createElement('label');
+                licategoria_piatto.htmlFor = 'categoriapiatto-' + index_piatto;
+                licategoria_piatto.appendChild(document.createTextNode('categoria'))
+
+                this_div.appendChild(icategoria_piatto);
+                this_div.appendChild(licategoria_piatto);
+
+                iprezzo_piatto = document.createElement('input');
+                iprezzo_piatto.type = "number";
+                iprezzo_piatto.id = 'prezzopiatto-' + index_piatto;
+                iprezzo_piatto.value = piatto['prezzo'];
+                liprezzo_piatto = document.createElement('label');
+                liprezzo_piatto.htmlFor = 'prezzopiatto-' + index_piatto;
+                liprezzo_piatto.appendChild(document.createTextNode('prezzo €'))
+
+                this_div.appendChild(iprezzo_piatto);
+                this_div.appendChild(liprezzo_piatto);
+
+                taingredienti_piatto = document.createElement('textarea');
+                taingredienti_piatto.id = 'ingredientipiatto-' + index_piatto;
+                taingredienti_piatto.placeholder = '(Breve descrizione del piatto con ingredienti)'
+                taingredienti_piatto.value = piatto['ingredienti'];
+                ltaingredienti_piatto = document.createElement('label');
+                ltaingredienti_piatto.htmlFor = 'ingredientipiatto-' + index_piatto;
+                ltaingredienti_piatto.appendChild(document.createTextNode('ingredenti'))
+
+                this_div.appendChild(taingredienti_piatto);
+                this_div.appendChild(ltaingredienti_piatto);
+
+                allergeni.forEach((allergene, index_allergene) => {
+                    cballergene = document.createElement('input');
+                    cballergene.type = 'checkbox';
+                    cballergene.id = 'allergene' + ':' + allergene + '-' + index_piatto;
+                    if (piatto['allergeni'] != null && piatto['allergeni'].includes(allergene)) cballergene.checked = true;
+                    lcballergene = document.createElement('label');
+                    lcballergene.appendChild(document.createTextNode(allergene));
+                    this_div.appendChild(cballergene);
+                    this_div.appendChild(lcballergene);
+                });
+
+
+
+                this_button = document.createElement('button');
+                this_button.appendChild(document.createTextNode('aggiorna'));
+                this_button.onclick = function(){updateDish(index_piatto)};
+                this_div.appendChild(this_button);
+                parentDiv.appendChild(this_div);
             });
 
             baddRoom = document.createElement('button');
@@ -485,6 +567,32 @@ function updateRoom(nome_stanza, stanza, ristorante) {
     console.log(stanza);
     console.log(ristorante);
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateRoom&nome_stanza='+nome_stanza+'&stanza='+stanza+'&ristorante='+ ristorante, true, null, 
+    function(response){
+        if (response['responseCode'] != 0) {
+            alert('qualcosa è andato storto: ' + response['message']);
+        } else {
+            alert('informazioni aggiornate con successo');
+        }
+    })
+
+}
+
+function updateDish(piatto) {
+
+    nome = document.getElementById('nomepiatto-'+piatto).value;
+    categoria = document.getElementById('categoriapiatto-'+piatto).value;
+    prezzo = document.getElementById('prezzopiatto-'+piatto).value;
+    ingredienti = document.getElementById('ingredientipiatto-'+piatto).value;
+
+    list_allergeni = '';
+
+    allergeni.forEach(allergene => {
+        list_allergeni += (document.getElementById('allergene' + ':' + allergene + '-' + piatto).checked) ? ((list_allergeni == '')?allergene:','+allergene) : '';
+    });
+
+    piatto = document.getElementById('indexpiatto-'+piatto).value;
+    
+    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateDish&nome_piatto='+nome+'&categoria='+categoria+'&prezzo='+ prezzo+'&ingredienti='+ ingredienti+'&allergeni='+ list_allergeni+'&piatto='+ piatto, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
             alert('qualcosa è andato storto: ' + response['message']);

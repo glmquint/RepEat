@@ -409,6 +409,10 @@
 			$nome_piatto = $repEatDb->sqlInjectionFilter($param['nome_piatto']);
 		} else  return 'Missing argument: nome_piatto';
 
+		if (isset($param['categoria'])){
+			$categoria = $repEatDb->sqlInjectionFilter($param['categoria']);
+		} else  return 'Missing argument: categoria';
+
 		if (isset($param['prezzo'])){
 			$prezzo = $repEatDb->sqlInjectionFilter($param['prezzo']);
 		} else  return 'Missing argument: prezzo';
@@ -425,7 +429,7 @@
 			$piatto = $repEatDb->sqlInjectionFilter($param['piatto']);
 		} else  return 'Missing argument: piatto';
 
-		$queryText = 'UPDATE Piatto SET nome = \'' . $nome_piatto . '\', prezzo = ' . $prezzo . ', ingredienti = \'' . $ingredienti . '\', allergeni = \'' . $allergeni . '\' WHERE id_Piatto = ' . $piatto . ';';	
+		$queryText = 'UPDATE Piatto SET nome = \'' . $nome_piatto . '\', categoria = \'' . $categoria . '\', prezzo = ' . $prezzo . ', ingredienti = \'' . $ingredienti . '\', allergeni = \'' . $allergeni . '\' WHERE id_Piatto = ' . $piatto . ';';	
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -510,6 +514,28 @@
 		$queryText = 'SELECT * ' . 
 						' FROM Piatto P ' .
 						' WHERE P.ristorante = ' . $ristorante .
+						' ORDER BY P.categoria;';
+
+		$result = $repEatDb->performQuery($queryText);
+		$repEatDb->closeConnection();
+		return $result;
+
+	}
+
+	function listDishesSimilar($param){
+		global $repEatDb;
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		if (isset($param['pattern'])){
+			$pattern = $repEatDb->sqlInjectionFilter($param['pattern']);
+		} else  return 'Missing argument: pattern';
+
+		$queryText = 'SELECT * ' . 
+						' FROM Piatto P ' .
+						' WHERE P.ristorante = ' . $ristorante .
+						' AND P.nome_piatto LIKE \'%' . $pattern . '%\'' .
 						' ORDER BY P.categoria;';
 
 		$result = $repEatDb->performQuery($queryText);

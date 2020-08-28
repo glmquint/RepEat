@@ -307,7 +307,7 @@ CREATE TABLE `Menu` (
 DROP TABLE IF EXISTS `Piatto`;
 CREATE TABLE `Piatto` (
   `id_piatto` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `nome` varchar(32) NOT NULL,
+  `nome` varchar(32) NOT NULL DEFAULT 'senza-nome',
   `categoria` varchar(32) NOT NULL,
   `prezzo` float UNSIGNED NOT NULL, -- per porzione o al kg
   `ingredienti` varchar(255) DEFAULT NULL,
