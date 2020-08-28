@@ -18,6 +18,7 @@
     <script src="../js/ajax/preferences.js"></script>
     <script src="../js/ajax/messages.js"></script>
     <script src="../js/ajax/mainHome.js"></script>
+    <script src="../js/ajax/admin.js"></script>
     <script src="../js/ajax/missingRestaurant.js"></script>
     <title>repEat</title>
 </head>

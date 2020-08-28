@@ -39,7 +39,7 @@
         'getDish',
         'listRooms',
         'listDishes',
-        'listDishesSimilar',
+        //'listDishesSimilar',
         'listMenus',
         'removeDish',
         'removeMenu',

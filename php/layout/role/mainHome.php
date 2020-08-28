@@ -32,7 +32,7 @@
         if (!isset($_SESSION['ristorante']) || $_SESSION['ristorante'] == null) {
             include DIR_LAYOUT . "missingRestaurants.php";
         } else {
-            echo '<p>This is the main home!</p>';
+            echo '<p>This is the main HHHHHHHome!</p>';
             if ($_SESSION['privilegi'] == null) {
                 echo '<p>Sembra che tu non abbia alcun ruolo assegnato. Chiedi ad un amministratore di cambiare i tuoi privilegi</p>';
             } else {

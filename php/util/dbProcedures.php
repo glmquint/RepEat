@@ -392,9 +392,9 @@
 			$orario_fine = $repEatDb->sqlInjectionFilter($param['orario_fine']);
 		} else  return 'Missing argument: orario_fine';
 
-		if (isset($param['parameters'])){
-			$parameters = $repEatDb->sqlInjectionFilter($param['parameters']);
-		} else  return 'Missing argument: parameters';
+		if (isset($param['menu'])){
+			$menu = $repEatDb->sqlInjectionFilter($param['menu']);
+		} else  return 'Missing argument: menu';
 
 		$queryText = 'UPDATE Menu SET orarioInizio = \'' . $orario_inizio . '\', orarioFine = \'' . $orario_fine . '\' WHERE id_Menu = ' . $menu . ';';	
 		$result = $repEatDb->performQuery($queryText);
@@ -408,6 +408,10 @@
 		if (isset($param['nome_piatto'])){
 			$nome_piatto = $repEatDb->sqlInjectionFilter($param['nome_piatto']);
 		} else  return 'Missing argument: nome_piatto';
+
+		if(!preg_match("/^[^,]+$/", $nome_piatto)){
+			return 'Argument nome_piatto can not contain commas';
+		}
 
 		if (isset($param['categoria'])){
 			$categoria = $repEatDb->sqlInjectionFilter($param['categoria']);
@@ -522,7 +526,7 @@
 
 	}
 
-	function listDishesSimilar($param){
+	function listDishesSimilar($param){ // TODO: remove if datalist tag is used instead
 		global $repEatDb;
 		if (isset($param['ristorante'])){
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
@@ -550,9 +554,10 @@
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'SELECT M.id_menu, M.orarioInizio, M.orarioFine, P.nome ' .
+		$queryText = 'SELECT M.id_menu, M.orarioInizio, M.orarioFine, GROUP_CONCAT(P.id_piatto, ":", P.nome, ":", P.categoria, ":", P.prezzo) AS piatti ' .
 						' FROM Menu M LEFT OUTER JOIN ComposizioneMenu CM ON M.id_menu = CM.menu LEFT OUTER JOIN Piatto P ON CM.piatto = P.id_piatto ' .
-						' WHERE M.ristorante = ' . $ristorante . ';';
+						' WHERE M.ristorante = ' . $ristorante . 
+						' GROUP BY M.id_menu;';
 
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
