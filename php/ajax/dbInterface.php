@@ -13,7 +13,7 @@
     
 
     $available_functions = [
-        'addLicenseLevel',
+        //'addLicenseLevel', //available only to site administrator
         'listLevels',
         'generateKey',
         'registerRestaurant',
@@ -35,11 +35,10 @@
         'updateDish',
         'getRoom',
         'getTable',
-        'getMenu',
+        'getCurrentDishes',
         'getDish',
         'listRooms',
         'listDishes',
-        //'listDishesSimilar',
         'listMenus',
         'removeDish',
         'removeMenu',

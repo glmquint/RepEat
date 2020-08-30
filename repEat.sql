@@ -297,8 +297,8 @@ DELIMITER ;
 DROP TABLE IF EXISTS `Menu`;
 CREATE TABLE `Menu` (
   `id_menu` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `orarioInizio` TIME DEFAULT NULL,
-  `orarioFine` TIME DEFAULT NULL,
+  `orarioInizio` TIME NOT NULL DEFAULT '00:00:00',
+  `orarioFine` TIME NOT NULL DEFAULT '23:59:59',
   `ristorante` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_menu`),
   foreign key(`ristorante`) references Ristorante(`id_ristorante`)

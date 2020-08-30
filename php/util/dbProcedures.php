@@ -409,7 +409,7 @@
 			$nome_piatto = $repEatDb->sqlInjectionFilter($param['nome_piatto']);
 		} else  return 'Missing argument: nome_piatto';
 
-		if(!preg_match("/^[^,]+$/", $nome_piatto)){
+		if(!preg_match("/^[^,]+$/", $nome_piatto)){	//necessary for the GROUP_CONCAT in listRooms
 			return 'Argument nome_piatto can not contain commas';
 		}
 
@@ -466,13 +466,20 @@
 
 	}
 
-	function getMenu($param){
+	function getCurrentDishes($param){
 		global $repEatDb;
-		if (isset($param['menu'])){
-			$menu = $repEatDb->sqlInjectionFilter($param['menu']);
-		} else  return 'Missing argument: menu';
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'SELECT * FROM Menu WHERE id_Menu = ' . $menu . ';'; // probably different: details on every dish, ordered by user-defined grouped categories (.. GROUP BY cat1 UNION .. GROUP BY cat2 ..)
+		$queryText = 'SELECT DISTINCT(P.id_piatto), P.* ' .
+						' FROM Piatto P INNER JOIN ComposizioneMenu CM ON P.id_piatto = CM.piatto ' .
+						' WHERE CM.menu IN (SELECT id_menu ' .
+										' FROM Menu ' .
+										' WHERE Ristorante = ' . $ristorante .
+											' AND orarioInizio <= current_time() ' .
+											' AND orarioFine >= current_time()) ' .
+						' ORDER BY P.categoria;'; 
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -518,28 +525,6 @@
 		$queryText = 'SELECT * ' . 
 						' FROM Piatto P ' .
 						' WHERE P.ristorante = ' . $ristorante .
-						' ORDER BY P.categoria;';
-
-		$result = $repEatDb->performQuery($queryText);
-		$repEatDb->closeConnection();
-		return $result;
-
-	}
-
-	function listDishesSimilar($param){ // TODO: remove if datalist tag is used instead
-		global $repEatDb;
-		if (isset($param['ristorante'])){
-			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
-		} else  return 'Missing argument: ristorante';
-
-		if (isset($param['pattern'])){
-			$pattern = $repEatDb->sqlInjectionFilter($param['pattern']);
-		} else  return 'Missing argument: pattern';
-
-		$queryText = 'SELECT * ' . 
-						' FROM Piatto P ' .
-						' WHERE P.ristorante = ' . $ristorante .
-						' AND P.nome_piatto LIKE \'%' . $pattern . '%\'' .
 						' ORDER BY P.categoria;';
 
 		$result = $repEatDb->performQuery($queryText);
@@ -654,9 +639,9 @@
 
 	function makeOrder($param){
 		global $repEatDb;
-		if (isset($param['utente_ordine'])){
-			$utente_ordine = $repEatDb->sqlInjectionFilter($param['utente_ordine']);
-		} else  return 'Missing argument: utente_ordine';
+		if (isset($param['user'])){	//utente ordine
+			$user = $repEatDb->sqlInjectionFilter($param['user']);
+		} else  return 'Missing argument: user';
 
 		if (isset($param['piatto'])){
 			$piatto = $repEatDb->sqlInjectionFilter($param['piatto']);
@@ -728,9 +713,9 @@
 
 	function setPrepared($param){
 		global $repEatDb;
-		if (isset($param['utente_preparazione'])){
-			$utente_preparazione = $repEatDb->sqlInjectionFilter($param['utente_preparazione']);
-		} else  return 'Missing argument: utente_preparazione';
+		if (isset($param['user'])){	//utente preparazione
+			$user = $repEatDb->sqlInjectionFilter($param['user']);
+		} else  return 'Missing argument: user';
 
 		if (isset($param['ordine'])){
 			$ordine = $repEatDb->sqlInjectionFilter($param['ordine']);
@@ -745,9 +730,9 @@
 	
 	function setReady($param){
 		global $repEatDb;
-		if (isset($param['utente_consegna'])){
-			$utente_consegna = $repEatDb->sqlInjectionFilter($param['utente_consegna']);
-		} else  return 'Missing argument: utente_consegna';
+		if (isset($param['user'])){	//utente consegna
+			$user = $repEatDb->sqlInjectionFilter($param['user']);
+		} else  return 'Missing argument: user';
 
 		if (isset($param['ordine'])){
 			$ordine = $repEatDb->sqlInjectionFilter($param['ordine']);

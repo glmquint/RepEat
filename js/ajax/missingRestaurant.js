@@ -88,16 +88,16 @@ function loadMissingRestaurant(user){
                         this_body.appendChild(p1);
                         this_body.appendChild(p2);
                         this_body.appendChild(sr);
-                        this_body.appendChild(ta);
                         this_body.appendChild(lta);
+                        this_body.appendChild(ta);
                         this_body.appendChild(srb);
                         this_body.appendChild(p3);
-                        this_body.appendChild(inr);
                         this_body.appendChild(linr);
-                        this_body.appendChild(ii);
+                        this_body.appendChild(inr);
                         this_body.appendChild(lii);
-                        this_body.appendChild(ilk);
+                        this_body.appendChild(ii);
                         this_body.appendChild(lilk);
+                        this_body.appendChild(ilk);
                         this_body.appendChild(rrb);
                         this_body.appendChild(p4);
 

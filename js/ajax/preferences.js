@@ -77,16 +77,16 @@ function loadPreferences(user){
             update_btn.appendChild(update_btn_label);
 
             body.appendChild(this_user);
-            body.appendChild(this_username);
             body.appendChild(this_username_label);
-            body.appendChild(this_mail);
+            body.appendChild(this_username);
             body.appendChild(this_mail_label);
-            body.appendChild(this_pwd);
+            body.appendChild(this_mail);
             body.appendChild(this_pwd_label);
-            body.appendChild(this_conf_pwd);
+            body.appendChild(this_pwd);
             body.appendChild(this_conf_pwd_label);
-            body.appendChild(this_theme);
+            body.appendChild(this_conf_pwd);
             body.appendChild(this_theme_label);
+            body.appendChild(this_theme);
             body.appendChild(update_btn);
         }
     });
