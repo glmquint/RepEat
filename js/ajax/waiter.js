@@ -15,6 +15,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     h3stanza.appendChild(document.createTextNode('Stanze:'))
     droom.appendChild(h3stanza);
     parentDiv.appendChild(droom);
+
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -40,7 +41,21 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
                             rtavolo.id = 'tavolo-' + index_stanza + ':' + index_tavolo;
                             rtavolo.value = stanza['id_stanza'] + ':' + tavolo.split(':')[0];
                             rtavolo.classList.add('rtavolo');
-                            rtavolo.classList.add(tavolo.split(':')[3]);
+
+                            //FIX: Working function but it doesn't repeat!!!
+                            intervalArr.push(setInterval(function intervalSetTableStatus() {
+                                AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getTable&tavolo='+ tavolo.split(':')[0] + '&stanza='+ stanza['id_stanza'] + '&ristorante='+ ristorante, true, null, 
+                                function(response2){
+                                    if (response2['responseCode'] != 0) {
+                                        alert('qualcosa è andato storto: ' + response2['message']);
+                                    } else {
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.add(response2['data'][0]['stato']);
+                                        return intervalSetTableStatus;   
+                                    }
+                                }); 
+                            
+                                }(), 1000)); //... grazie a https://stackoverflow.com/a/6685505 per l'idea di chiamare una funzione che ritorna se stessa (così da evitare il primo delay della setInterval)
+                            
                             rtavolo.addEventListener('change', function(){if(this.checked) selectTable(this.value, this.nextSibling.innerText)})
                             lrtavolo = document.createElement('label');
                             lrtavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
@@ -117,7 +132,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
 
     parentDiv.appendChild(dorder);
 
-    //TODO
+    
     dready = document.createElement('div');
     dready.id = 'pronti';
     h3ready = document.createElement('h3');

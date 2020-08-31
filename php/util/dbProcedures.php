@@ -449,7 +449,7 @@
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'SELECT * FROM Stanza WHERE id_Stanza = ' . $stanza . ' ristorante = ' . $ristorante . ';';	
+		$queryText = 'SELECT * FROM Stanza WHERE id_Stanza = ' . $stanza . ' AND ristorante = ' . $ristorante . ';';	
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -468,7 +468,7 @@
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'SELECT * FROM Tavolo WHERE id_Tavolo = ' . $tavolo . ' stanza = ' . $stanza . ' ristorante = ' . $ristorante . ';';
+		$queryText = 'SELECT * FROM Tavolo WHERE id_Tavolo = ' . $tavolo . ' AND stanza = ' . $stanza . ' AND ristorante = ' . $ristorante . ';';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
