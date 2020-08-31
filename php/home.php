@@ -4,7 +4,7 @@
     require_once DIR_UTIL . "/sessionUtil.php";
 
     if (!isLogged()){
-		    header('Location: ./../index.php');
+		    header('Location: ../index.php');
 		    exit;
     }	
 ?>
@@ -19,6 +19,9 @@
     <script src="../js/ajax/messages.js"></script>
     <script src="../js/ajax/mainHome.js"></script>
     <script src="../js/ajax/admin.js"></script>
+    <script src="../js/ajax/waiter.js"></script>
+    <script src="../js/ajax/chef.js"></script>
+    <script src="../js/ajax/cashier.js"></script>
     <script src="../js/ajax/missingRestaurant.js"></script>
     <title>repEat</title>
 </head>

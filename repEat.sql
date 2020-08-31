@@ -371,6 +371,20 @@ SET NEW.totale = (SELECT SUM(P.prezzo * O.quantita) FROM Ordine O INNER JOIN Pia
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER `reset_table_status` AFTER UPDATE ON `Conto`
+FOR EACH ROW
+BEGIN
+IF NEW.ts_pagamento IS NOT NULL
+THEN
+UPDATE Tavolo SET stato = 'libero' WHERE ristorante = (SELECT ristorante FROM Conto WHERE id_conto = NEW.id_conto) 
+									AND stanza = (SELECT stanza FROM Conto WHERE id_conto = NEW.id_conto)
+                                    AND id_tavolo = (SELECT tavolo FROM Conto WHERE id_conto = NEW.id_conto);
+END IF;
+END $$
+DELIMITER ;
+
+
 DROP TABLE IF EXISTS `Ordine`;
 CREATE TABLE `Ordine` (
   `id_ordine` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -391,6 +405,47 @@ CREATE TABLE `Ordine` (
   foreign key(`utente_preparazione`) references Utente(`id_utente`),
   foreign key(`utente_consegna`) references Utente(`id_utente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DELIMITER $$
+CREATE TRIGGER `test_ordine` BEFORE UPDATE ON `Ordine`
+FOR EACH ROW
+BEGIN
+IF NEW.ts_ordine <> OLD.ts_ordine
+THEN
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'cambio ts_ordine!!';
+END IF;
+END $$
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS `upd_table_status`;
+DELIMITER $$
+CREATE TRIGGER `upd_table_status` AFTER UPDATE ON `Ordine`
+FOR EACH ROW
+BEGIN
+IF NOT EXISTS (SELECT * 
+				FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto 
+				WHERE C.id_conto = NEW.conto
+					AND O.ts_preparazione IS NULL
+                    AND O.ts_consegna IS NULL)
+THEN
+UPDATE Tavolo SET stato = 'pronto' WHERE ristorante = (SELECT ristorante FROM Conto WHERE id_conto = NEW.conto) 
+									AND stanza = (SELECT stanza FROM Conto WHERE id_conto = NEW.conto)
+                                    AND id_tavolo = (SELECT tavolo FROM Conto WHERE id_conto = NEW.conto);
+	IF NOT EXISTS (SELECT * 
+					FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto
+					WHERE C.id_conto = NEW.conto
+						AND O.ts_preparazione IS NOT NULL
+						AND O.ts_consegna IS NULL)
+	THEN
+	UPDATE Tavolo SET stato = 'servito' WHERE ristorante = (SELECT ristorante FROM Conto WHERE id_conto = NEW.conto) 
+										AND stanza = (SELECT stanza FROM Conto WHERE id_conto = NEW.conto)
+										AND id_tavolo = (SELECT tavolo FROM Conto WHERE id_conto = NEW.conto);
+	END IF;
+END IF;
+
+END $$
+DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS `makeOrder`;
 DELIMITER $$
@@ -420,6 +475,7 @@ BEGIN
         SET var_conto = (SELECT LAST_INSERT_ID());
     END IF;
     CALL LOG('Finally');
+    UPDATE Tavolo SET stato = 'ordinato' WHERE ristorante = _ristorante AND stanza = _stanza AND id_tavolo = _tavolo;
 	INSERT INTO Ordine (utente_ordine, conto, piatto, quantita, note, ts_ordine) VALUE (_utente_ordine, var_conto, _piatto, _quantita, _note, CURRENT_TIMESTAMP);
 	SELECT LAST_INSERT_ID();
 

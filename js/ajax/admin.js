@@ -482,10 +482,10 @@ function loadMenuSettings(parentDiv, ristorante){
 /*--------------------------------------------------------------------*/
 
 function updatePrivilege(target_user, nodeList) {
-    admin = nodeList[0];
-    cameriere = nodeList[2];
-    cuoco = nodeList[4];
-    cassa = nodeList[6];
+    admin = nodeList[1];
+    cameriere = nodeList[3];
+    cuoco = nodeList[5];
+    cassa = nodeList[7];
 
     if (admin.checked) {
         cameriere.checked = cuoco.checked = cassa.checked = true;

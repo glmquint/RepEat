@@ -1,4 +1,11 @@
 function loadPreferences(user){
+    intervalArr.map((a) => {
+        clearInterval(a);
+        arr = [];
+    });
+
+    notifUnreadMessages(user);
+
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getUser&user='+ user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {

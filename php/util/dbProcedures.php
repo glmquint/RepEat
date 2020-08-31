@@ -508,7 +508,8 @@
 		$queryText = 'SELECT id_stanza, nome_stanza, GROUP_CONCAT(id_tavolo, ":", percentX, ":", percentY, ":", stato) AS tavoli ' . 
 						' FROM Stanza S LEFT OUTER JOIN Tavolo T ON T.stanza = S.id_stanza AND T.ristorante = S.ristorante ' . 
 						' WHERE S.ristorante = ' . $ristorante . 
-						' GROUP BY S.id_stanza;';
+						' GROUP BY S.id_stanza ' .
+						' ORDER BY T.id_tavolo;';
 
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -667,7 +668,7 @@
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'CALL makeOrder(' . $utente_ordine . ', ' . $piatto . ', ' . $quantita . ', \'' . $note . '\', ' . $tavolo . ', ' . $stanza . ', ' . $ristorante . '); ';
+		$queryText = 'CALL makeOrder(' . $user . ', ' . $piatto . ', ' . $quantita . ', \'' . $note . '\', ' . $tavolo . ', ' . $stanza . ', ' . $ristorante . '); ';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -680,12 +681,13 @@
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		$queryText = 'SELECT O.*, P.* ' . 
+		$queryText = 'SELECT O.id_ordine, O.quantita, P.nome, O.note, C.tavolo, C.stanza, SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) AS attesa ' . 
 		' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .
 		' WHERE ts_preparazione IS NULL' .
 			' AND C.ristorante = (SELECT U.ristorante' .
 								' FROM Utente U' .
-								' WHERE id_utente = ' . $user . ');';
+								' WHERE id_utente = ' . $user . ') ' .
+		' ORDER BY SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) DESC;';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -698,13 +700,14 @@
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		$queryText = 'SELECT O.* , P.* ' .
+		$queryText = 'SELECT O.id_ordine, O.quantita, P.nome, O.note, C.tavolo, C.stanza, SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) AS attesa ' . 
 		' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .
 		' WHERE ts_preparazione IS NOT NULL' .
 			' AND ts_consegna IS NULL' .
 			' AND C.ristorante = (SELECT U.ristorante ' .
 								' FROM Utente U '.
-								' WHERE id_utente = ' . $user . ');';
+								' WHERE id_utente = ' . $user . ') ' .
+		' ORDER BY SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) DESC;';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -721,14 +724,14 @@
 			$ordine = $repEatDb->sqlInjectionFilter($param['ordine']);
 		} else  return 'Missing argument: ordine';
 
-		$queryText = 'UPDATE Ordine SET ts_preparazione=CURRENT_TIMESTAMP, utente_preparazione = ' . $utente_preparazione . ' WHERE id_ordine = ' . $ordine . ';';
+		$queryText = 'UPDATE Ordine SET ts_preparazione=CURRENT_TIMESTAMP, utente_preparazione = ' . $user . ' WHERE id_ordine = ' . $ordine . ';';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
 
 	}
 	
-	function setReady($param){
+	function setDelivered($param){
 		global $repEatDb;
 		if (isset($param['user'])){	//utente consegna
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
@@ -738,7 +741,7 @@
 			$ordine = $repEatDb->sqlInjectionFilter($param['ordine']);
 		} else  return 'Missing argument: ordine';
 
-		$queryText = 'UPDATE Ordine SET ts_consegna=CURRENT_TIMESTAMP, utente_consegna = ' . $utente_consegna . ' WHERE id_ordine = ' . $ordine . ';';
+		$queryText = 'UPDATE Ordine SET ts_consegna=CURRENT_TIMESTAMP, utente_consegna = ' . $user . ' WHERE id_ordine = ' . $ordine . ';';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -755,6 +758,19 @@
 			$recensione = $repEatDb->sqlInjectionFilter($param['recensione']);
 		} else  return 'Missing argument: recensione';
 
+		if (isset($param['conto'])){
+			$conto = $repEatDb->sqlInjectionFilter($param['conto']);
+		} else  return 'Missing argument: conto';
+
+		$queryText = 'UPDATE Conto SET valutazione = ' . $valutazione . ', recensione = \'' . $recensione . '\' WHERE id_conto = ' . $conto . ';';
+		$result = $repEatDb->performQuery($queryText);
+		$repEatDb->closeConnection();
+		return $result;
+
+	}
+
+	function payCheck($param){
+		global $repEatDb;
 		if (isset($param['tipo_pagamento'])){
 			$tipo_pagamento = $repEatDb->sqlInjectionFilter($param['tipo_pagamento']);
 		} else  return 'Missing argument: tipo_pagamento';
@@ -763,7 +779,7 @@
 			$conto = $repEatDb->sqlInjectionFilter($param['conto']);
 		} else  return 'Missing argument: conto';
 
-		$queryText = 'UPDATE Conto SET valutazione = ' . $valutazione . ', recensione = \'' . $recensione . '\', tipo_pagamento = \'' . $tipo_pagamento . '\', ts_pagamento = CURRENT_TIMESTAMP WHERE id_conto = ' . $conto . ';';
+		$queryText = 'UPDATE Conto SET tipo_pagamento = \'' . $tipo_pagamento . '\', ts_pagamento = CURRENT_TIMESTAMP WHERE id_conto = ' . $conto . ';';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
