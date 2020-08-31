@@ -1,5 +1,12 @@
 
 function loadStaffSettings(parentDiv, user, ristorante){
+    intervalArr.map((a) => {
+        clearInterval(a);
+        arr = [];
+    })
+
+    notifUnreadMessages(user);        
+
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listUsers&ristorante='+ ristorante, true, null, 
             function(response){
                 if (response['responseCode'] != 0) {
