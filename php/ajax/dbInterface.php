@@ -8,7 +8,9 @@
 
 
     session_start();
-    updateSessionVars($_SESSION['user_id']);
+    if (isLogged()) {        
+        updateSessionVars($_SESSION['user_id']);
+    }
 
     
 
