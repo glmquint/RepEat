@@ -2,7 +2,7 @@
 function loadStaffSettings(parentDiv, user, ristorante){
     intervalArr.map((a) => {
         clearInterval(a);
-        arr = [];
+        intervalArr= [];
     })
 
     notifUnreadMessages(user);        

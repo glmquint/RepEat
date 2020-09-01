@@ -1,4 +1,4 @@
-DROP DATABASE `repEat`;
+DROP DATABASE `repEat`; -- id14703549_repeat
 CREATE DATABASE  IF NOT EXISTS `repEat`;
 USE `repEat`;
 /*----For debugging purpose-----*/
@@ -308,7 +308,7 @@ DROP TABLE IF EXISTS `Piatto`;
 CREATE TABLE `Piatto` (
   `id_piatto` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nome` varchar(32) NOT NULL DEFAULT 'senza-nome',
-  `categoria` varchar(32) NOT NULL,
+  `categoria` varchar(32) NOT NULL DEFAULT '',
   `prezzo` float UNSIGNED NOT NULL, -- per porzione o al kg
   `ingredienti` varchar(255) DEFAULT NULL,
   `allergeni` set('pesce', 'molluschi', 'latticini', 'glutine', 
@@ -321,7 +321,7 @@ CREATE TABLE `Piatto` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `ComposizioneMenu`;
-CREATE TABLE `composizioneMenu` (
+CREATE TABLE `ComposizioneMenu` (
   `menu` int(11) UNSIGNED NOT NULL,
   `piatto` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`menu`, `piatto`),

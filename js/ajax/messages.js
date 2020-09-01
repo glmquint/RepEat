@@ -1,7 +1,7 @@
 function loadMessages(user, ristorante) {
     intervalArr.map((a) => {
         clearInterval(a);
-        arr = [];
+        intervalArr= [];
     })
 
     notifUnreadMessages(user);
@@ -90,7 +90,7 @@ function readMessages(user, dest, ristorante){
 
     intervalArr.map((a) => {
         clearInterval(a);
-        arr = [];
+        intervalArr= [];
     })
     notifUnreadMessages(user);
 

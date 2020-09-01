@@ -3,7 +3,7 @@ alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'
 function loadWaiterDashboard(parentDiv, user, ristorante){
     intervalArr.map((a) => {
         clearInterval(a);
-        arr = [];
+        intervalArr= [];
     })
 
     notifUnreadMessages(user);

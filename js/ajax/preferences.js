@@ -1,7 +1,7 @@
 function loadPreferences(user){
     intervalArr.map((a) => {
         clearInterval(a);
-        arr = [];
+        intervalArr= [];
     });
 
     notifUnreadMessages(user);
