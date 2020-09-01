@@ -767,11 +767,19 @@
 			$recensione = $repEatDb->sqlInjectionFilter($param['recensione']);
 		} else  return 'Missing argument: recensione';
 
-		if (isset($param['conto'])){
-			$conto = $repEatDb->sqlInjectionFilter($param['conto']);
-		} else  return 'Missing argument: conto';
+		if (isset($param['tavolo'])){
+			$tavolo = $repEatDb->sqlInjectionFilter($param['tavolo']);
+		} else  return 'Missing argument: tavolo';
 
-		$queryText = 'UPDATE Conto SET valutazione = ' . $valutazione . ', recensione = \'' . $recensione . '\' WHERE id_conto = ' . $conto . ';';
+		if (isset($param['stanza'])){
+			$stanza = $repEatDb->sqlInjectionFilter($param['stanza']);
+		} else  return 'Missing argument: stanza';
+
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'UPDATE Conto SET valutazione = ' . $valutazione . ', recensione = \'' . $recensione . '\' WHERE ts_pagamento IS NULL AND tavolo = ' . $tavolo . ' AND stanza = ' . $stanza . ' AND ristorante = ' . $ristorante . ';';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -784,11 +792,19 @@
 			$tipo_pagamento = $repEatDb->sqlInjectionFilter($param['tipo_pagamento']);
 		} else  return 'Missing argument: tipo_pagamento';
 
-		if (isset($param['conto'])){
-			$conto = $repEatDb->sqlInjectionFilter($param['conto']);
-		} else  return 'Missing argument: conto';
+		if (isset($param['tavolo'])){
+			$tavolo = $repEatDb->sqlInjectionFilter($param['tavolo']);
+		} else  return 'Missing argument: tavolo';
 
-		$queryText = 'UPDATE Conto SET tipo_pagamento = \'' . $tipo_pagamento . '\', ts_pagamento = CURRENT_TIMESTAMP WHERE id_conto = ' . $conto . ';';
+		if (isset($param['stanza'])){
+			$stanza = $repEatDb->sqlInjectionFilter($param['stanza']);
+		} else  return 'Missing argument: stanza';
+
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'UPDATE Conto SET tipo_pagamento = \'' . $tipo_pagamento . '\', ts_pagamento = CURRENT_TIMESTAMP WHERE ts_pagamento IS NULL AND tavolo = ' . $tavolo . ' AND stanza = ' . $stanza . ' AND ristorante = ' . $ristorante . ';';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -837,13 +853,24 @@
 			$tavolo = $repEatDb->sqlInjectionFilter($param['tavolo']);
 		} else  return 'Missing argument: tavolo';
 
-		$queryText = 'SELECT * FROM Conto WHERE ristorante = ' . $ristorante . ' AND stanza = ' . $stanza . ' AND tavolo = ' . $tavolo . ' AND ts_pagamento IS NULL;';
+		$queryText = ' SELECT \'Permanenza:\' AS piatto, null AS quantita, DATE_FORMAT(SEC_TO_TIME(CURRENT_TIMESTAMP - ts_primo_ordine), \'%H:%i:%s\') AS prezzo ' .
+					' FROM Conto ' .
+					' WHERE ts_pagamento IS NULL AND tavolo = ' . $tavolo . ' AND stanza = ' . $stanza . ' AND ristorante = ' . $ristorante .
+					' UNION ALL ' .
+					' SELECT P.nome AS piatto, SUM(O.quantita) AS quantita, CAST(SUM(P.prezzo*O.quantita) AS DECIMAL(5, 2)) AS prezzo ' .
+					' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .
+					' WHERE C.ts_pagamento IS NULL AND C.tavolo = ' . $tavolo . ' AND C.stanza = ' . $stanza . ' AND C.ristorante = ' . $ristorante .
+					' GROUP BY P.nome' .
+					' UNION ALL ' .
+					' SELECT \'Totale:\', null, CAST(totale AS DECIMAL(5, 2)) AS totale ' .
+					' FROM Conto ' .
+					' WHERE ts_pagamento IS NULL AND tavolo = ' . $tavolo . ' AND stanza = ' . $stanza . ' AND ristorante = ' . $ristorante . ';';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
 
 	} 
-
+	
 
 	function writeMessage($param){
 		global $repEatDb;
