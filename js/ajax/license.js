@@ -17,7 +17,7 @@ function load(){
                     }
 
                     bgenerate = document.createElement('button');
-                    bgenerate.appendChild(document.createTextNode('genera chiave')) ;
+                    bgenerate.appendChild(document.createTextNode('acquista')) ;
                     bgenerate.value = offer['livello'];
                     bgenerate.addEventListener('click', function(){generateKey(this.value)});
                     cell = row.insertCell(-1);
