@@ -15,19 +15,21 @@
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class=<?php if (isset($_COOKIE['dark-mode']) && $_COOKIE['dark-mode']){echo "dark-mode";}else{echo "";}?>>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/neonmorphism.css">
     <title>repEat</title>
 </head>
 <body>
+<!--button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button-->
 
     <form action="" method="post">
     <input type="text" name="function" id="function" value='register' readonly hidden>
-    <input type="text" name="username" id="username"><label for="username">username</label><br>
-    <input type="mail" name="mail" id="mail"><label for="mail">mail</label><br>
-    <input type="password" name="password" id="password"><label for="password">password</label><br>
+    <label for="username">username</label><input type="text" name="username" id="username"><br>
+    <label for="mail">mail</label><input type="mail" name="mail" id="mail"><br>
+    <label for="password">password</label><input type="password" name="password" id="password"><br>
     <input type="submit" value="submit">
     </form>
 

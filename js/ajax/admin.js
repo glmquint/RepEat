@@ -343,8 +343,8 @@ function loadDishSettings(parentDiv, ristorante){
                         lcballergene = document.createElement('label');
                         lcballergene.htmlFor = 'allergene' + ':' + allergene + '-' + index_piatto;
                         lcballergene.appendChild(document.createTextNode(allergene));
-                        this_div.appendChild(lcballergene);
                         this_div.appendChild(cballergene);
+                        this_div.appendChild(lcballergene);
                     });
 
 

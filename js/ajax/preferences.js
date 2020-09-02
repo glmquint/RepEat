@@ -1,3 +1,5 @@
+old_theme = '';
+
 function loadPreferences(user){
     intervalArr.map((a) => {
         clearInterval(a);
@@ -72,6 +74,7 @@ function loadPreferences(user){
                 this_theme.appendChild(option_dark);
                 this_theme.appendChild(option_light);
             }
+            old_theme = row['pref_theme'];
             this_theme_label = document.createElement('label');
             this_theme_label.htmlFor = "pref-theme";
             this_theme_label.appendChild(document.createTextNode('Tema preferito'));
@@ -121,6 +124,10 @@ function updateUser(){
                 alert('qualcosa è andato storto: ' + response['message']);
             } else {
                 alert('preferenze aggiornate correttamente');
+                if (pref_theme != old_theme) {
+                    document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'
+                    old_theme = pref_theme;
+                }
             }
         })
     }
