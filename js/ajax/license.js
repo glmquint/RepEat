@@ -49,6 +49,9 @@ function generateKey(level){
             } else {
                 key_holder = document.getElementById('key');
                 console.log(response['data']);
+                if (key_holder.firstChild) {                    
+                    key_holder.removeChild(key_holder.firstChild);
+                }
                 key_holder.appendChild(document.createTextNode('La tua chiave è: ' + response['data'][0]['rand_key']));
         }
     })

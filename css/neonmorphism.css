@@ -158,7 +158,7 @@ button, input, select{
     transition: background .25s ease-in-out;
 }
 
-button:focus, input:focus, select:focus{
+button:focus, input:focus, select:focus, textarea:focus{
     outline: none;
 }
 
@@ -189,7 +189,7 @@ button {
 }
 
 
-.box, select, button, input, textarea{
+.box, select, button, input, textarea, table{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -206,13 +206,13 @@ button {
 
 /* componenti specifiche di un box, associati automaticamente ad alcuni elementi html */
 /*VVV mutuamente esclusivi VVV*/
-.box-flat, .multi-switch, select, button, input:focus, textarea:active{    /*multi-switch è deprecato: richiede cutom js. Usare radio-label method */
+.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table{    /*multi-switch è deprecato: richiede cutom js. Usare radio-label method */
     box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark), 
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
 
 
-.box-convex, button:hover, input:hover + label{
+.box-convex, button:enabled:hover, input[type="submit"]:enabled:hover, input[type="checkbox"]:enabled:hover + label{
     background: linear-gradient(145deg, var(--gradient-light), var(--gradient-dark));
     box-shadow: var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
@@ -239,7 +239,7 @@ button {
     padding: 5px;  
 }
 
-.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:active, input:active + label, input:checked + label:not(.release-press), textarea{
+.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:active, input[type="submit"]:active, input:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea{
     box-shadow: inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -344,7 +344,7 @@ button {
 .glow-orange, .light-switch:active{
     --button-active-color: orange;
 }
-.button-glow, button:active, input:checked + label{
+.button-glow, button:active, input[type="submit"]:active, input:checked + label{
     color:var(--button-active-color);
     text-shadow: 0px 0px var(--log-box-shadow-size) var(--button-active-color);/*,
                 0px 0px 50px var(--button-active-color); /* forse overkill, ma altrimenti il verde non risalta abbastanza */
@@ -380,7 +380,7 @@ input[type="radio"] + label , input[type="checkbox"] + label {
     min-width: 1rem;
 }
 
-input[type="radio"], input[type="checkbox"]{
+input[type="radio"], input[type="checkbox"], [hidden]{
     display: none;
 }
 

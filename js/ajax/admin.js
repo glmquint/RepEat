@@ -78,14 +78,14 @@ function loadStaffSettings(parentDiv, user, ristorante){
                         lcbcassa.appendChild(document.createTextNode('cassa'));
                         
 
-                        form.appendChild(lcbadmin);
                         form.appendChild(cbadmin);
-                        form.appendChild(lcbcameriere);
+                        form.appendChild(lcbadmin);
                         form.appendChild(cbcameriere);
-                        form.appendChild(lcbcuoco);
+                        form.appendChild(lcbcameriere);
                         form.appendChild(cbcuoco);
-                        form.appendChild(lcbcassa);
+                        form.appendChild(lcbcuoco);
                         form.appendChild(cbcassa);
+                        form.appendChild(lcbcassa);
 
                         this_user.appendChild(form);
                         parentDiv.appendChild(this_user);
@@ -489,10 +489,10 @@ function loadMenuSettings(parentDiv, ristorante){
 /*--------------------------------------------------------------------*/
 
 function updatePrivilege(target_user, nodeList) {
-    admin = nodeList[1];
-    cameriere = nodeList[3];
-    cuoco = nodeList[5];
-    cassa = nodeList[7];
+    admin = nodeList[0];
+    cameriere = nodeList[2];
+    cuoco = nodeList[4];
+    cassa = nodeList[6];
 
     if (admin.checked) {
         cameriere.checked = cuoco.checked = cassa.checked = true;

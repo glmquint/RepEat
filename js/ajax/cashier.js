@@ -97,7 +97,7 @@ function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentD
     dstarcontainer.id = 'starcontainer';
     for (let i = 1; i < 6; i++) {
         this_star = document.createElement('input');
-        this_star.type = 'checkbox';
+        this_star.type = 'radio';
         this_star.name = 'star';
         this_star.id = 'star-' + i;
         this_star.value = i;
@@ -105,8 +105,8 @@ function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentD
         lthis_star = document.createElement('label');
         lthis_star.appendChild(document.createTextNode(i));
 
-        dstarcontainer.appendChild(lthis_star);
         dstarcontainer.appendChild(this_star);
+        dstarcontainer.appendChild(lthis_star);
         
     }
 
