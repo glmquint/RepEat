@@ -4,7 +4,7 @@
         require_once DIR_UTIL . 'userAuth.php';
         require_once DIR_UTIL . "sessionUtil.php";
     
-        if (isset($_POST['function'])) {
+        if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password'])) {
             echo '<span>' . register($_POST) . '</span>';
         }
         if (isLogged()){
@@ -26,7 +26,7 @@
 <!--button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button-->
 
     <form action="" method="post">
-    <input type="text" name="function" id="function" value='register' readonly hidden>
+    <!--input type="text" name="function" id="function" value='register' readonly hidden-->
     <label for="username">username</label><input type="text" name="username" id="username"><br>
     <label for="mail">mail</label><input type="mail" name="mail" id="mail"><br>
     <label for="password">password</label><input type="password" name="password" id="password"><br>
