@@ -35,6 +35,7 @@
 
     <p>Already have an account? <a href="./login.php">here</a></p>
     <p>Back to <a href="../index.php">index</a></p>
-    
+    <div id="alert-container"><p class="error-box">Errore: spiegazione dell'errore</p><p class="info-box">Errore: spiegazione dell'errore</p><p class="success-box">Errore: spiegazione dell'errore</p></div>
+
 </body>
 </html>

@@ -82,7 +82,12 @@ function readMessages(user, dest, ristorante){
     }
     this_btn = document.createElement('button');
     this_btn.addEventListener("click", function(){loadMessages(user, ristorante)});
-    this_btn.appendChild(document.createTextNode('Torna alle chat'));
+    
+    lback = document.createElement('label');
+    lback.appendChild(document.createTextNode('arrow_back'));
+    lback.classList.add("material-icons");
+    this_btn.appendChild(lback);
+
     body.appendChild(this_btn);
     
     dmsgcontainer = document.createElement('div');
@@ -182,7 +187,7 @@ function notifUnreadMessages(user) {
 
                 num_unread = 0;
                 response['data'].forEach(row => {
-                    num_unread += row['unread_msgs'] ;
+                    num_unread += Number(row['unread_msgs']) ;
                 });
 
                 document.getElementById('notif-unread').innerText = (num_unread == 0)?'':num_unread;

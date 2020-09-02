@@ -23,6 +23,7 @@
     <script src="../js/ajax/chef.js"></script>
     <script src="../js/ajax/cashier.js"></script>
     <script src="../js/ajax/missingRestaurant.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../css/neonmorphism.css">
     <title>repEat</title>
 </head>
@@ -30,12 +31,10 @@
     <h1>Welcome home</h1>
     <button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button>
 
-    <span id="main-container"></span>
+    <div id="main-container"></div>
     <?php
-        //echo '<iframe id="main-iframe" src="./layout/mainHome.php" frameborder="0" title = "main iframe" width=100% height=500px></iframe>';
-        //echo '<link rel="import" id="main-link" href="./layout/mainHome.php">';
         include DIR_LAYOUT . "mainNavBar.php";
     ?>
-    <p>You can logout <a href="../php/logout.php">here</a></p>
+    <div id="alert-container"><p class="error-box">Errore: spiegazione dell'errore</p><p class="info-box">Errore: spiegazione dell'errore</p><p class="success-box">Errore: spiegazione dell'errore</p></div>
 </body>
 </html>

@@ -86,6 +86,13 @@ function loadPreferences(user){
             update_btn_label.appendChild(document.createTextNode('Invia'))
             update_btn.appendChild(update_btn_label);
 
+            blogout = document.createElement('button');
+            blogout.addEventListener('click', function(){location.replace("../php/logout.php");})
+            llogout = document.createElement('label');
+            llogout.appendChild(document.createTextNode('exit_to_app'));
+            llogout.classList.add("material-icons");
+            blogout.appendChild(llogout);
+
             body.appendChild(this_user);
             body.appendChild(this_username_label);
             body.appendChild(this_username);
@@ -98,6 +105,7 @@ function loadPreferences(user){
             body.appendChild(this_theme_label);
             body.appendChild(this_theme);
             body.appendChild(update_btn);
+            body.appendChild(blogout);
         }
     });
 };

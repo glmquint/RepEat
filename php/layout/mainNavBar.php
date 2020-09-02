@@ -19,7 +19,9 @@ function loadMainContent(content) {
     l.href = page;
 }
 </script-->
-<nav><button onclick="loadMessages(<?php echo $_SESSION['user_id'] . ', ' . (isset($_SESSION['ristorante'])?$_SESSION['ristorante']:'-1') ?>)" > <div id="notif-unread"></div> Messages </button>
-    <button onclick="loadMainHome(<?php echo $_SESSION['user_id']/* . ', ' . ((isset($_SESSION['ristorante']) && $_SESSION['ristorante'] != null)?$_SESSION['ristorante']:'-1') . ', ' . ((isset($_SESSION['privilegi']) && $_SESSION['privilegi'] != null)?(($_SESSION['privilegi'] == 0)?15:$_SESSION['privilegi']):'-1') */?>)"><div id="notif-home"> Home </button>
-    <button onclick="loadPreferences(<?php echo $_SESSION['user_id'] ?>)"> Preferences </button>
+
+<nav id="main-nav"><div id="notif-unread"></div>
+    <input type="radio" name="nav-btn" id="messages"> </input><label for="messages" onclick="loadMessages(<?php echo $_SESSION['user_id'] . ', ' . (isset($_SESSION['ristorante'])?$_SESSION['ristorante']:'-1') ?>)" class="material-icons box glow-fuchsia">mail</label>
+    <input type="radio" name="nav-btn" id="home"> </input><label for="home" onclick="loadMainHome(<?php echo $_SESSION['user_id']?>)" class="material-icons box">home</label>
+    <input type="radio" name="nav-btn" id="preferences"> </input><label for="preferences" onclick="loadPreferences(<?php echo $_SESSION['user_id'] ?>)" class="material-icons box glow-orange">settings</label>
 </nav>
