@@ -5,22 +5,37 @@ function load(){
                 console.log(response['message'])
             } else {
                 console.table(response['data']);
-                body = document.getElementsByTagName('body')[0];
-                response['data'].forEach(row => {
-                    console.log(row)
-                    this_div = document.createElement('div');
-                    for (property in row){
-                        this_div.innerHTML += property + '=' + row[property] + ', ';
+                table = document.getElementById('offers');
+                
+                response['data'].forEach((offer, index_offer) => {
+                    console.log(offer);
+                    row = table.insertRow(index_offer);
+                    
+                    for (property in offer){
+                        cell = row.insertCell(-1);
+                        cell.appendChild(document.createTextNode((property != 'prezzo')?((offer[property] == 0)?'∞':offer[property]):offer[property]+'€'));
                     }
-                    this_button = document.createElement('button');
-                    this_button.innerHTML = 'Generate';
-                    this_button.onclick = function(){generateKey(row['id_livello'])};
-                    this_key_holder = document.createElement('p');
-                    this_key_holder.id = row['id_livello'];
-                    this_div.appendChild(this_button);
-                    this_div.appendChild(this_key_holder);
-                    body.appendChild(this_div);
+
+                    bgenerate = document.createElement('button');
+                    bgenerate.appendChild(document.createTextNode('genera chiave')) ;
+                    bgenerate.value = offer['livello'];
+                    bgenerate.addEventListener('click', function(){generateKey(this.value)});
+                    cell = row.insertCell(-1);
+                    cell.appendChild(bgenerate);
+
+
+
+                    
                 });
+                
+                tablecaption = table.createCaption();
+                tablecaption.appendChild(document.createTextNode('Le nostre offerte'));
+                tablehead = table.createTHead();
+                row = tablehead.insertRow(0);
+                for (const property in response['data'][0]) {
+                    cell = row.insertCell(Object.keys(response['data'][0]).indexOf(property));
+                    cell.appendChild(document.createTextNode(property));
+                }
             }
         })
 };
@@ -32,9 +47,9 @@ function generateKey(level){
             if (response['responseCode'] != 0) {
                 console.log(response['message'])
             } else {
-                key_holder = document.getElementById(level);
+                key_holder = document.getElementById('key');
                 console.log(response['data']);
-                key_holder.innerHTML = 'Your key is: ' + response['data'][0]['rand_key'];
+                key_holder.appendChild(document.createTextNode('La tua chiave è: ' + response['data'][0]['rand_key']));
         }
     })
 };
