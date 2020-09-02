@@ -46,7 +46,7 @@
 
 	function listLevels(){
 		global $repEatDb;
-		$queryText = 'SELECT * FROM Livello';
+		$queryText = 'SELECT id_livello AS livello, max_dipendenti AS \'limite n° dipendenti\', max_tavoli AS \'limite n° tavoli\', max_menu AS \'limite n° menu\', max_stanze AS \'limite n° stanze\', durata_validita AS \'durata validità (giorni)\', prezzo FROM Livello';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;

@@ -10,6 +10,7 @@
 </head>
 <body onLoad="load()">
     <p>Back to <a href="../index.php">index</a></p>
-    
+    <table id='offers'></table>
+    <p id='key'></p>
 </body>
 </html>
