@@ -2,7 +2,7 @@ function loadMissingRestaurant(user){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=existsRequest&user=' + user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: '+ response['message']);
+            sendAlert('qualcosa è andato storto: '+ response['message'], 'error');
         } else {
             this_body = document.getElementById('main-container');
             while (this_body.firstChild) {
@@ -12,7 +12,7 @@ function loadMissingRestaurant(user){
                 AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRestaurants', true, null, 
                 function(response){
                     if (response['responseCode'] != 0) {
-                        alert('qualcosa è andato storto: '+ response['message']);
+                        sendAlert('qualcosa è andato storto: '+ response['message'], 'error');
                     } else {
                         console.table(response['data']);
                         p1 = document.createElement('p');
@@ -39,6 +39,7 @@ function loadMissingRestaurant(user){
                         ta = document.createElement('textarea');
                         ta.id = 'msg';
                         ta.name = 'msg';
+                        ta.placeholder = 'fai sapere chi sei...';
 
                         lta = document.createElement('label');
                         lta.appendChild(document.createTextNode('note:'));
@@ -55,7 +56,7 @@ function loadMissingRestaurant(user){
                         inr.name = 'nome_ristorante';
                         inr.id = 'nome_ristorante';
                         linr = document.createElement('label');
-                        linr.for = 'nome_ristorante';
+                        linr.htmlFor = 'nome_ristorante';
                         linr.appendChild(document.createTextNode('Nome ristorante:'));
 
                         ii = document.createElement('input');
@@ -63,7 +64,7 @@ function loadMissingRestaurant(user){
                         ii.name = 'indirizzo';
                         ii.id = 'indirizzo';
                         lii = document.createElement('label');
-                        lii.for = 'indirizzo';
+                        lii.htmlFor = 'indirizzo';
                         lii.appendChild(document.createTextNode('Indirizzo:'));
 
                         ilk = document.createElement('input');
@@ -71,7 +72,7 @@ function loadMissingRestaurant(user){
                         ilk.name = 'license_key';
                         ilk.id = 'license_key';
                         lilk = document.createElement('label');
-                        lilk.for = 'license_key';
+                        lilk.htmlFor = 'license_key';
                         lilk.appendChild(document.createTextNode('License key:'));
 
                         rrb = document.createElement('button');
@@ -106,6 +107,7 @@ function loadMissingRestaurant(user){
             } else {
                 this_replacement = document.createElement('p');
                 this_replacement.appendChild(document.createTextNode('La tua richiesta è stata inviata correttamente. Attendi una risposta da parte di un amministratore'));
+                this_replacement.classList.add('info-box');
                 this_body.appendChild(this_replacement);
 
             }
@@ -120,10 +122,10 @@ function registerRestaurant(nome_ristorante, indirizzo, license_key, user) {
     function(response){
         //console.log(response);
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: '+ response['message']);
+            sendAlert('qualcosa è andato storto: '+ response['message'], 'error');
         } else {
-            alert('Registrazione avvenuta con successo!');
             window.location.reload();
+            sendAlert('Registrazione avvenuta con successo!', 'success');
         }
     });
 };
@@ -132,9 +134,9 @@ function sendRequest(user, ristorante, msg) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=sendRequest&user=' + user + '&target_restaurant=' + ristorante + '&msg=' + msg, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('Richiesta inviata con successo. Attendere che questa venga accettata da un amministratore');
+            sendAlert('Richiesta inviata con successo. Attendere che questa venga accettata da un amministratore', 'success');
             window.location.reload();
         }
     })

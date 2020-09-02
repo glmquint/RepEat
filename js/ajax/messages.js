@@ -17,7 +17,7 @@ function loadMessages(user, ristorante) {
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getChats&user='+ user, true, null, 
         function(response){
             if (response['responseCode'] != 0) {
-                alert('qualcosa è andato storto: ' + response['message']);
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
                 console.log(response);
 
@@ -49,7 +49,7 @@ function loadMessages(user, ristorante) {
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listUsers&ristorante='+ristorante, true, null,
         function (response) {
             if (response['responseCode'] != 0) {
-                alert('qualcosa è andato storto: ' + response['message']);
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
                 body.appendChild(document.createTextNode('Inizia una chat con un tuo collega:'));
                 select_user = document.createElement('select');
@@ -103,7 +103,7 @@ function readMessages(user, dest, ristorante){
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=readMessages&user=' + user + '&dest=' + dest, true, null,
         function(response){
             if(response['responseCode'] != 0) {
-                alert('qualcosa è andato storto: ' + response['message']);
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
             console.log(response);
             
@@ -159,9 +159,9 @@ function processRequest(request, accepted) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=processRequest&req='+request+'&accepted='+accepted, true, null,
     function(response){
         if(response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('La richiesta è stata ' + ((accepted)?'accettata':'rifiutata') + ' con successo');
+            sendAlert('La richiesta è stata ' + ((accepted)?'accettata':'rifiutata') + ' con successo', 'success');
         }
     });
 };
@@ -170,7 +170,7 @@ function writeMessage(from_user, to_user, msg, ristorante) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=writeMessage&from_user='+from_user+'&to_user='+to_user+'&msg='+msg, true, null,
     function(response){
         if(response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             readMessages(from_user, to_user, ristorante);
         }
@@ -182,7 +182,7 @@ function notifUnreadMessages(user) {
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getChats&user='+ user, true, null, 
         function(response){
             if (response['responseCode'] != 0) {
-                alert('qualcosa è andato storto: ' + response['message']);
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
 
                 num_unread = 0;

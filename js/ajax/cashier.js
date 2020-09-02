@@ -26,7 +26,7 @@ function loadCashierDashboard(parentDiv, user, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             if (response['data'].length == 0){
                 pnoroom = document.createElement('p');
@@ -47,31 +47,31 @@ function loadCashierDashboard(parentDiv, user, ristorante){
                             rtavolo.name = 'tavolo';
                             rtavolo.id = 'tavolo-' + index_stanza + ':' + index_tavolo;
                             rtavolo.value = stanza['id_stanza'] + ':' + tavolo.split(':')[0];
-                            rtavolo.classList.add('rtavolo');
-
-                            intervalArr.push(setInterval(function intervalSetTableStatus() {
-                                AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getTable&tavolo='+ tavolo.split(':')[0] + '&stanza='+ stanza['id_stanza'] + '&ristorante='+ ristorante, true, null, 
-                                function(response2){
-                                    if (response2['responseCode'] != 0) {
-                                        alert('qualcosa è andato storto: ' + response2['message']);
-                                    } else {
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('libero');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('ordinato');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('pronto');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('servito');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.add(response2['data'][0]['stato']);   
-                                    }
-                                }); 
-                            
-                                }, 3000)); 
                             
                             rtavolo.addEventListener('change', function(){if(this.checked) buildReviewCheck(this.value, this.nextSibling.innerText, ristorante, checkcontainer)})
                             lrtavolo = document.createElement('label');
                             lrtavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
                             lrtavolo.htmlFor = 'tavolo-' + index_stanza + ':' + index_tavolo;
+                            lrtavolo.classList.add('rtavolo');
 
                             dthis_stanza.appendChild(rtavolo);
                             dthis_stanza.appendChild(lrtavolo);
+                            intervalArr.push(setInterval(function intervalSetTableStatus() {
+                                AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getTable&tavolo='+ tavolo.split(':')[0] + '&stanza='+ stanza['id_stanza'] + '&ristorante='+ ristorante, true, null, 
+                                function(response2){
+                                    if (response2['responseCode'] != 0) {
+                                        sendAlert('qualcosa è andato storto: ' + response2['message'], 'error');
+                                    } else {
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('libero');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('ordinato');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('pronto');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('servito');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.add(response2['data'][0]['stato']);   
+                                    }
+                                }); 
+                            
+                                }, 3000)); 
+                            
                         });
                     } else {
                         dthis_stanza.appendChild(document.createTextNode('Non è stato trovato alcun tavolo. Chiedi al tuo amministratore di aggiungere un tavolo per iniziare...'))
@@ -88,6 +88,8 @@ function loadCashierDashboard(parentDiv, user, ristorante){
 
 
 function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentDiv) {
+    sentiment = ['sentiment_very_dissatisfied', 'sentiment_dissatisfied', 'sentiment_neutral', 'sentiment_satisfied', 'sentiment_very_satisfied'];
+
     h5review = document.createElement('h5');
     h5review.appendChild(document.createTextNode('Recensisci la tua esperienza al tavolo ' + nome_stanza_tavolo));
     preview = document.createElement('p');
@@ -103,7 +105,10 @@ function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentD
         this_star.value = i;
         this_star.addEventListener('change', function(){if (this.checked) document.getElementById('starcontainer').value = this.value});
         lthis_star = document.createElement('label');
-        lthis_star.appendChild(document.createTextNode(i));
+        lthis_star.htmlFor = 'star-' + i;
+        lthis_star.classList.add('material-icons');
+        lthis_star.classList.add('pill');
+        lthis_star.appendChild(document.createTextNode(sentiment[i - 1]));
 
         dstarcontainer.appendChild(this_star);
         dstarcontainer.appendChild(lthis_star);
@@ -145,7 +150,7 @@ function buildPayCheck(stanza, tavolo, nome_stanza_tavolo, ristorante, parentDiv
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getCheck&stanza='+ stanza + '&tavolo='+ tavolo + '&ristorante='+ ristorante , true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             if (response['data'].length == 0){
                 pnodish = document.createElement('p');
@@ -214,9 +219,9 @@ function payCheck(tipo_pagamento, tavolo, stanza, ristorante) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=payCheck&tipo_pagamento='+ tipo_pagamento + '&stanza='+ stanza + '&tavolo='+ tavolo + '&ristorante='+ ristorante , true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('pagamento effettuato');
+            sendAlert('pagamento effettuato', 'success');
         }
     });
 
@@ -226,10 +231,10 @@ function review(valutazione, recensione, stanza, tavolo, ristorante) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=review&valutazione='+ valutazione + '&recensione='+ ((recensione == null)?'':recensione) + '&stanza='+ stanza + '&tavolo='+ tavolo + '&ristorante='+ ristorante , true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             if (valutazione != null || recensione != null) {               
-                alert('grazie per il tuo feedback!');
+                sendAlert('grazie per il tuo feedback!', 'info');
             }
         }
     });

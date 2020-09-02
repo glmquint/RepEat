@@ -5,7 +5,7 @@
         require_once DIR_UTIL . "sessionUtil.php";
     
         if (isset($_POST['username']) && isset($_POST['mail']) && isset($_POST['password'])) {
-            echo '<span>' . register($_POST) . '</span>';
+            $registerres = register($_POST);
         }
         if (isLogged()){
                 header('Location: ./home.php');
@@ -19,7 +19,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../css/neonmorphism.css">
+    <script src="../js/alertsManager.js"></script>
     <title>repEat</title>
 </head>
 <body>
@@ -35,7 +37,12 @@
 
     <p>Already have an account? <a href="./login.php">here</a></p>
     <p>Back to <a href="../index.php">index</a></p>
-    <div id="alert-container"><p class="error-box">Errore: spiegazione dell'errore</p><p class="info-box">Errore: spiegazione dell'errore</p><p class="success-box">Errore: spiegazione dell'errore</p></div>
+    <div id="alert-container"></div>
+    <?php
+        if (isset($_POST['username']) && isset($_POST['password'])) {
+            echo '<script>sendAlert(\'' . $registerres . '\', \'error\');</script>';
+        }
+    ?>
 
 </body>
 </html>

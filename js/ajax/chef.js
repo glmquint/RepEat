@@ -18,7 +18,7 @@ function loadChefDashboard(parentDiv, user, ristorante){
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getOrdersWaiting&user='+ user, true, null, 
         function(response){
             if (response['responseCode'] != 0) {
-                alert('qualcosa è andato storto: ' + response['message']);
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
                 while (reqorderslist.lastChild) {
                     reqorderslist.removeChild(reqorderslist.firstChild);
@@ -64,9 +64,9 @@ function setPrepared(user, ordine) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=setPrepared&user='+ user + '&ordine='+ ordine, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('ordine completato con successo');
+            sendAlert('ordine completato con successo', 'success');
         }
     });
 

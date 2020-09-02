@@ -11,7 +11,7 @@ function loadPreferences(user){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getUser&user='+ user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log(response);
             body = document.getElementById('main-container');
@@ -115,7 +115,7 @@ function updateUser(){
     pwd = document.getElementById("Password").value;
     conf_pwd = document.getElementById("Conferma-Password").value;
     if (pwd != conf_pwd) {
-        alert("La password non coincide tra i due campi Password e Conferma Password");
+        sendAlert("La password non coincide tra i due campi Password e Conferma Password", 'error');
     } else {
         url = './ajax/dbInterface.php?function=updateUser&user='+ user;
         if (pwd != '') {
@@ -129,9 +129,9 @@ function updateUser(){
         AjaxManager.performAjaxRequest('POST', url , true, null, 
         function (response){
             if (response['responseCode'] != 0) {
-                alert('qualcosa è andato storto: ' + response['message']);
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
-                alert('preferenze aggiornate correttamente');
+                sendAlert('preferenze aggiornate correttamente', 'success');
                 if (pref_theme != old_theme) {
                     document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'
                     old_theme = pref_theme;

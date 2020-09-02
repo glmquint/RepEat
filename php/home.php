@@ -23,6 +23,7 @@
     <script src="../js/ajax/chef.js"></script>
     <script src="../js/ajax/cashier.js"></script>
     <script src="../js/ajax/missingRestaurant.js"></script>
+    <script src="../js/alertsManager.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../css/neonmorphism.css">
     <title>repEat</title>
@@ -35,6 +36,8 @@
     <?php
         include DIR_LAYOUT . "mainNavBar.php";
     ?>
-    <div id="alert-container"><p class="error-box">Errore: spiegazione dell'errore</p><p class="info-box">Errore: spiegazione dell'errore</p><p class="success-box">Errore: spiegazione dell'errore</p></div>
+    <div id="alert-container">
+        <!--p class="error-box">Errore: spiegazione dell'errore</p><p class="info-box">Errore: spiegazione dell'errore</p><p class="success-box">Errore: spiegazione dell'errore</p-->
+    </div>
 </body>
 </html>

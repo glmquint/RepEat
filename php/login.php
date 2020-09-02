@@ -4,7 +4,7 @@
         require_once DIR_UTIL . "sessionUtil.php";
     
         if (isset($_POST['username']) && isset($_POST['password'])) {
-            echo '<span>' . login($_POST) . '</span>';
+            $loginres = login($_POST);
         }
         if (isLogged()){
                 header('Location: ./home.php');
@@ -18,15 +18,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../css/neonmorphism.css">
+    <script src="../js/alertsManager.js"></script>
     <title>repEat</title>
 </head>
 <body>
 <!--button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button-->
 
-    <?php
-
-    ?>
 
     <form action="" method="post">
     <!--input type="text" name="function" id="function" value='login' readonly hidden-->
@@ -37,7 +36,12 @@
 
     <p>Don't have an account? Register <a href="./register.php">here</a></p>
     <p>Back to <a href="../index.php">index</a></p>
-    <div id="alert-container"><p class="error-box">Errore: spiegazione dell'errore</p><p class="info-box">Errore: spiegazione dell'errore</p><p class="success-box">Errore: spiegazione dell'errore</p></div>
+    <div id="alert-container"></div>
+    <?php
+        if (isset($_POST['username']) && isset($_POST['password'])) {
+            echo '<script>sendAlert(\'' . $loginres . '\', \'error\');</script>';
+        }
+    ?>
 
 </body>
 </html>

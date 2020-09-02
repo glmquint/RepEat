@@ -10,7 +10,7 @@ function loadStaffSettings(parentDiv, user, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listUsers&ristorante='+ ristorante, true, null, 
             function(response){
                 if (response['responseCode'] != 0) {
-                    alert('qualcosa è andato storto: ' + response['message']);
+                    sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
                 } else {
                     console.table(response['data']);
                     h3staff = document.createElement('h3');
@@ -98,7 +98,7 @@ function loadRestaurantSettings(parentDiv, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getRestaurant&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log(response);
             h3Ristorante = document.createElement('h3');
@@ -165,7 +165,7 @@ function loadRoomSettings(parentDiv, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log('room:');
             console.log(response);
@@ -258,7 +258,7 @@ function loadDishSettings(parentDiv, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listDishes&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log('Dish:');
             console.log(response);
@@ -369,7 +369,7 @@ function loadMenuSettings(parentDiv, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listMenus&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log('Menu:');
             console.log(response);
@@ -508,7 +508,7 @@ function updatePrivilege(target_user, nodeList) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=setPrivilege&target_user='+ target_user+'&privilegi='+privilegi, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             //alert('privilegi aggiornati con successo');
         }
@@ -519,9 +519,9 @@ function updateRestaurant(nome_ristorante, indirizzo, limite_consegna_ordine, li
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateRestaurant&nome_ristorante='+nome_ristorante+'&indirizzo='+indirizzo+'&limite_consegna_ordine='+limite_consegna_ordine+'&license_key='+license_key+'&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('informazioni aggiornate con successo');
+            sendAlert('informazioni aggiornate con successo', 'success');
         }
     })
 }
@@ -534,9 +534,9 @@ function updateTable(percentX, percentY, tavolo, stanza, ristorante) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateTable&percentX='+percentX+'&percentY='+percentY+'&tavolo='+tavolo+'&stanza='+stanza+'&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('informazioni aggiornate con successo');
+            sendAlert('informazioni aggiornate con successo', 'success');
         }
     })
 
@@ -551,9 +551,9 @@ function updateRoom(nome_stanza, stanza, ristorante) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateRoom&nome_stanza='+nome_stanza+'&stanza='+stanza+'&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('informazioni aggiornate con successo');
+            sendAlert('informazioni aggiornate con successo', 'success');
         }
     })
 
@@ -577,9 +577,9 @@ function updateDish(piatto) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateDish&nome_piatto='+nome+'&categoria='+categoria+'&prezzo='+ prezzo+'&ingredienti='+ ingredienti+'&allergeni='+ list_allergeni+'&piatto='+ piatto, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('informazioni aggiornate con successo');
+            sendAlert('informazioni aggiornate con successo', 'success');
         }
     })
 
@@ -592,9 +592,9 @@ function updateMenu(menu){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateMenu&orario_inizio='+orario_inizio+'&orario_fine='+ orario_fine+'&menu='+ menu, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('informazioni aggiornate con successo');
+            sendAlert('informazioni aggiornate con successo', 'success');
         }
     })
 
@@ -605,7 +605,7 @@ function addTable(stanza, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addTable&stanza='+stanza+'&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             window.location.reload();
         }
@@ -617,7 +617,7 @@ function addRoom(ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addRoom&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             window.location.reload();
         }
@@ -629,7 +629,7 @@ function addDish(ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addDish&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             window.location.reload();
         }
@@ -641,7 +641,7 @@ function addMenu(ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addMenu&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             window.location.reload();
         }
@@ -656,7 +656,7 @@ function removeDishFromMenu(piatto, menu) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=removeDishFromMenu&piatto='+ piatto + '&menu='+ menu, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             alert('Piatto rimosso con successo');
         }
@@ -671,7 +671,7 @@ function addDishToMenu(menu) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addDishToMenu&piatto='+ piatto + '&menu='+ menu, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             alert('Piatto aggiunto con successo'); //TODO: append dish without reload
         }
@@ -683,7 +683,7 @@ function buildDishList(ristorante, parentlist){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listDishes&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             if (response['data'].length == 0){
                 parentlist.previousSibling.placeholder = '(nessun piatto trovato...)';

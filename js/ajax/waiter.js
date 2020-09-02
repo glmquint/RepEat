@@ -19,7 +19,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             if (response['data'].length == 0){
                 pnoroom = document.createElement('p');
@@ -40,31 +40,32 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
                             rtavolo.name = 'tavolo';
                             rtavolo.id = 'tavolo-' + index_stanza + ':' + index_tavolo;
                             rtavolo.value = stanza['id_stanza'] + ':' + tavolo.split(':')[0];
-                            rtavolo.classList.add('rtavolo');
-
-                            intervalArr.push(setInterval(function intervalSetTableStatus() {
-                                AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getTable&tavolo='+ tavolo.split(':')[0] + '&stanza='+ stanza['id_stanza'] + '&ristorante='+ ristorante, true, null, 
-                                function(response2){
-                                    if (response2['responseCode'] != 0) {
-                                        alert('qualcosa è andato storto: ' + response2['message']);
-                                    } else {
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('libero');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('ordinato');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('pronto');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.remove('servito');   
-                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).classList.add(response2['data'][0]['stato']);   
-                                    }
-                                }); 
-                            
-                                }, 3000)); 
                             
                             rtavolo.addEventListener('change', function(){if(this.checked) selectTable(this.value, this.nextSibling.innerText)})
                             lrtavolo = document.createElement('label');
                             lrtavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
                             lrtavolo.htmlFor = 'tavolo-' + index_stanza + ':' + index_tavolo;
+                            lrtavolo.classList.add('rtavolo');
 
                             dthis_stanza.appendChild(rtavolo);
                             dthis_stanza.appendChild(lrtavolo);
+
+                            intervalArr.push(setInterval(function intervalSetTableStatus() {
+                                AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getTable&tavolo='+ tavolo.split(':')[0] + '&stanza='+ stanza['id_stanza'] + '&ristorante='+ ristorante, true, null, 
+                                function(response2){
+                                    if (response2['responseCode'] != 0) {
+                                        sendAlert('qualcosa è andato storto: ' + response2['message'], 'error');
+                                    } else {
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('libero');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('ordinato');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('pronto');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.remove('servito');   
+                                        document.getElementById('tavolo-' + index_stanza + ':' + index_tavolo).nextSibling.classList.add(response2['data'][0]['stato']);   
+                                    }
+                                }); 
+                            
+                                }, 3000)); 
+                            
                         });
                     } else {
                         dthis_stanza.appendChild(document.createTextNode('Non è stato trovato alcun tavolo. Chiedi al tuo amministratore di aggiungere un tavolo per iniziare...'))
@@ -91,7 +92,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getCurrentDishes&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log('available dishes');
             console.log(response);
@@ -158,7 +159,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getOrdersReady&user='+ user, true, null, 
         function(response){
             if (response['responseCode'] != 0) {
-                alert('qualcosa è andato storto: ' + response['message']);
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
                 console.log('ready');
                 console.log(response);
@@ -335,11 +336,11 @@ function selectTable(stanza_tavolo, nome_stanza_tavolo) {
 
 function makeOrder(utente, ristorante) { //utente_ordine, piatto, quantita, note, tavolo, stanza, ristorante
     if (document.getElementById('orderlist') == null) {
-        alert('Nessun piatto ordinato')
+        sendAlert('Nessun piatto ordinato', 'info');
     } else {
         orderlist = document.getElementById('orderlist');
         if (orderlist.childNodes.length == 0) {
-            alert('selezionare almeno un piatto');
+            sendAlert('selezionare almeno un piatto', 'info');
             return
         }
         for (const elem_piatto of orderlist.childNodes) {
@@ -347,7 +348,7 @@ function makeOrder(utente, ristorante) { //utente_ordine, piatto, quantita, note
             quantita = elem_piatto.childNodes[0].innerText.split('x')[0];
             note = elem_piatto.childNodes[2].value;
             if (document.getElementById('tableorder').firstChild.value == null) {
-                alert('selezionare un tavolo');
+                sendAlert('selezionare un tavolo', 'info');
                 return
             }
             stanza = document.getElementById('tableorder').firstChild.value.split(':')[0];
@@ -355,9 +356,9 @@ function makeOrder(utente, ristorante) { //utente_ordine, piatto, quantita, note
             AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=makeOrder&user='+ utente + '&piatto='+ piatto + '&quantita='+ quantita + '&note='+ note + '&tavolo='+ tavolo + '&stanza='+ stanza + '&ristorante='+ ristorante, true, null, 
             function(response){
                 if (response['responseCode'] != 0) {
-                    alert('qualcosa è andato storto: ' + response['message']);
+                    sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
                 } else {
-                    alert('ordine registrato con successo');
+                    sendAlert('ordine registrato con successo', 'success');
                 }
             });        
         }
@@ -368,9 +369,9 @@ function setDelivered(user, ordine) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=setDelivered&user='+ user + '&ordine='+ ordine, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('ordine completato con successo');
+            sendAlert('ordine completato con successo', 'success');
         }
     });
 

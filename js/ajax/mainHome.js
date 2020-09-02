@@ -11,7 +11,7 @@ function loadMainHome(user) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getUser&user='+ user, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
-            alert('qualcosa è andato storto: ' + response['message']);
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log(response);
             body = document.getElementById('main-container');
@@ -29,10 +29,10 @@ function loadMainHome(user) {
                 function(response){
                     console.log(response['data'][0]['is_valid'] == 0);
                     if (response['responseCode'] != 0) {
-                        alert('qualcosa è andato storto: ' + response['message']);
+                        sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
                     } else if (response['data'][0]['is_valid'] == 0){
                         if (privilegi != 15) {
-                            alert('licenza scaduta o disabilitata, contattare l\'amministratore per aggiornare la licensa in uso');
+                            sendAlert('licenza scaduta o disabilitata, contattare l\'amministratore per aggiornare la licensa in uso', 'info');
                         } else {
                             t = document.createElement('div');
                             t.innerHTML = 'Licenza scaduta o disabilitata, puoi acquistarne una tra quelle proposte <a href="./license.php" target="_blank" rel="noopener noreferrer">quì</a>';
@@ -102,27 +102,27 @@ function loadRole(role, user, ristorante) {
         case 'admin':
             console.log('admin');
             staffDiv = document.createElement('div');
-            staffDiv.classList.add('staff');
+            staffDiv.classList.add('staff-container');
             loadStaffSettings(staffDiv, user, ristorante);
             rw.appendChild(staffDiv);
 
             restaurantDiv = document.createElement('div');
-            restaurantDiv.classList.add('restaurant');
+            restaurantDiv.classList.add('restaurant-container');
             loadRestaurantSettings(restaurantDiv, ristorante);
             rw.appendChild(restaurantDiv);
 
             roomDiv = document.createElement('div');
-            roomDiv.classList.add('room');
+            roomDiv.classList.add('room-container');
             loadRoomSettings(roomDiv, ristorante);  
             rw.appendChild(roomDiv);
 
             dishDiv = document.createElement('div');
-            dishDiv.classList.add('dish');
+            dishDiv.classList.add('dish-container');
             loadDishSettings(dishDiv, ristorante); 
             rw.appendChild(dishDiv);
 
             menuDiv = document.createElement('div');
-            menuDiv.classList.add('menu');
+            menuDiv.classList.add('menu-container');
             loadMenuSettings(menuDiv, ristorante); 
             rw.appendChild(menuDiv);
 

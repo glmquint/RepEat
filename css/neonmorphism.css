@@ -146,23 +146,70 @@ html {
     color: var(--text-color);
     font-family: sans-serif;    /* in attesa di un font specifico */
 }
-/*
+
 *{
-    /*transition: all .25s ease-in-out;    per sicurezza, rende ogni cambiamento meno aggressivo 
+    transition: all .25s ease-in-out;    /*per sicurezza, rende ogni cambiamento meno aggressivo */
 }
-*/
+
+#notif-container{
+    position: relative;
+    width: 0px;
+    height: 0px;
+    top: -.4rem;
+    left: 3.5rem;
+}
+
+
 #main-nav{
+    /*
     position: relative;
     margin-left: 20%;
     margin-right: 20%;
     text-align: center;
     display: block;
+*/
+    position: fixed;
+    left: 50%;
+    transform: translate(-55%, 0);
+    /* padding-left: 10%;
+    padding-right: 10%; */
+    text-align: center;
+    display: block;
+    bottom: 0;
+    width: 300px;
+    height: 2.75rem;
+    margin: 1rem;
+
+    transition: left 2s;
+
+}
+
+#chatpickercontainer:empty:before{
+    content: 'Pare che tu non possa ancora chattare con nessuno...'
+}
+
+#checkcontainer > table {
+    width: 100%;
+}
+
+:not(thead) > tr:nth-of-type(2n+1) {
+    background-color: rgba(38,40,51,.05);
+}
+
+td {
+    padding: 1rem;
+}
+
+caption {
+    text-align: left;
+    font-size: large;
 }
 
 body, .main-container{
     margin: auto;
     max-width: 1000px;
     padding: 1rem;
+    padding-bottom: 7rem;
 }
 
 
@@ -188,7 +235,7 @@ button {
 }
 
 /*VVV mutuamente esclusivi VVV*/
-.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker{
+.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, .staff-container, .restaurant-container, .room-container, .dish-container, .piatto-container, .menu-container, #ordine, #pronti, caption{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -201,7 +248,7 @@ button {
     --ring-glow-color: var(--button-active-color);
 }
 
-.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty){
+.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav{
     background-color: var(--main-color);
     border-radius: 2rem;
     padding: 8px;
@@ -220,7 +267,7 @@ button {
 
 /* componenti specifiche di un box, associati automaticamente ad alcuni elementi html */
 /*VVV mutuamente esclusivi VVV*/
-.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table, .chat-picker{    /*multi-switch è deprecato: richiede cutom js. Usare radio-label method */
+.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table, .chat-picker, .staff-container, .restaurant-container, .room-container, .dish-container, .piatto-container, .menu-container, #ordine, #pronti{    /*multi-switch è deprecato: richiede cutom js. Usare radio-label method */
     box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark), 
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -265,7 +312,7 @@ button {
     margin: 1rem;
     max-width: 500px;
 }
-.error-box{
+.error-box, .ordinato{
     border-width: 0;
     background-color: #ff00007f;
     --shadow-dark: #ff00007f;
@@ -275,7 +322,7 @@ button {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
-.success-box{
+.success-box, .servito{
     border-width: 0;
     background-color: #00ff007f;
     --shadow-dark: #00ff007f;
@@ -285,7 +332,7 @@ button {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
-.info-box{
+.info-box, .pronto{
     border-width: 0;
     background-color: #00ffff7f;
     --shadow-dark: #00ffff7f;
@@ -365,7 +412,7 @@ button {
 .glow-orange, .light-switch:active{
     --button-active-color: orange;
 }
-.button-glow, button:active, input[type="submit"]:active, input:checked + label{
+.button-glow, button:active, input[type="submit"]:active, input:checked + label, input[type="radio"]:checked + label{
     color:var(--button-active-color);
     text-shadow: 0px 0px var(--log-box-shadow-size) var(--button-active-color);/*,
                 0px 0px 50px var(--button-active-color); /* forse overkill, ma altrimenti il verde non risalta abbastanza */
@@ -376,7 +423,7 @@ button {
 /* utile per le notifiche */
 .badge, #notif-unread:not(:empty){
     display: inline-block;
-    position: relative;
+    position: absolute;
     padding: .275rem .425rem;
     font-size: .7rem;
     font-weight: 600;
@@ -387,8 +434,8 @@ button {
     padding-right: .875em;
     padding-left: .875em;
     border-radius: 10rem;
-    top: -1.25rem;
-    left: 2rem;
+    top: 0;
+    left: 0;
     color: red;
 
 }
@@ -422,8 +469,19 @@ a:active{
     text-shadow: 0px 0px var(--link-blur-radius) var(--link-active);
 }
 
+@keyframes fadein{
+    from{opacity: 0}
+    to{opacity: 1}
+}
 
+.fade-in{
+    animation: fadein 1s;
+}
 
+.fade-out{
+    opacity: 0;
+    transition: opacity 1s;
+}
 
 
 
