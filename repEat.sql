@@ -308,8 +308,13 @@ DROP TABLE IF EXISTS `Piatto`;
 CREATE TABLE `Piatto` (
   `id_piatto` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nome` varchar(32) NOT NULL DEFAULT 'senza-nome',
+<<<<<<< Updated upstream
   `categoria` varchar(32) NOT NULL,
   `prezzo` float UNSIGNED NOT NULL, -- per porzione o al kg
+=======
+  `categoria` varchar(32) NOT NULL DEFAULT '',
+  `prezzo` float UNSIGNED NOT NULL DEFAULT 0, -- per porzione o al kg
+>>>>>>> Stashed changes
   `ingredienti` varchar(255) DEFAULT NULL,
   `allergeni` set('pesce', 'molluschi', 'latticini', 'glutine', 
 					'frutta a guscio', 'crostacei', 'arachidi', 
