@@ -309,7 +309,7 @@ CREATE TABLE `Piatto` (
   `id_piatto` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nome` varchar(32) NOT NULL DEFAULT 'senza-nome',
   `categoria` varchar(32) NOT NULL DEFAULT '',
-  `prezzo` float UNSIGNED NOT NULL, -- per porzione o al kg
+  `prezzo` float UNSIGNED NOT NULL DEFAULT 0, -- per porzione o al kg
   `ingredienti` varchar(255) DEFAULT NULL,
   `allergeni` set('pesce', 'molluschi', 'latticini', 'glutine', 
 					'frutta a guscio', 'crostacei', 'arachidi', 
