@@ -27,6 +27,7 @@
 <body>
 <!--button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button-->
 
+    <a id="index-btn" href="../index.php"><button href="../index.php"><img src="../css/img/logo_squared.svg" alt="index"></button></a>
     <div id="access-container">
         <h2>Login</h2>
         <form action="" method="post">
@@ -37,7 +38,6 @@
         </form>
 
         <p>Don't have an account? Register <a href="./register.php">here</a></p>
-        <p>Back to <a href="../index.php">index</a></p>
     </div>
     <div id="alert-container"></div>
     <?php

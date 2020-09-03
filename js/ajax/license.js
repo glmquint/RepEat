@@ -13,7 +13,7 @@ function load(){
                     
                     for (property in offer){
                         cell = row.insertCell(-1);
-                        if (offer[property] == 0) {
+                        if (property != 'prezzo' && offer[property] == 0) {
                             iinf = document.createElement('i');
                             iinf.classList.add('material-icons');
                             iinf.appendChild(document.createTextNode('all_inclusive'));

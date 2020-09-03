@@ -29,7 +29,21 @@ function loadMessages(user, ristorante) {
                 response['data'].forEach(row => {
                     this_div = document.createElement('div');
                     this_div.classList.add('chat-picker');
-                    this_div.appendChild(document.createTextNode('(' + row['unread_msgs'] + ') ' + row['other_name'] + '::::::::' + row['last_msg']));
+
+                    unreadbadbe = document.createElement('div');
+                    unreadbadbe.classList.add('notif-unread');
+                    unreadbadbe.appendChild(document.createTextNode(row['unread_msgs']));
+
+                    othername = document.createElement('div');
+                    othername.appendChild(document.createTextNode(row['other_name']));
+
+                    lastmsg = document.createElement('div'),
+                    lastmsg.appendChild(document.createTextNode(row['last_msg']));
+
+
+                    this_div.appendChild(unreadbadbe);
+                    this_div.appendChild(othername);
+                    this_div.appendChild(lastmsg);
                     //this_btn = document.createElement('button');
                     this_div.addEventListener("click", function(){readMessages(user, row['other'], ristorante)});
                     //this_btn.appendChild(document.createTextNode('Vai alla chat'));
@@ -99,6 +113,7 @@ function readMessages(user, dest, ristorante){
     })
     notifUnreadMessages(user);
 
+    firsttime = true;
     intervalArr.push(setInterval(function intervalReadMessages() {
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=readMessages&user=' + user + '&dest=' + dest, true, null,
         function(response){
@@ -110,29 +125,69 @@ function readMessages(user, dest, ristorante){
             while (dmsgcontainer.firstChild) {
                 dmsgcontainer.removeChild(dmsgcontainer.lastChild);
             }
+            prevdate = '';
             response['data'].forEach(row => {
                 this_div = document.createElement('div');
                 this_div.classList.add('message');
-                this_content = document.createTextNode('(' + ((row['from_user'] == user)?'io':row['other_name']) + ') ' + row['ts'] + '[' + row['msg'] + ']' + ((row['is_req'] == 1)?((row['is_read'] == 1)?'Processata':'Non processata'):((row['is_read'] == 1)?'Letto':'Non letto')));                
-                this_div.appendChild(this_content);
+                this_content = document.createElement('p');
+                this_metadata = document.createElement('p');
+                this_metadata.classList.add('metadata');
+                this_metadata.appendChild(document.createTextNode(row['ts'].split(' ')[1]))
+
+                iread = document.createElement('i');
+                iread.classList.add('material-icons');
+                if (row['from_user'] == user){ //row['other_name']
+                this_div.classList.add('io');
+                }
                 if (row['is_req'] == 1) {
+                    if (row['is_read'] == 1){
+                        this_div.classList.add('success-box');
+                    } else {
+                        this_div.classList.add('error-box');
+                    }
+                } else {
+                    if (row['is_read'] == 1){
+                        iread.appendChild(document.createTextNode('done_all'))
+                    } else {
+                        iread.appendChild(document.createTextNode('done'))
+                    }
+                }
+                this_metadata.appendChild(iread);
+                this_content.appendChild(document.createTextNode(row['msg']));                
+                
+                this_div.appendChild(this_content);
+                this_div.appendChild(this_metadata);
+                if (row['ts'].split(' ')[0] != prevdate) {
+                    this_date = document.createElement('div');
+                    this_date.classList.add('message');
+                    this_date.classList.add('date');
+                    this_date.appendChild(document.createTextNode(row['ts'].split(' ')[0]));
+                    dmsgcontainer.appendChild(this_date);
+                    prevdate = row['ts'].split(' ')[0]
+                }
+                dmsgcontainer.appendChild(this_div);
+                if (row['is_req'] == 1) {
+                    this_request = document.createElement('div')
                     this_div.classList.add('request-msg');
                     if(row['to_user'] == user && row['is_read'] == 0){
                         accept_btn = document.createElement('button');
                         accept_btn.addEventListener("click", function(){processRequest(row['id_msg'], 1)});
-                        accept_btn.appendChild(document.createTextNode('accetta'));
-                        this_div.appendChild(accept_btn);
+                        accept_btn.classList.add('button-confirm')
+                        this_request.appendChild(accept_btn);
                         refuse_btn = document.createElement('button');
                         refuse_btn.addEventListener("click", function(){processRequest(row['id_msg'], 0)});
-                        refuse_btn.appendChild(document.createTextNode('rifiuta'));
-                        this_div.appendChild(refuse_btn);
+                        refuse_btn.classList.add('button-cancel')
+                        this_request.appendChild(refuse_btn);
                         
                     }
+                    dmsgcontainer.appendChild(this_request);
                     
-                } 
-                dmsgcontainer.appendChild(this_div);
-                
+                }
             });
+            if (firsttime) {
+                dmsgcontainer.scrollTop = dmsgcontainer.scrollHeight; 
+                firsttime = false;  
+            }
         }
     });
     return intervalReadMessages;
@@ -155,6 +210,8 @@ function readMessages(user, dest, ristorante){
     msg_bar.appendChild(msg_send);
     body.appendChild(dmsgcontainer);
     body.appendChild(msg_bar);
+
+    
 
 };
 

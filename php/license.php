@@ -11,7 +11,8 @@
     <title>repEat</title>
 </head>
 <body onLoad="load()">
-    <p>Back to <a href="../index.php">index</a></p>
+<a id="index-btn" href="../index.php"><button href="../index.php"><img src="../css/img/logo_squared.svg" alt="index"></button></a>
+
     <table id='offers'></table>
     <p id='key'></p>
 </body>

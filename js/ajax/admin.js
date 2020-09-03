@@ -144,13 +144,29 @@ function loadRestaurantSettings(parentDiv, ristorante){
             updateButton.addEventListener('click', function(){updateRestaurant(inome.value, addr.value, lco.value, license_key.value, ristorante)});
 
             parentDiv.appendChild(linome);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(inome);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(laddr);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(addr);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(llco);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(lco);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(llicense_key);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(license_key);
+            parentDiv.appendChild(document.createElement('br'));
+
             parentDiv.appendChild(updateButton);
 
         }
@@ -182,8 +198,8 @@ function loadRoomSettings(parentDiv, ristorante){
                     console.log(stanza['id_stanza']);
                     dstanza = document.createElement('div');
                     dstanza.classList.add('stanza');
-                    h5Stanza = document.createElement('h5');
-                    h5Stanza.appendChild(document.createTextNode('stanza ' + stanza['id_stanza'] + ': '));
+                    h3Stanza = document.createElement('h3');
+                    h3Stanza.appendChild(document.createTextNode('stanza ' + stanza['id_stanza'] + ': '));
                     inome_stanza = document.createElement('input');
                     inome_stanza.type = 'text';
                     inome_stanza.value = stanza['nome_stanza'];
@@ -194,7 +210,7 @@ function loadRoomSettings(parentDiv, ristorante){
                     lbnome_stanza = document.createElement('label');
                     lbnome_stanza.htmlFor ='is-'+index_stanza;
                     lbnome_stanza.appendChild(document.createTextNode('Nome stanza: '))
-                    dstanza.appendChild(h5Stanza);
+                    dstanza.appendChild(h3Stanza);
                     dstanza.appendChild(lbnome_stanza);
                     dstanza.appendChild(inome_stanza);
                     dstanza.appendChild(bnome_stanza);
@@ -225,19 +241,25 @@ function loadRoomSettings(parentDiv, ristorante){
                             btavolo.addEventListener('click', function(){updateTable('px-' + index_stanza + '-' + index_tavolo, 'py-'+ index_stanza + '-' + index_tavolo, index_tavolo, index_stanza, ristorante)});
 
                             dstanza.appendChild(dtavolo);
+                            dstanza.appendChild(document.createElement('br'));
                             dstanza.appendChild(lipx);
+                            dstanza.appendChild(document.createElement('br'));
                             dstanza.appendChild(ipx);
+                            dstanza.appendChild(document.createElement('br'));
                             dstanza.appendChild(lipy);
+                            dstanza.appendChild(document.createElement('br'));
                             dstanza.appendChild(ipy);
+                            dstanza.appendChild(document.createElement('br'));
                             dstanza.appendChild(btavolo);
+                            dstanza.appendChild(document.createElement('br'));
                             
                         });
                     }
 
                     baddtable = document.createElement('button');
-iadd = document.createElement('i');
-iadd.classList.add('material-icons');
-iadd.appendChild(document.createTextNode('add_circle'));
+                    iadd = document.createElement('i');
+                    iadd.classList.add('material-icons');
+                    iadd.appendChild(document.createTextNode('add_circle'));
                     baddtable.appendChild(iadd);
                     baddtable.addEventListener('click', function(){addTable(index_stanza, ristorante)});
                     dstanza.appendChild(baddtable);
@@ -245,9 +267,9 @@ iadd.appendChild(document.createTextNode('add_circle'));
                 });
             }
             baddRoom = document.createElement('button');
-iadd = document.createElement('i');
-iadd.classList.add('material-icons');
-iadd.appendChild(document.createTextNode('add_circle'));
+            iadd = document.createElement('i');
+            iadd.classList.add('material-icons');
+            iadd.appendChild(document.createTextNode('add_circle'));
             baddRoom.appendChild(iadd);
             baddRoom.addEventListener('click', function(){addRoom(ristorante)});
             parentDiv.appendChild(baddRoom);
@@ -301,7 +323,10 @@ function loadDishSettings(parentDiv, ristorante){
                     linome_piatto.appendChild(document.createTextNode('nome piatto'))
 
                     this_div.appendChild(linome_piatto);
+                    this_div.appendChild(document.createElement('br'));
                     this_div.appendChild(inome_piatto);
+                    
+                    this_div.appendChild(document.createElement('br'));
 
                     icategoria_piatto = document.createElement('input');
                     icategoria_piatto.type = "text";
@@ -313,7 +338,10 @@ function loadDishSettings(parentDiv, ristorante){
                     licategoria_piatto.appendChild(document.createTextNode('categoria'))
 
                     this_div.appendChild(licategoria_piatto);
+                    this_div.appendChild(document.createElement('br'));
                     this_div.appendChild(icategoria_piatto);
+                    
+                    this_div.appendChild(document.createElement('br'));
 
                     iprezzo_piatto = document.createElement('input');
                     iprezzo_piatto.type = "number";
@@ -324,7 +352,10 @@ function loadDishSettings(parentDiv, ristorante){
                     liprezzo_piatto.appendChild(document.createTextNode('prezzo €'))
 
                     this_div.appendChild(liprezzo_piatto);
+                    this_div.appendChild(document.createElement('br'));
                     this_div.appendChild(iprezzo_piatto);
+                    
+                    this_div.appendChild(document.createElement('br'));
 
                     taingredienti_piatto = document.createElement('textarea');
                     taingredienti_piatto.id = 'ingredientipiatto-' + index_piatto;
@@ -335,11 +366,15 @@ function loadDishSettings(parentDiv, ristorante){
                     ltaingredienti_piatto.appendChild(document.createTextNode('ingredenti'))
 
                     this_div.appendChild(ltaingredienti_piatto);
+                    this_div.appendChild(document.createElement('br'));
                     this_div.appendChild(taingredienti_piatto);
+                    
+                    this_div.appendChild(document.createElement('br'));
 
                     lallergeni = document.createElement('label');
                     lallergeni.appendChild(document.createTextNode('allergeni'));
                     this_div.appendChild(lallergeni);
+                    this_div.appendChild(document.createElement('br'));
 
                     allergeni.forEach((allergene, index_allergene) => {
                         cballergene = document.createElement('input');
@@ -354,6 +389,7 @@ function loadDishSettings(parentDiv, ristorante){
                     });
 
 
+                    this_div.appendChild(document.createElement('br'));
 
                     this_button = document.createElement('button');
                     this_button.appendChild(document.createTextNode('aggiorna'));

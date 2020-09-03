@@ -40,10 +40,10 @@ function loadMainHome(user) {
                             loadRestaurantSettings(body, ristorante);
                         }
                     } else {
-                        main_banner = document.createElement('p');
-                        main_banner.appendChild(document.createTextNode('This is the main home'));
+                        //main_banner = document.createElement('p');
+                        //main_banner.appendChild(document.createTextNode('This is the main home'));
                         p = document.createElement('p');
-                        body.appendChild(main_banner);
+                        //body.appendChild(main_banner);
                         body.appendChild(p);
                         if (privilegi == 0) {
                             p.appendChild(document.createTextNode('Sembra che tu non abbia alcun ruolo assegnato. Chiedi ad un amministratore di cambiare i tuoi privilegi'));    

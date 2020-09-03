@@ -128,6 +128,17 @@
     margin: 0 auto;
 }*/
 
+#index-btn{
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+
+}
+
+#index-btn > button > img{
+    width: 3rem;
+}
+
 .light-switch{
     position: fixed;
     top: 1rem;
@@ -162,6 +173,11 @@ html {
 .message-bar {
     position: sticky;
     bottom: 0;
+    padding-bottom: 4rem;
+}
+
+#main-h1{
+    text-align: right;
 }
 
 #main-nav{
@@ -206,14 +222,71 @@ html {
     width: 47.4%;
 }
 
-.menu-container {
+#role-view > div >div:last-child {
     flex-grow: 1;
 }
 
-@media all and (max-width: 1030px) {
+@media all and (max-width: 1050px) {
     #role-view > div > div { flex-grow: 1; }
 }
 
+.chat-picker, .message-bar{
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-start;
+}
+
+.message-bar > textarea{
+    flex-grow: 1;
+}
+
+.chat-picker > div {
+
+    font-weight: 600;
+    line-height: 1;
+    margin: 5px;
+}
+
+.chat-picker > div:last-child{
+    margin-left: auto;
+    color: grey;
+}
+
+#msgcontainer{
+    display: flex;
+    flex-flow: column;
+    max-height: 30vh;
+    overflow-y: scroll;
+}
+
+.message{
+    align-self: flex-start;
+}
+
+.message.io{
+    align-self: flex-end;
+}
+
+.message.date{
+    align-self: center;
+}
+
+.message > p{
+    height: 0;
+    line-height: 0;
+}
+
+.metadata{
+    font-size: xx-small;
+}
+
+.io > .metadata {
+    text-align: right;
+}
+
+.metadata > i {
+    font-size: xx-small;
+}
 
 
 :not(thead) > tr:nth-of-type(2n+1) {
@@ -234,6 +307,11 @@ body, .main-container{
     max-width: 1000px;
     padding: 1rem;
     padding-bottom: 7rem;
+    padding-top: 0;
+}
+
+@media all and (max-width: 1200px) {
+    body { padding-top: 2.5rem; }
 }
 
 
@@ -259,7 +337,7 @@ button {
 }
 
 /*VVV mutuamente esclusivi VVV*/
-.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container{
+.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -272,7 +350,7 @@ button {
     --ring-glow-color: var(--button-active-color);
 }
 
-.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav, #logo-title{
+.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav, #logo-title, .message, .notif-unread, #msg-box{
     background-color: var(--main-color);
     border-radius: 2rem;
     padding: 8px;
@@ -291,7 +369,7 @@ button {
 
 /* componenti specifiche di un box, associati automaticamente ad alcuni elementi html */
 /*VVV mutuamente esclusivi VVV*/
-.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table, .chat-picker, #role-view > div > div, #preferences-container, #logo-title{    
+.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table, .chat-picker, #role-view > div > div, #preferences-container, #logo-title, .message{    
     box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark), 
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -324,7 +402,7 @@ button {
     padding: 5px;  
 }
 
-.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container{
+.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu{
     box-shadow: inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -402,6 +480,7 @@ input:required:valid:not(:empty){
 
 }
 .button-confirm{
+    transition: all 0s; 
     --button-active-color: lime;
     text-align: center;
     min-width: 2rem;
@@ -424,6 +503,7 @@ input:required:valid:not(:empty){
     
 }
 .button-cancel{
+    transition: all 0s; 
     --button-active-color: red;
     text-align: center;
     min-width: 2rem;
@@ -455,9 +535,9 @@ input:required:valid:not(:empty){
 
 
 /* utile per le notifiche */
-.badge, #notif-unread:not(:empty){
+.badge, #notif-unread:not(:empty), .notif-unread{
     display: inline-block;
-    position: absolute;
+    position: relative;
     padding: .275rem .425rem;
     font-size: .7rem;
     font-weight: 600;
@@ -468,9 +548,14 @@ input:required:valid:not(:empty){
     padding-right: .875em;
     padding-left: .875em;
     border-radius: 10rem;
+    color: red;
+
+}
+
+#notif-unread:not(:empty){
+    position: absolute;
     top: 0;
     left: 0;
-    color: red;
 
 }
 
