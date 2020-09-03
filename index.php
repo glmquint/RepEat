@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/neonmorphism.css">
-    <title>repEat</title>
+    <link rel="shortcut icon" type="image/x-icon" href="./css/img/favicon.ico" />
+    <title>RepEat</title>
 </head>
 <body>
-    <h1>RepEat</h1>
+    <img id="logo-title" src="./css/img/logo_title.svg" alt="RepEat">
+    
     <button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button>
 
     <p>Go <a href="./php/ajax/dbInterface.php">here</a> to test the developer api!</p>

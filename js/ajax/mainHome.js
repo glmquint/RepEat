@@ -101,30 +101,35 @@ function loadRole(role, user, ristorante) {
     switch (role) {
         case 'admin':
             console.log('admin');
+            adminDiv = document.createElement('div');
+            adminDiv.classList.add('admin-container');
+
             staffDiv = document.createElement('div');
             staffDiv.classList.add('staff-container');
             loadStaffSettings(staffDiv, user, ristorante);
-            rw.appendChild(staffDiv);
+            adminDiv.appendChild(staffDiv);
 
             restaurantDiv = document.createElement('div');
             restaurantDiv.classList.add('restaurant-container');
             loadRestaurantSettings(restaurantDiv, ristorante);
-            rw.appendChild(restaurantDiv);
+            adminDiv.appendChild(restaurantDiv);
 
             roomDiv = document.createElement('div');
             roomDiv.classList.add('room-container');
             loadRoomSettings(roomDiv, ristorante);  
-            rw.appendChild(roomDiv);
+            adminDiv.appendChild(roomDiv);
 
             dishDiv = document.createElement('div');
             dishDiv.classList.add('dish-container');
             loadDishSettings(dishDiv, ristorante); 
-            rw.appendChild(dishDiv);
+            adminDiv.appendChild(dishDiv);
 
             menuDiv = document.createElement('div');
             menuDiv.classList.add('menu-container');
             loadMenuSettings(menuDiv, ristorante); 
-            rw.appendChild(menuDiv);
+            adminDiv.appendChild(menuDiv);
+
+            rw.appendChild(adminDiv);
 
 
             break;

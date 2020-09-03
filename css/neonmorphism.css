@@ -159,6 +159,10 @@ html {
     left: 3.5rem;
 }
 
+.message-bar {
+    position: sticky;
+    bottom: 0;
+}
 
 #main-nav{
     /*
@@ -170,7 +174,7 @@ html {
 */
     position: fixed;
     left: 50%;
-    transform: translate(-55%, 0);
+    transform: translate(-51%, 0);
     /* padding-left: 10%;
     padding-right: 10%; */
     text-align: center;
@@ -191,6 +195,26 @@ html {
 #checkcontainer > table {
     width: 100%;
 }
+
+#role-view > div{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+#role-view > div > div {
+    width: 47.4%;
+}
+
+.menu-container {
+    flex-grow: 1;
+}
+
+@media all and (max-width: 1030px) {
+    #role-view > div > div { flex-grow: 1; }
+}
+
+
 
 :not(thead) > tr:nth-of-type(2n+1) {
     background-color: rgba(38,40,51,.05);
@@ -235,7 +259,7 @@ button {
 }
 
 /*VVV mutuamente esclusivi VVV*/
-.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, .staff-container, .restaurant-container, .room-container, .dish-container, .piatto-container, .menu-container, #ordine, #pronti, caption{
+.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -248,7 +272,7 @@ button {
     --ring-glow-color: var(--button-active-color);
 }
 
-.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav{
+.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav, #logo-title{
     background-color: var(--main-color);
     border-radius: 2rem;
     padding: 8px;
@@ -267,7 +291,7 @@ button {
 
 /* componenti specifiche di un box, associati automaticamente ad alcuni elementi html */
 /*VVV mutuamente esclusivi VVV*/
-.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table, .chat-picker, .staff-container, .restaurant-container, .room-container, .dish-container, .piatto-container, .menu-container, #ordine, #pronti{    /*multi-switch è deprecato: richiede cutom js. Usare radio-label method */
+.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table, .chat-picker, #role-view > div > div, #preferences-container, #logo-title{    
     box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark), 
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -300,11 +324,12 @@ button {
     padding: 5px;  
 }
 
-.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover{
+.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container{
     box-shadow: inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
 /* per i messaggi con vari livelli di rilievo */
+
 #alert-container{
     right: 0px;
     bottom: 0px;
@@ -345,13 +370,22 @@ button {
 /*^^^*/
 
 /* disattivato di default, evidenzia il contorno di un box  Più leggibile ma meno m i n i m a l*/
-.box-border{
+.box-border, input:required{
     border: var(--button-border-size) solid var(--border-color);
 }
 
 .box-border:focus, .box-border:hover{
     --border-color: var(--focus-outline);
 }
+
+input:required:invalid:not(:empty){
+    --border-color: red;
+}
+
+input:required:valid:not(:empty){
+    --border-color: green;
+}
+
 
 
 /* Comportamento personalizzato per pulsanti conferma e cancellazione */
@@ -468,6 +502,21 @@ a:active{
     color: var(--link-active);
     text-shadow: 0px 0px var(--link-blur-radius) var(--link-active);
 }
+
+#logo-title{
+    width: 75%;
+    padding: 10%;
+}
+
+#access-container{
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-width: 200px;
+    padding: 1rem 5rem 1rem 5rem; 
+}
+
 
 @keyframes fadein{
     from{opacity: 0}

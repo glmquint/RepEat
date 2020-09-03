@@ -76,66 +76,6 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
         }
     });
 
-    dmenu = document.createElement('div');
-    h3menu = document.createElement('h3');
-    h3menu.appendChild(document.createTextNode('Menu:'));
-    searchinmenu = document.createElement('input');
-    searchinmenu.type = 'text';
-    searchinmenu.placeholder = 'cerca (usa spazio per multi-search)'
-    ddishlist = document.createElement('div');
-    ddishlist.id = 'dishlist';
-    searchinmenu.addEventListener('keyup', function(){updateDishList(dishArr, this.value, ddishlist)});
-    dmenu.appendChild(h3menu);
-    dmenu.appendChild(searchinmenu);
-    dmenu.appendChild(ddishlist);
-    parentDiv.appendChild(dmenu);
-    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getCurrentDishes&ristorante='+ ristorante, true, null, 
-    function(response){
-        if (response['responseCode'] != 0) {
-            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
-        } else {
-            console.log('available dishes');
-            console.log(response);
-            if (response['data'].length == 0){
-                pnomenu = document.createElement('p');
-                pnomenu.appendChild(document.createTextNode('Non è stato trovato alcun piatto. Assicurati che esista un menu attivo in questa fascia oraria, oppure chiedi al tuo amministratore di aggiungere un piatto per iniziare...'));
-                dmenu.appendChild(pnomenu);
-            } else {
-                previous_category = 'undefined';
-                response['data'].forEach((piatto, index_piatto) => {
-                    dishArr.push(piatto);
-                });
-                buildDish(dishArr, ddishlist);
-            }
-        }
-
-    });
-
-    
-    dorder = document.createElement('div');
-    dorder.id = 'ordine';
-    h3order = document.createElement('h3');
-    h3order.appendChild(document.createTextNode('Ordine:'))
-    dorder.appendChild(h3order);
-    pnomenu = document.createElement('p');
-    pnomenu.appendChild(document.createTextNode('Seleziona un tavolo per iniziare...'));
-    dtableorder = document.createElement('div');
-    dtableorder.id = 'tableorder';
-    dtableorder.appendChild(pnomenu);
-    dorderlist = document.createElement('div');
-    dorderlist.id = 'orderlist';
-    
-    bsendorder = document.createElement('button');
-    bsendorder.appendChild(document.createTextNode('Invia ordine'));
-    bsendorder.addEventListener('click', function(){makeOrder(user, ristorante)})
-
-    dorder.appendChild(dtableorder);
-    dorder.appendChild(dorderlist);
-    dorder.appendChild(bsendorder);
-
-    parentDiv.appendChild(dorder);
-
-    
     dready = document.createElement('div');
     dready.id = 'pronti';
     h3ready = document.createElement('h3');
@@ -206,6 +146,68 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
         });
     return intervalgetOrdersReady;    
     }(), 1000)); //... grazie a https://stackoverflow.com/a/6685505 per l'idea di chiamare una funzione che ritorna se stessa (così da evitare il primo delay della setInterval)
+
+
+    dmenu = document.createElement('div');
+    h3menu = document.createElement('h3');
+    h3menu.appendChild(document.createTextNode('Menu:'));
+    searchinmenu = document.createElement('input');
+    searchinmenu.type = 'text';
+    searchinmenu.placeholder = 'cerca (usa spazio per multi-search)'
+    ddishlist = document.createElement('div');
+    ddishlist.id = 'dishlist';
+    searchinmenu.addEventListener('keyup', function(){updateDishList(dishArr, this.value, ddishlist)});
+    dmenu.appendChild(h3menu);
+    dmenu.appendChild(searchinmenu);
+    dmenu.appendChild(ddishlist);
+    parentDiv.appendChild(dmenu);
+    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getCurrentDishes&ristorante='+ ristorante, true, null, 
+    function(response){
+        if (response['responseCode'] != 0) {
+            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
+        } else {
+            console.log('available dishes');
+            console.log(response);
+            if (response['data'].length == 0){
+                pnomenu = document.createElement('p');
+                pnomenu.appendChild(document.createTextNode('Non è stato trovato alcun piatto. Assicurati che esista un menu attivo in questa fascia oraria, oppure chiedi al tuo amministratore di aggiungere un piatto per iniziare...'));
+                dmenu.appendChild(pnomenu);
+            } else {
+                previous_category = 'undefined';
+                response['data'].forEach((piatto, index_piatto) => {
+                    dishArr.push(piatto);
+                });
+                buildDish(dishArr, ddishlist);
+            }
+        }
+
+    });
+
+    
+    dorder = document.createElement('div');
+    dorder.id = 'ordine';
+    h3order = document.createElement('h3');
+    h3order.appendChild(document.createTextNode('Ordine:'))
+    dorder.appendChild(h3order);
+    pnomenu = document.createElement('p');
+    pnomenu.appendChild(document.createTextNode('Seleziona un tavolo per iniziare...'));
+    dtableorder = document.createElement('div');
+    dtableorder.id = 'tableorder';
+    dtableorder.appendChild(pnomenu);
+    dorderlist = document.createElement('div');
+    dorderlist.id = 'orderlist';
+    
+    bsendorder = document.createElement('button');
+    bsendorder.appendChild(document.createTextNode('Invia ordine'));
+    bsendorder.addEventListener('click', function(){makeOrder(user, ristorante)})
+
+    dorder.appendChild(dtableorder);
+    dorder.appendChild(dorderlist);
+    dorder.appendChild(bsendorder);
+
+    parentDiv.appendChild(dorder);
+
+    
     
 }
 
@@ -253,12 +255,18 @@ function buildDish(arr, parentDiv){
         
         baddpiatto = document.createElement('button');
         baddpiatto.value = piatto['id_piatto']+':'+piatto['nome'];
-        baddpiatto.appendChild(document.createTextNode('+'));
+        iadd = document.createElement('i');
+        iadd.classList.add('material-icons');
+        iadd.appendChild(document.createTextNode('add_circle'));
+        baddpiatto.appendChild(iadd);
         //baddpiatto.disabled = true;
         baddpiatto.addEventListener('click', function(){addDishToOrder(this.value, 1)} );
         bremovepiatto = document.createElement('button');
         bremovepiatto.value = piatto['id_piatto']+':'+piatto['nome'];
-        bremovepiatto.appendChild(document.createTextNode('-'));
+        iremove = document.createElement('i');
+        iremove.classList.add('material-icons');
+        iremove.appendChild(document.createTextNode('remove_circle'));
+        bremovepiatto.appendChild(iremove);
         //bremovepiatto.disabled = true;
         bremovepiatto.addEventListener('click', function(){addDishToOrder(this.value, -1)} );
 

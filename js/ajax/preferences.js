@@ -14,10 +14,8 @@ function loadPreferences(user){
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log(response);
-            body = document.getElementById('main-container');
-            while (body.firstChild) {
-                body.removeChild(body.firstChild);
-            }
+            body = document.createElement('div');
+            body.id = 'preferences-container';
             row = response['data'][0];
 
             this_user = document.createElement('input');
@@ -105,7 +103,14 @@ function loadPreferences(user){
             body.appendChild(this_theme_label);
             body.appendChild(this_theme);
             body.appendChild(update_btn);
-            body.appendChild(blogout);
+            
+            mainbody = document.getElementById('main-container');
+            while (mainbody.firstChild) {
+                mainbody.removeChild(mainbody.firstChild);
+            }
+            
+            mainbody.appendChild(body);
+            mainbody.appendChild(blogout);
         }
     });
 };

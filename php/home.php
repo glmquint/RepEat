@@ -26,7 +26,8 @@
     <script src="../js/alertsManager.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="../css/neonmorphism.css">
-    <title>repEat</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../css/img/favicon.ico" />
+    <title>RepEat</title>
 </head>
 <body onLoad = "loadMainHome(<?php echo $_SESSION['user_id'] ?>)">
     <h1>Welcome home</h1>

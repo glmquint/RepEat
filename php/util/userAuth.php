@@ -20,7 +20,7 @@
         }
 
         
-        return 'Username and password not valid.';
+        return 'Username o password non validi.';
     }
 
     function register ($param){ 

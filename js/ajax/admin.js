@@ -235,14 +235,20 @@ function loadRoomSettings(parentDiv, ristorante){
                     }
 
                     baddtable = document.createElement('button');
-                    baddtable.appendChild(document.createTextNode('+'));
+iadd = document.createElement('i');
+iadd.classList.add('material-icons');
+iadd.appendChild(document.createTextNode('add_circle'));
+                    baddtable.appendChild(iadd);
                     baddtable.addEventListener('click', function(){addTable(index_stanza, ristorante)});
                     dstanza.appendChild(baddtable);
                     parentDiv.appendChild(dstanza);
                 });
             }
             baddRoom = document.createElement('button');
-            baddRoom.appendChild(document.createTextNode('+'));
+iadd = document.createElement('i');
+iadd.classList.add('material-icons');
+iadd.appendChild(document.createTextNode('add_circle'));
+            baddRoom.appendChild(iadd);
             baddRoom.addEventListener('click', function(){addRoom(ristorante)});
             parentDiv.appendChild(baddRoom);
         }
@@ -357,7 +363,10 @@ function loadDishSettings(parentDiv, ristorante){
                 });
             }
             baddRoom = document.createElement('button');
-            baddRoom.appendChild(document.createTextNode('+'));
+iadd = document.createElement('i');
+iadd.classList.add('material-icons');
+iadd.appendChild(document.createTextNode('add_circle'));
+            baddRoom.appendChild(iadd);
             baddRoom.addEventListener('click', function(){addDish(ristorante)});
             parentDiv.appendChild(baddRoom);
 
@@ -478,7 +487,10 @@ function loadMenuSettings(parentDiv, ristorante){
             }
 
             baddMenu = document.createElement('button');
-            baddMenu.appendChild(document.createTextNode('+'));
+iadd = document.createElement('i');
+iadd.classList.add('material-icons');
+iadd.appendChild(document.createTextNode('add_circle'));
+            baddMenu.appendChild(iadd);
             baddMenu.addEventListener('click', function(){addMenu(ristorante)});
             parentDiv.appendChild(baddMenu);
 

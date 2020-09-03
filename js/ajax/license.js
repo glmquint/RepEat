@@ -29,7 +29,9 @@ function load(){
                 });
                 
                 tablecaption = table.createCaption();
-                tablecaption.appendChild(document.createTextNode('Le nostre offerte'));
+                h3offers = document.createElement('h3')
+                h3offers.appendChild(document.createTextNode('Le nostre offerte'));
+                tablecaption.appendChild(h3offers);
                 tablehead = table.createTHead();
                 row = tablehead.insertRow(0);
                 for (const property in response['data'][0]) {

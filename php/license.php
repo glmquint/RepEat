@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../js/ajax/ajaxManager.js"></script>
     <script src="../js/ajax/license.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="../css/img/favicon.ico" />
     <link rel="stylesheet" href="../css/neonmorphism.css">
     <title>repEat</title>
 </head>
