@@ -12,8 +12,63 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
 
     droom = document.createElement('div');
     h3stanza = document.createElement('h3');
-    h3stanza.appendChild(document.createTextNode('Stanze:'))
+    h3stanza.appendChild(document.createTextNode('Stanze:'));
+    legendatext = "Legenda tavoli: ";
+
+    ilibero = document.createElement('input');
+    ilibero.type="radio";
+    ilibero.name = "legenda";
+    ilibero.id="legendalibero";
+    ilibero.disabled = true
+    llibero = document.createElement('label');
+    llibero.htmlFor = "legendalibero"
+    llibero.appendChild(document.createTextNode('libero'));
+    llibero.classList.add('rtavolo');
+    llibero.classList.add('libero');
+
+    iordinato = document.createElement('input');
+    iordinato.type="radio";
+    iordinato.name = "legenda";
+    iordinato.id="legendaordinato";
+    iordinato.disabled = true
+    lordinato = document.createElement('label');
+    lordinato.htmlFor = "legendaordinato"
+    lordinato.appendChild(document.createTextNode('ordinato'));
+    lordinato.classList.add('rtavolo');
+    lordinato.classList.add('ordinato');
+
+    ipronto = document.createElement('input');
+    ipronto.type="radio";
+    ipronto.name = "legenda";
+    ipronto.id="legendapronto";
+    ipronto.disabled = true
+    lpronto = document.createElement('label');
+    lpronto.htmlFor = "legendapronto"
+    lpronto.appendChild(document.createTextNode('pronto'));
+    lpronto.classList.add('rtavolo');
+    lpronto.classList.add('pronto');
+
+    iservito = document.createElement('input');
+    iservito.type="radio";
+    iservito.name = "legenda";
+    iservito.id="legendaservito";
+    iservito.disabled = true
+    lservito = document.createElement('label');
+    lservito.htmlFor = "legendaservito"
+    lservito.appendChild(document.createTextNode('servito'));
+    lservito.classList.add('rtavolo');
+    lservito.classList.add('servito');
+
     droom.appendChild(h3stanza);
+    droom.appendChild(document.createTextNode(legendatext));
+    droom.appendChild(ilibero)
+    droom.appendChild(llibero);
+    droom.appendChild(iordinato)
+    droom.appendChild(lordinato);
+    droom.appendChild(ipronto)
+    droom.appendChild(lpronto);
+    droom.appendChild(iservito)
+    droom.appendChild(lservito);
     parentDiv.appendChild(droom);
 
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 

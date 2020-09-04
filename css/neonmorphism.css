@@ -51,8 +51,8 @@
     
     --log-box-shadow-size: 30px;
 
-    --green-shadow: #00ff0044;
-    --red-shadow: #ff000044;
+    --green-shadow: #00ff007f;
+    --red-shadow: #ff00007f;
     
     --info-text-color: dodgerblue;
     --success-text-color:green;
@@ -375,7 +375,7 @@ button {
 
 /* componenti specifiche di un box, associati automaticamente ad alcuni elementi html */
 /*VVV mutuamente esclusivi VVV*/
-.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label, textarea:focus, table, .chat-picker, #role-view > div > div, #preferences-container, #logo-title, .message{    
+.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label:not(.rtavolo), label.rtavolo.libero, textarea:focus, table, .chat-picker, #role-view > div > div, #preferences-container, #logo-title, .message{    
     box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark), 
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -485,7 +485,15 @@ input:required:valid[value], input.valid{
 }
 
 /* Comportamento personalizzato per pulsanti conferma e cancellazione */
-.ring-glow, .button-confirm:hover, .button-cancel:hover{
+.ring-glow, .button-confirm:hover, .button-cancel:hover, label.rtavolo.pronto{
+    box-shadow: 0px 0px var(--log-box-shadow-size) var(--ring-glow-color);
+}
+label.rtavolo.ordinato{
+    --ring-glow-color: var(--red-shadow);
+    box-shadow: 0px 0px var(--log-box-shadow-size) var(--ring-glow-color);
+}
+label.rtavolo.servito{
+    --ring-glow-color: var(--green-shadow);
     box-shadow: 0px 0px var(--log-box-shadow-size) var(--ring-glow-color);
 }
 .button-confirm::before{
