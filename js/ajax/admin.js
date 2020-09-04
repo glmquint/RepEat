@@ -391,6 +391,11 @@ function loadDishSettings(parentDiv, ristorante){
                         lcballergene = document.createElement('label');
                         lcballergene.htmlFor = 'allergene' + ':' + allergene + '-' + index_piatto;
                         lcballergene.appendChild(document.createTextNode(allergene));
+                        if (index_allergene % 3 == 1) {
+                            lcballergene.classList.add('glow-fuchsia');
+                        } else if (index_allergene % 3 == 2){
+                            lcballergene.classList.add('glow-orange');
+                        }
                         this_div.appendChild(cballergene);
                         this_div.appendChild(lcballergene);
                     });

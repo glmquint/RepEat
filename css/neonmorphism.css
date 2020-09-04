@@ -228,11 +228,11 @@ html {
     width: 47.4%;
 }
 
-#role-view > div >div:last-child {
-    flex-grow: 1;
+@media (min-width: 1030px){
+    #role-view > div > div:last-child { flex-grow: 1; }
 }
 
-@media all and (max-width: 1050px) {
+@media all and (max-width: 800px) {
     #role-view > div > div { flex-grow: 1; }
 }
 
@@ -408,7 +408,7 @@ button {
     padding: 5px;  
 }
 
-.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel{
+.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:enabled:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel{
     box-shadow: inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -632,6 +632,9 @@ a:active{
     margin-top: 6rem;
 }
 
+#preferences-container{
+    margin-top: 5rem;
+}
 
 @keyframes fadein{
     from{opacity: 0}
