@@ -215,10 +215,16 @@ function loadRoomSettings(parentDiv, ristorante){
                     dstanza.appendChild(inome_stanza);
                     dstanza.appendChild(bnome_stanza);
                     if(stanza['tavoli'] != null){
+                        dtavolocontainer = document.createElement('div');
+                        dtavolocontainer.classList.add('table-container');
                         stanza['tavoli'].split(',').forEach((tavolo, index_tavolo) => {
+
+
                             dtavolo = document.createElement('div');
                             dtavolo.classList.add('tavolo');
-                            dtavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
+                            nometavolo = document.createElement('b');
+                            nometavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
+                            dtavolo.appendChild(nometavolo);
 
                             ipx = document.createElement('input');
                             ipx.id = 'px-' + index_stanza + '-' + index_tavolo;
@@ -240,20 +246,21 @@ function loadRoomSettings(parentDiv, ristorante){
                             btavolo.appendChild(document.createTextNode('Aggiorna'));
                             btavolo.addEventListener('click', function(){updateTable('px-' + index_stanza + '-' + index_tavolo, 'py-'+ index_stanza + '-' + index_tavolo, index_tavolo, index_stanza, ristorante)});
 
-                            dstanza.appendChild(dtavolo);
-                            dstanza.appendChild(document.createElement('br'));
-                            dstanza.appendChild(lipx);
-                            dstanza.appendChild(document.createElement('br'));
-                            dstanza.appendChild(ipx);
-                            dstanza.appendChild(document.createElement('br'));
-                            dstanza.appendChild(lipy);
-                            dstanza.appendChild(document.createElement('br'));
-                            dstanza.appendChild(ipy);
-                            dstanza.appendChild(document.createElement('br'));
-                            dstanza.appendChild(btavolo);
-                            dstanza.appendChild(document.createElement('br'));
+                            dtavolo.appendChild(document.createElement('br'));
+                            dtavolo.appendChild(lipx);
+                            dtavolo.appendChild(document.createElement('br'));
+                            dtavolo.appendChild(ipx);
+                            dtavolo.appendChild(document.createElement('br'));
+                            dtavolo.appendChild(lipy);
+                            dtavolo.appendChild(document.createElement('br'));
+                            dtavolo.appendChild(ipy);
+                            dtavolo.appendChild(document.createElement('br'));
+                            dtavolo.appendChild(btavolo);
+                            dtavolo.appendChild(document.createElement('br'));
                             
+                            dtavolocontainer.appendChild(dtavolo);
                         });
+                        dstanza.appendChild(dtavolocontainer);
                     }
 
                     baddtable = document.createElement('button');
@@ -399,9 +406,9 @@ function loadDishSettings(parentDiv, ristorante){
                 });
             }
             baddRoom = document.createElement('button');
-iadd = document.createElement('i');
-iadd.classList.add('material-icons');
-iadd.appendChild(document.createTextNode('add_circle'));
+            iadd = document.createElement('i');
+            iadd.classList.add('material-icons');
+            iadd.appendChild(document.createTextNode('add_circle'));
             baddRoom.appendChild(iadd);
             baddRoom.addEventListener('click', function(){addDish(ristorante)});
             parentDiv.appendChild(baddRoom);
@@ -523,9 +530,9 @@ function loadMenuSettings(parentDiv, ristorante){
             }
 
             baddMenu = document.createElement('button');
-iadd = document.createElement('i');
-iadd.classList.add('material-icons');
-iadd.appendChild(document.createTextNode('add_circle'));
+            iadd = document.createElement('i');
+            iadd.classList.add('material-icons');
+            iadd.appendChild(document.createTextNode('add_circle'));
             baddMenu.appendChild(iadd);
             baddMenu.addEventListener('click', function(){addMenu(ristorante)});
             parentDiv.appendChild(baddMenu);

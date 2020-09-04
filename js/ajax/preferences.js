@@ -85,6 +85,7 @@ function loadPreferences(user){
             update_btn.appendChild(update_btn_label);
 
             blogout = document.createElement('button');
+            blogout.id="btn-logout";
             blogout.addEventListener('click', function(){location.replace("../php/logout.php");})
             llogout = document.createElement('label');
             llogout.appendChild(document.createTextNode('exit_to_app'));
@@ -93,24 +94,34 @@ function loadPreferences(user){
 
             body.appendChild(this_user);
             body.appendChild(this_username_label);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_username);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_mail_label);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_mail);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_pwd_label);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_pwd);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_conf_pwd_label);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_conf_pwd);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_theme_label);
+            body.appendChild(document.createElement('br'));
             body.appendChild(this_theme);
             body.appendChild(update_btn);
-            
+
+            body.appendChild(document.createElement('br'));            
+            body.appendChild(blogout);
             mainbody = document.getElementById('main-container');
             while (mainbody.firstChild) {
                 mainbody.removeChild(mainbody.firstChild);
             }
             
             mainbody.appendChild(body);
-            mainbody.appendChild(blogout);
         }
     });
 };

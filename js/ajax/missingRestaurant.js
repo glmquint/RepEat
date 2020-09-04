@@ -19,13 +19,13 @@ function loadMissingRestaurant(user){
                         p1.appendChild(document.createTextNode('Sembra che tu non sia iscritto ad alcun ristorante!'));
 
                         p2 = document.createElement('p');
-                        p2.appendChild(document.createTextNode('Se l\'amministratore del tuo ristorante è già iscritto a repEat, puoi inviare una richiesta di partecipazione da quest\'elenco:'));
+                        p2.appendChild(document.createTextNode('Se l\'amministratore del tuo ristorante è già iscritto a RepEat, puoi inviare una richiesta di partecipazione da quest\'elenco:'));
 
                         sr = document.createElement('select');
                         sr.id = 'select-ristorante';
                         this_option = document.createElement('option');
                         this_option.value = -1;
-                        this_option.appendChild(document.createTextNode('--Selezionare un ristorante--'));
+                        this_option.appendChild(document.createTextNode('--Seleziona il tuo ristorante--'));
                         sr.appendChild(this_option);
 
                         response['data'].forEach(row => {
@@ -87,20 +87,36 @@ function loadMissingRestaurant(user){
                         this_body = document.getElementById('main-container');
                         
                         this_body.appendChild(p1);
-                        this_body.appendChild(p2);
-                        this_body.appendChild(sr);
-                        this_body.appendChild(lta);
-                        this_body.appendChild(ta);
-                        this_body.appendChild(srb);
-                        this_body.appendChild(p3);
-                        this_body.appendChild(linr);
-                        this_body.appendChild(inr);
-                        this_body.appendChild(lii);
-                        this_body.appendChild(ii);
-                        this_body.appendChild(lilk);
-                        this_body.appendChild(ilk);
-                        this_body.appendChild(rrb);
-                        this_body.appendChild(p4);
+
+                        dadmin = document.createElement('div');
+                        dadmin.id = 'missingadmin';
+                        dadmin.appendChild(p2);
+                        dadmin.appendChild(sr);
+                        dadmin.appendChild(document.createElement('br'));
+                        dadmin.appendChild(lta);
+                        dadmin.appendChild(document.createElement('br'));
+                        dadmin.appendChild(ta);
+                        dadmin.appendChild(srb);
+
+                        dpersonel = document.createElement('div');
+                        dpersonel.id = 'missingpersonel';
+                        dpersonel.appendChild(p3);
+                        dpersonel.appendChild(linr);
+                        dpersonel.appendChild(document.createElement('br'));
+                        dpersonel.appendChild(inr);
+                        dpersonel.appendChild(document.createElement('br'));
+                        dpersonel.appendChild(lii);
+                        dpersonel.appendChild(document.createElement('br'));
+                        dpersonel.appendChild(ii);
+                        dpersonel.appendChild(document.createElement('br'));
+                        dpersonel.appendChild(lilk);
+                        dpersonel.appendChild(document.createElement('br'));
+                        dpersonel.appendChild(ilk);
+                        dpersonel.appendChild(rrb);
+                        dpersonel.appendChild(p4);
+
+                        this_body.appendChild(dadmin);
+                        this_body.appendChild(dpersonel);
 
                     }
                 });

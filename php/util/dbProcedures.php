@@ -518,7 +518,7 @@
 						' FROM Stanza S LEFT OUTER JOIN Tavolo T ON T.stanza = S.id_stanza AND T.ristorante = S.ristorante ' . 
 						' WHERE S.ristorante = ' . $ristorante . 
 						' GROUP BY S.id_stanza ' .
-						' ORDER BY T.id_tavolo;';
+						' ORDER BY S.id_stanza, T.id_tavolo;';
 
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();

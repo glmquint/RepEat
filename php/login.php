@@ -32,8 +32,8 @@
         <h2>Login</h2>
         <form action="" method="post">
         <!--input type="text" name="function" id="function" value='login' readonly hidden-->
-        <label for="username">username</label><br><input type="text" name="username" id="username" autofocus required><br>
-        <label for="password">password</label><br><input type="password" name="password" id="password" required><br>
+        <label for="username">username</label><br><input type="text" name="username" id="username" autofocus required onkeyup="this.classList.remove('invalid')"><br>
+        <label for="password">password</label><br><input type="password" name="password" id="password" required onkeyup="this.classList.remove('invalid')"><br>
         <input type="submit" value="submit">
         </form>
 
@@ -42,7 +42,7 @@
     <div id="alert-container"></div>
     <?php
         if (isset($_POST['username']) && isset($_POST['password'])) {
-            echo '<script>sendAlert(\'' . $loginres . '\', \'error\');</script>';
+            echo '<script>sendAlert(\'' . $loginres . '\', \'error\');document.getElementById(\'username\').classList.add(\'invalid\');document.getElementById(\'password\').classList.add(\'invalid\');</script>';
         }
     ?>
 

@@ -61,7 +61,7 @@ function generateKey(level){
                 if (key_holder.firstChild) {                    
                     key_holder.removeChild(key_holder.firstChild);
                 }
-                key_holder.appendChild(document.createTextNode('La tua chiave è: ' + response['data'][0]['rand_key']));
+                key_holder.appendChild(document.createTextNode('La tua chiave è: ' + response['data'][0]['rand_key'] + '. Non dirla a nessuno e inseriscila nel campo License key nel pannello di controllo del tuo ristorante'));
         }
     })
 };

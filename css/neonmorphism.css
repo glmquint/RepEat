@@ -159,7 +159,7 @@ html {
 }
 
 *{
-    transition: all .25s ease-in-out;    /*per sicurezza, rende ogni cambiamento meno aggressivo */
+    transition: all .2s ease-in-out;    /*per sicurezza, rende ogni cambiamento meno aggressivo */
 }
 
 #notif-container{
@@ -212,7 +212,13 @@ html {
     width: 100%;
 }
 
-#role-view > div{
+.table-container{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
+
+#role-view > div {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
@@ -337,7 +343,7 @@ button {
 }
 
 /*VVV mutuamente esclusivi VVV*/
-.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu{
+.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, .tavolo{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -350,7 +356,7 @@ button {
     --ring-glow-color: var(--button-active-color);
 }
 
-.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav, #logo-title, .message, .notif-unread, #msg-box{
+.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav, #logo-title, .message, .notif-unread, #msg-box, #key:not(:empty){
     background-color: var(--main-color);
     border-radius: 2rem;
     padding: 8px;
@@ -394,7 +400,7 @@ button {
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
 
-.box-smooth{
+.box-smooth, .tavolo{
     box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark), 
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light),
     inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-light),  
@@ -402,7 +408,7 @@ button {
     padding: 5px;  
 }
 
-.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu{
+.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel{
     box-shadow: inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -414,6 +420,7 @@ button {
     position: fixed;
     margin: 1rem;
     max-width: 500px;
+    pointer-events: none;
 }
 .error-box, .ordinato{
     border-width: 0;
@@ -425,7 +432,7 @@ button {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
-.success-box, .servito{
+.success-box, .servito, #key:not(:empty){
     border-width: 0;
     background-color: #00ff007f;
     --shadow-dark: #00ff007f;
@@ -456,15 +463,26 @@ button {
     --border-color: var(--focus-outline);
 }
 
-input:required:invalid:not(:empty){
+input:required:invalid[value], input.invalid{
     --border-color: red;
 }
 
-input:required:valid:not(:empty){
+input:required:valid[value], input.valid{
     --border-color: green;
 }
 
+.tooltip + .tooltiptext{
+    display: none;
+}
 
+.tooltip:focus + .tooltiptext{
+    position: absolute;
+    display: inline-block;
+}
+
+.tooltiptext > ul{
+    padding-inline-end: 30px;
+}
 
 /* Comportamento personalizzato per pulsanti conferma e cancellazione */
 .ring-glow, .button-confirm:hover, .button-cancel:hover{
@@ -522,6 +540,9 @@ input:required:valid:not(:empty){
 /* comportamento generale per tutti i tasti con varianti colorate */
 .glow-fuchsia{
     --button-active-color: fuchsia;
+}
+.glow-red, #btn-logout{
+    --button-active-color: red;
 }
 .glow-orange, .light-switch:active{
     --button-active-color: orange;
@@ -593,7 +614,7 @@ a:active{
     padding: 10%;
 }
 
-#access-container{
+#access-container, #preferences-container{
     display: inline-block;
     position: relative;
     left: 50%;
@@ -619,7 +640,10 @@ a:active{
 }
 
 
-
+#btn-logout {
+    left: 100%;
+    position: relative;
+}
 
 
 
