@@ -566,6 +566,9 @@ label.rtavolo.servito{
     transition: text-shadow 0.2s ease-in-out;
 }
 
+#btn-logout > label.material-icons {
+    transition-duration: 0s;
+}
 
 /* utile per le notifiche */
 .badge, #notif-unread:not(:empty), .notif-unread{
