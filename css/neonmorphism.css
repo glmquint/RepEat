@@ -182,6 +182,10 @@ html {
 
 #main-h1{
     text-align: right;
+    font-family: 'Fredoka One';
+    background: -webkit-linear-gradient(#2cebcc, #256ad3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 #main-nav{
@@ -656,9 +660,13 @@ a:active{
     position: relative;
 }
 
+.material-icons{
+    user-select: none;
+}
 
 
-/*-------input range----------*/
+
+/*-------input range (non usato per il progetto RepEat..)----------*/
 
 input[type=range] {
     -webkit-appearance: none;
