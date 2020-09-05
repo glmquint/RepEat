@@ -10,7 +10,7 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="en" class=<?php if (isset($_SESSION['pref_theme']) && $_SESSION['pref_theme'] == 'dark'){echo "dark-mode";}else{echo "";}?>>
+<html lang="it" class=<?php if (isset($_SESSION['pref_theme']) && $_SESSION['pref_theme'] == 'dark'){echo "dark-mode";}else{echo "";}?>>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,7 @@
     <title>RepEat</title>
 </head>
 <body onLoad = "loadMainHome(<?php echo $_SESSION['user_id'] ?>)">
-<a id="index-btn" href="../index.php"><button href="../index.php"><img src="../css/img/logo_squared.svg" alt="index"></button></a>
+<button id="index-btn" onclick="window.location.href='../index.php'"><img src="../css/img/logo_squared.svg" alt="index"></button>
 
     <h1 id="main-h1">RepEat</h1>
     <button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button>

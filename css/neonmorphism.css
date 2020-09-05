@@ -135,7 +135,7 @@
 
 }
 
-#index-btn > button > img{
+#index-btn > img{
     width: 3rem;
 }
 
@@ -188,6 +188,10 @@ html {
     -webkit-text-fill-color: transparent;
 }
 
+#index-page > div {
+    width: 95%;
+}
+
 #main-nav{
     /*
     position: relative;
@@ -210,6 +214,25 @@ html {
 
     transition: left 2s;
 
+}
+
+#index-btn-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
+
+#access-btn{
+    --main-color: #6495ed;
+    color: white;
+    --gradient-light: #6b9ffe;
+    --gradient-dark: #5a86d5;
+    transition: all 0s;
+}
+
+#access-btn:active{
+    --shadow-light: #73abff;
+    --shadow-dark: #557fc9;
 }
 
 #chatpickercontainer:empty:before{
@@ -347,7 +370,7 @@ button {
 }
 
 /*VVV mutuamente esclusivi VVV*/
-.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, .tavolo{
+.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, .tavolo, #index-page > div{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -360,7 +383,7 @@ button {
     --ring-glow-color: var(--button-active-color);
 }
 
-.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav, #logo-title, .message, .notif-unread, #msg-box, #key:not(:empty){
+.pill, .light-switch, :not(nav) > input[type="radio"] + label, input[type="checkbox"] + label, #notif-unread:not(:empty), #main-nav, #logo-title, .message, .notif-unread, #msg-box, #key:not(:empty), #index-page > div > h2{
     background-color: var(--main-color);
     border-radius: 2rem;
     padding: 8px;
@@ -379,7 +402,7 @@ button {
 
 /* componenti specifiche di un box, associati automaticamente ad alcuni elementi html */
 /*VVV mutuamente esclusivi VVV*/
-.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label:not(.rtavolo), label.rtavolo.libero, textarea:focus, table, .chat-picker, #role-view > div > div, #preferences-container, #logo-title, .message{    
+.box-flat, .multi-switch, select, button, input:focus, textarea:active, input[type="submit"], input[type="checkbox"]:enabled + label, input[type="radio"]:enabled + label:not(.rtavolo), label.rtavolo.libero, textarea:focus, table, .chat-picker, #role-view > div > div, #preferences-container, #logo-title, .message, #index-page > div, #index-page > div:hover > h2{    
     box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark), 
     var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -412,7 +435,7 @@ button {
     padding: 5px;  
 }
 
-.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:enabled:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel{
+.box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:enabled:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, #index-page > div > h2{
     box-shadow: inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
@@ -553,7 +576,7 @@ label.rtavolo.servito{
 .glow-fuchsia{
     --button-active-color: fuchsia;
 }
-.glow-red, #btn-logout{
+.glow-red, #btn-logout, #btn-index-logout{
     --button-active-color: red;
 }
 .glow-orange, .light-switch:active{
@@ -627,6 +650,10 @@ a:active{
 #logo-title{
     width: 75%;
     padding: 10%;
+}
+
+#logo-title:hover, #logo-title:focus {
+    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
 }
 
 #access-container, #preferences-container{

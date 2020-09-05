@@ -15,7 +15,7 @@
 
 
 <!DOCTYPE html>
-<html lang="en" class=<?php if (isset($_COOKIE['dark-mode']) && $_COOKIE['dark-mode']){echo "dark-mode";}else{echo "";}?>>
+<html lang="it" class=<?php if (isset($_COOKIE['dark-mode']) && $_COOKIE['dark-mode']){echo "dark-mode";}else{echo "";}?>>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,17 +28,17 @@
 <body>
 <button class = "light-switch" onclick="document.getElementsByTagName('html')[0].classList.toggle('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';path=/577923_quint;expires=Wed, 18 Dec 2023 12:00:00 GMT'"></button>
 
-    <a id="index-btn" href="../index.php"><button href="../index.php"><img src="../css/img/logo_squared.svg" alt="index"></button></a>
+    <button id="index-btn" onclick="window.location.href='../index.php'"><img src="../css/img/logo_squared.svg" alt="index"></button>
     <div id="access-container">
         <h2>Login</h2>
-        <form action="" method="post">
+        <form action="./login.php" method="post">
         <!--input type="text" name="function" id="function" value='login' readonly hidden-->
         <label for="username">username</label><br><input type="text" name="username" id="username" autofocus required onkeyup="this.classList.remove('invalid')"><br>
         <label for="password">password</label><br><input type="password" name="password" id="password" required onkeyup="this.classList.remove('invalid')"><br>
-        <input type="submit" value="submit">
+        <input type="submit" value="invia">
         </form>
 
-        <p>Don't have an account? Register <a href="./register.php">here</a></p>
+        <p>Non hai un account? Registrati <a href="./register.php">quì</a></p>
     </div>
     <div id="alert-container"></div>
     <?php
