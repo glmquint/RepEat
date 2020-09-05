@@ -178,10 +178,10 @@ function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentD
 
     breview = document.createElement('button');
     breview.appendChild(document.createTextNode('invia'));
-    breview.addEventListener('click', function(){review(document.getElementById('starcontainer').value, document.getElementById('recensione').value, stanza_tavolo.split(':')[0], stanza_tavolo.split(':')[1], ristorante);  buildPayCheck(stanza_tavolo.split(':')[0], stanza_tavolo.split(':')[1], nome_stanza_tavolo, ristorante, parentDiv)})
+    breview.addEventListener('click', function(){review(document.getElementById('starcontainer').value, document.getElementById('recensione').value, stanza_tavolo.split(':')[0], stanza_tavolo.split(':')[1], ristorante, nome_stanza_tavolo, parentDiv)});
     bskip = document.createElement('button');
     bskip.appendChild(document.createTextNode('salta'));
-    bskip.addEventListener('click', function(){review(null, null, stanza_tavolo.split(':')[0], stanza_tavolo.split(':')[1], ristorante); buildPayCheck(stanza_tavolo.split(':')[0], stanza_tavolo.split(':')[1], nome_stanza_tavolo, ristorante, parentDiv)})
+    bskip.addEventListener('click', function(){review(null, null, stanza_tavolo.split(':')[0], stanza_tavolo.split(':')[1], ristorante, nome_stanza_tavolo, parentDiv) })
 
     while (parentDiv.lastChild) {
         parentDiv.removeChild(parentDiv.firstChild);
@@ -284,15 +284,20 @@ function payCheck(tipo_pagamento, tavolo, stanza, ristorante) {
 
 }
 
-function review(valutazione, recensione, stanza, tavolo, ristorante) {
-    AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=review&valutazione='+ valutazione + '&recensione='+ ((recensione == null)?'':recensione) + '&stanza='+ stanza + '&tavolo='+ tavolo + '&ristorante='+ ristorante , true, null, 
-    function(response){
-        if (response['responseCode'] != 0) {
-            sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
-        } else {
-            if (valutazione != null || recensione != null) {               
-                sendAlert('grazie per il tuo feedback!', 'info');
+function review(valutazione, recensione, stanza, tavolo, ristorante, nome_stanza_tavolo, parentDiv) {
+    if (valutazione == undefined && recensione != null) {
+        sendAlert('selezionare almeno un livello di gradimento', 'error');
+    } else {
+        AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=review&valutazione='+ valutazione + '&recensione='+ recensione + '&stanza='+ stanza + '&tavolo='+ tavolo + '&ristorante='+ ristorante , true, null, 
+        function(response){
+            if (response['responseCode'] != 0) {
+                sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
+            } else {
+                if (valutazione != null || recensione != null) {               
+                    sendAlert('grazie per il tuo feedback!', 'info');
+                }
+                buildPayCheck(stanza, tavolo, nome_stanza_tavolo, ristorante, parentDiv);
             }
-        }
-    });
+        });
+    }
 }

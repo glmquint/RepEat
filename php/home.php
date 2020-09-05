@@ -25,6 +25,7 @@
     <script src="../js/ajax/missingRestaurant.js"></script>
     <script src="../js/alertsManager.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href='https://fonts.googleapis.com/css?family=Fredoka One&text=RepEat' rel='stylesheet'>
     <link rel="stylesheet" href="../css/neonmorphism.css">
     <link rel="shortcut icon" type="image/x-icon" href="../css/img/favicon.ico" />
     <title>RepEat</title>
