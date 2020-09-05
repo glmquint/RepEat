@@ -146,11 +146,13 @@ function readMessages(user, dest, ristorante){
                         this_div.classList.add('error-box');
                     }
                 } else {
-                    if (row['is_read'] == 1){
-                        iread.appendChild(document.createTextNode('done_all'))
-                    } else {
-                        iread.appendChild(document.createTextNode('done'))
-                    }
+                    if (row['to_user'] != user){
+                        if (row['is_read'] == 1){
+                            iread.appendChild(document.createTextNode('done_all'))
+                        } else {
+                            iread.appendChild(document.createTextNode('done'))
+                        }
+                    }   
                 }
                 this_metadata.appendChild(iread);
                 this_content.appendChild(document.createTextNode(row['msg']));                

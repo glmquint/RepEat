@@ -282,16 +282,12 @@ html {
     line-height: 0;
 }
 
-.metadata{
-    font-size: xx-small;
+.metadata, .metadata > i{
+    font-size: x-small;
 }
 
 .io > .metadata {
     text-align: right;
-}
-
-.metadata > i {
-    font-size: xx-small;
 }
 
 
