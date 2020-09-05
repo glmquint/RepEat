@@ -199,7 +199,7 @@ function loadRoomSettings(parentDiv, ristorante){
                     dstanza = document.createElement('div');
                     dstanza.classList.add('stanza');
                     h3Stanza = document.createElement('h3');
-                    h3Stanza.appendChild(document.createTextNode('stanza ' + stanza['id_stanza'] + ': '));
+                    h3Stanza.appendChild(document.createTextNode('stanza ' + alphabet[stanza['id_stanza']] + ': '));
                     inome_stanza = document.createElement('input');
                     inome_stanza.type = 'text';
                     inome_stanza.value = stanza['nome_stanza'];
@@ -449,7 +449,7 @@ function loadMenuSettings(parentDiv, ristorante){
                         this_div.innerHTML += property + '=' + menu[property] + ', ';
                     }*/
                     h5menu = document.createElement('h5');
-                    h5menu.appendChild(document.createTextNode('menu: ' + index_menu));
+                    h5menu.appendChild(document.createTextNode('menu: ' + (Number(index_menu) + 1)));   //per qualche motivo solo ai programmatori piace partire da 0..
 
                     this_div.appendChild(h5menu);
 
