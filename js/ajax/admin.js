@@ -268,7 +268,7 @@ function loadRoomSettings(parentDiv, ristorante){
                     iadd.classList.add('material-icons');
                     iadd.appendChild(document.createTextNode('add_circle'));
                     baddtable.appendChild(iadd);
-                    baddtable.addEventListener('click', function(){addTable(index_stanza, ristorante)});
+                    baddtable.addEventListener('click', function(){addTable(index_stanza, ristorante, parentDiv)});
                     dstanza.appendChild(baddtable);
                     parentDiv.appendChild(dstanza);
                 });
@@ -278,7 +278,7 @@ function loadRoomSettings(parentDiv, ristorante){
             iadd.classList.add('material-icons');
             iadd.appendChild(document.createTextNode('add_circle'));
             baddRoom.appendChild(iadd);
-            baddRoom.addEventListener('click', function(){addRoom(ristorante)});
+            baddRoom.addEventListener('click', function(){addRoom(ristorante, parentDiv)});
             parentDiv.appendChild(baddRoom);
         }
     });
@@ -405,7 +405,7 @@ function loadDishSettings(parentDiv, ristorante){
 
                     this_button = document.createElement('button');
                     this_button.appendChild(document.createTextNode('aggiorna'));
-                    this_button.onclick = function(){updateDish(index_piatto)};
+                    this_button.onclick = function(){updateDish(index_piatto, parentDiv, document.getElementsByClassName('menu-container')[0], ristorante)};
                     this_div.appendChild(this_button);
                     parentDiv.appendChild(this_div);
                 });
@@ -415,7 +415,7 @@ function loadDishSettings(parentDiv, ristorante){
             iadd.classList.add('material-icons');
             iadd.appendChild(document.createTextNode('add_circle'));
             baddRoom.appendChild(iadd);
-            baddRoom.addEventListener('click', function(){addDish(ristorante)});
+            baddRoom.addEventListener('click', function(){addDish(ristorante, parentDiv, document.getElementsByClassName('menu-container')[0])});
             parentDiv.appendChild(baddRoom);
 
         }
@@ -423,6 +423,9 @@ function loadDishSettings(parentDiv, ristorante){
 }
 
 function loadMenuSettings(parentDiv, ristorante){
+    while (parentDiv.lastChild) {
+        parentDiv.removeChild(parentDiv.firstChild);
+    }
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listMenus&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -504,8 +507,11 @@ function loadMenuSettings(parentDiv, ristorante){
                             dpiatto.appendChild(document.createTextNode('Nome: ' + piatto.split(':')[1] + ', Categoria: ' + ((piatto.split(':')[2] == '')?'nessuna': piatto.split(':')[2]) + ', Prezzo: ' + piatto.split(':')[3] + '€'));
 
                             brempiatto = document.createElement('button');
-                            brempiatto.appendChild(document.createTextNode('Rimuovi'));
-                            brempiatto.addEventListener('click', function(){removeDishFromMenu(index_piatto, index_menu)})
+                            irimuovi = document.createElement('i');
+                            irimuovi.classList.add('material-icons');
+                            irimuovi.appendChild(document.createTextNode('cancel'));
+                            brempiatto.appendChild(irimuovi);
+                            brempiatto.addEventListener('click', function(){removeDishFromMenu(index_piatto, index_menu, parentDiv, ristorante)})
                             dpiatto.appendChild(brempiatto);
                             this_div.appendChild(dpiatto);
                         });
@@ -525,7 +531,7 @@ function loadMenuSettings(parentDiv, ristorante){
                     buildDishList(ristorante, datalistpiatti);
                 
 
-                    listpiatti.addEventListener('change', function(){addDishToMenu(index_menu)})
+                    listpiatti.addEventListener('change', function(){addDishToMenu(index_menu, parentDiv, ristorante)})
 
                     parentDiv.appendChild(llistpiatti);
                     parentDiv.appendChild(listpiatti);
@@ -539,7 +545,7 @@ function loadMenuSettings(parentDiv, ristorante){
             iadd.classList.add('material-icons');
             iadd.appendChild(document.createTextNode('add_circle'));
             baddMenu.appendChild(iadd);
-            baddMenu.addEventListener('click', function(){addMenu(ristorante)});
+            baddMenu.addEventListener('click', function(){addMenu(ristorante, parentDiv)});
             parentDiv.appendChild(baddMenu);
 
         }
@@ -619,7 +625,7 @@ function updateRoom(nome_stanza, stanza, ristorante) {
 
 }
 
-function updateDish(piatto) {
+function updateDish(piatto, parentDiv, menucontainer, ristorante) {
 
     nome = document.getElementById('nomepiatto-'+piatto).value;
     categoria = document.getElementById('categoriapiatto-'+piatto).value;
@@ -640,6 +646,7 @@ function updateDish(piatto) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             sendAlert('informazioni aggiornate con successo', 'success');
+            loadMenuSettings(menucontainer, ristorante); //necessario per ricostruire la lista di piatti disponibili per i menu
         }
     })
 
@@ -648,6 +655,10 @@ function updateDish(piatto) {
 function updateMenu(menu){
     orario_inizio = document.getElementById('orainizio-'+menu).value;
     orario_fine = document.getElementById('orafine-'+menu).value;
+    if (orario_fine < orario_inizio) {
+        sendAlert('l\'orario di fine validità del menu non può essere minore del suo orario di inizio', 'error');
+        return;
+    }
     menu = document.getElementById('indexmenu-'+menu).value;
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateMenu&orario_inizio='+orario_inizio+'&orario_fine='+ orario_fine+'&menu='+ menu, true, null, 
     function(response){
@@ -661,55 +672,56 @@ function updateMenu(menu){
 
 }
 
-function addTable(stanza, ristorante){
+function addTable(stanza, ristorante, parentDiv){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addTable&stanza='+stanza+'&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            window.location.reload();
+            loadRoomSettings(parentDiv, ristorante);
         }
     })
 
 }
 
-function addRoom(ristorante){
+function addRoom(ristorante, parentDiv){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addRoom&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            window.location.reload();
+            loadRoomSettings(parentDiv, ristorante);
         }
     })
 
 }
 
-function addDish(ristorante){
+function addDish(ristorante, parentDiv, menucontainer){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addDish&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            window.location.reload();
+            loadDishSettings(parentDiv, ristorante);
+            loadMenuSettings(menucontainer, ristorante); //necessario per ricostruire la lista di piatti disponibili per i menu
         }
     })
 
 }
 
-function addMenu(ristorante){
+function addMenu(ristorante, parentDiv){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=addMenu&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            window.location.reload();
+            loadMenuSettings(parentDiv, ristorante);
         }
     })
 
 }
 
-function removeDishFromMenu(piatto, menu) {
+function removeDishFromMenu(piatto, menu, parentDiv, ristorante) {
     piatto = document.getElementById('indexpiattoinmenu-'+piatto).value;
     menu = document.getElementById('indexmenu-'+menu).value;
 
@@ -718,13 +730,13 @@ function removeDishFromMenu(piatto, menu) {
         if (response['responseCode'] != 0) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('Piatto rimosso con successo');
+            loadMenuSettings(parentDiv, ristorante)
         }
     })
 
 }
 
-function addDishToMenu(menu) {
+function addDishToMenu(menu, parentDiv, ristorante) {
     piatto = document.getElementById("inputdatalist-piatti-"+menu).value;
     menu = document.getElementById('indexmenu-'+menu).value;
 
@@ -733,7 +745,7 @@ function addDishToMenu(menu) {
         if (response['responseCode'] != 0) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
-            alert('Piatto aggiunto con successo'); //TODO: append dish without reload
+            loadMenuSettings(parentDiv, ristorante);
         }
     })
 
