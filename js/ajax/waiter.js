@@ -44,7 +44,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     ipronto.disabled = true
     lpronto = document.createElement('label');
     lpronto.htmlFor = "legendapronto"
-    lpronto.appendChild(document.createTextNode('pronto'));
+    lpronto.appendChild(document.createTextNode('da servire'));
     lpronto.classList.add('rtavolo');
     lpronto.classList.add('pronto');
 
