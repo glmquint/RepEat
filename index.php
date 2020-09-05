@@ -45,13 +45,13 @@
     <p>Esistono due modi per iniziare ad usare RepEat, a seconda del ruolo da amministratore o dipendente del proprio ristorante. Entrambi iniziano dalla registrazione del proprio account nell'area <a href="./php/register.php">registrazione</a>.</p>
     <p> Si può stare tranquilli che le password non sono e mai saranno tenute in chiaro nei nostri servers (dovrebbe essere una cosa scontata, ma non sempre è così..)</p>
     <h3>Per gli amministratori</h3>
-    <p>Al primo accesso è possibile inserire tutti i dati del proprio ristorante nella seconda delle due senzioni che si presentano davanti. Viene anche richiesta una chiave di attivazione che è possibile acquistare dall'apposita senzione delle <a href="./php/license.php">nostre offerte</a>. 
+    <p>Al primo accesso è possibile inserire tutti i dati del proprio ristorante nella seconda delle due senzioni che si presentano davanti. Viene anche richiesta una chiave di attivazione che è possibile acquistare dall'apposita sezione delle <a href="./php/license.php">nostre offerte</a>. 
     Allo scadere del proprio abbonamento, o al raggiungimento di uno dei limiti del proprio livello, l'applicazione si occuperà di notificare ciò e bloccare le conseguenti funzioni.</p><p> Sarà sempre possibile modificare queste informazioni anche in futuro</p>
     <h4>Admin</h4>
     <p>Il pannello di controllo dell'amministratore permette prima di tutto di passare a qualunque altro ruolo, potendo così monitorare l'andamento in ogni settore. In seguito è possibile aggiungere stanze, con i rispettivi tavoli, aggiungere i piatti disponibili con i relativi parametri e creare nuovo menù. Per ognuno dei menù è possibile specificare quali piatti gli appartengono e quale sia la sua fascia di attività, così da rendere immediatamente visibili i piatti corretti in base all'orario.</p>
     <p>Le richieste di partecipzaione verranno automaticamente notificate e rese disponibili nella sezione dei messaggi, nella quale sarà possibile accettare o rifiutare le singole richieste</p>
     <h3>Per il personale</h3>
-    <p>Al primo accesso è possibile cercare il proprio ristorante tra l'elenco nella prima delle due senzioni che si presentano dabanti. E' anche possibile, e raccomandato, aggiungere una nota in modo da far presente la propria identità.</p>
+    <p>Al primo accesso è possibile cercare il proprio ristorante tra l'elenco nella prima delle due senzioni che si presentano davanti. E' anche possibile, e raccomandato, aggiungere una nota in modo da far presente la propria identità.</p>
     <p class="pill error-box">Non sarà possibile inviare altre richieste finchè quella precedente non sarà stata accettata o rifiutata.</p>
     <p>Una volta all'interno dello staff del proprio ristorante sarà sempre possibile passare da un ruolo a l'altro, in base ai permessi concessi dall'amministratore.</p>
     <h4>Cameriere</h4>
