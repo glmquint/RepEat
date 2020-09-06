@@ -143,6 +143,7 @@
     position: fixed;
     top: 1rem;
     right: 1rem;
+    z-index: 1;
 }
 
 .light-switch::after{
@@ -277,6 +278,12 @@ html {
     justify-content: flex-start;
 }
 
+.chat-picker > div:last-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .message-bar > textarea{
     flex-grow: 1;
 }
@@ -296,7 +303,7 @@ html {
 #msgcontainer{
     display: flex;
     flex-flow: column;
-    max-height: 30vh;
+    max-height: 50vh;
     overflow-y: scroll;
 }
 
@@ -306,23 +313,23 @@ html {
 
 .message.io{
     align-self: flex-end;
+    --main-color: #6495ed40;
 }
 
 .message.date{
     align-self: center;
 }
 
-.message > p{
-    height: 0;
-    line-height: 0;
-}
-
-.metadata, .metadata > i{
-    font-size: x-small;
-}
-
 .io > .metadata {
     text-align: right;
+}
+
+.metadata, .metadata > i {
+    font-size: x-small;
+    height: 0;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: .5rem;
 }
 
 
@@ -696,6 +703,16 @@ a:active{
 
 .material-icons{
     user-select: none;
+}
+
+.stanza.real {
+    position: relative;
+    height: 400px;
+    box-sizing: border-box;
+}
+
+.stanza.real > label {
+    position: absolute;
 }
 
 

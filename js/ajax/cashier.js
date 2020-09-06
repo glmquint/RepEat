@@ -57,6 +57,25 @@ function loadCashierDashboard(parentDiv, user, ristorante){
     lservito.classList.add('rtavolo');
     lservito.classList.add('servito');
 
+    ichangeview = document.createElement('input');
+    ichangeview.type = "checkbox";
+    ichangeview.name="changeview";
+    ichangeview.id="changeview";
+    ichangeview.addEventListener('change', function(){for (const stanza of document.getElementsByClassName('stanza')) {
+        stanza.classList.toggle('real');
+    }})
+    lchangeview = document.createElement('label');
+    lchangeview.htmlFor = "changeview";
+    lchangeview.classList.add('box');
+    lchangeview.classList.add('glow-orange');
+    lchangeview.classList.add('release-press');
+    lchangeview.appendChild(document.createTextNode('Disposizione reale'))
+
+
+
+    droom.appendChild(ichangeview);
+    droom.appendChild(lchangeview);
+    droom.appendChild(document.createTextNode('(default: compatta) Attenzione: assicurarsi che non esistano più tavoli sovrapposti nella visualizzazione reale'))
     droom.appendChild(h3stanza);
     droom.appendChild(document.createTextNode(legendatext));
     droom.appendChild(ilibero)
@@ -96,7 +115,7 @@ function loadCashierDashboard(parentDiv, user, ristorante){
                     dthis_stanza.classList.add('stanza');
                     h5Stanza = document.createElement('h5');
                     h5Stanza.appendChild(document.createTextNode(stanza['nome_stanza']));
-                    dthis_stanza.appendChild(h5Stanza);
+                    droom.appendChild(h5Stanza);
                     if(stanza['tavoli'] != null){
                         stanza['tavoli'].split(',').forEach((tavolo, index_tavolo) => {
                             rtavolo = document.createElement('input');
@@ -110,6 +129,8 @@ function loadCashierDashboard(parentDiv, user, ristorante){
                             lrtavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
                             lrtavolo.htmlFor = 'tavolo-' + index_stanza + ':' + index_tavolo;
                             lrtavolo.classList.add('rtavolo');
+                            lrtavolo.style.left = Number(tavolo.split(':')[1]) * (9/10) + '%';
+                            lrtavolo.style.top = Number(tavolo.split(':')[2]) * (9/10) + '%';
 
                             dthis_stanza.appendChild(rtavolo);
                             dthis_stanza.appendChild(lrtavolo);

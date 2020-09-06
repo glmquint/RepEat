@@ -43,27 +43,28 @@
     </div>
     <div><h2>Come</h2>
     <p>Esistono due modi per iniziare ad usare RepEat, a seconda del ruolo da amministratore o dipendente del proprio ristorante. Entrambi iniziano dalla registrazione del proprio account nell'area <a href="./php/register.php">registrazione</a>.</p>
-    <p> Si può stare tranquilli che le password non sono e mai saranno tenute in chiaro nei nostri servers (dovrebbe essere una cosa scontata, ma non sempre è così..)</p>
+    <p> Si può stare tranquilli che le password non sono e mai saranno tenute in chiaro nei nostri servers.</p>
     <h3>Per gli amministratori</h3>
     <p>Al primo accesso è possibile inserire tutti i dati del proprio ristorante nella seconda delle due senzioni che si presentano davanti. Viene anche richiesta una chiave di attivazione che è possibile acquistare dall'apposita sezione delle <a href="./php/license.php">nostre offerte</a>. 
-    Allo scadere del proprio abbonamento, o al raggiungimento di uno dei limiti del proprio livello, l'applicazione si occuperà di notificare ciò e bloccare le conseguenti funzioni.</p><p> Sarà sempre possibile modificare queste informazioni anche in futuro</p>
+    Allo scadere del proprio abbonamento, o al raggiungimento di uno dei limiti del proprio livello, l'applicazione si occuperà di notificare ciò e bloccare le conseguenti funzioni.</p>
+    <p> Sarà sempre possibile modificare queste informazioni anche in futuro.</p>
     <h4>Admin</h4>
     <p>Il pannello di controllo dell'amministratore permette prima di tutto di passare a qualunque altro ruolo, potendo così monitorare l'andamento in ogni settore. In seguito è possibile aggiungere stanze, con i rispettivi tavoli, aggiungere i piatti disponibili con i relativi parametri e creare nuovo menù. Per ognuno dei menù è possibile specificare quali piatti gli appartengono e quale sia la sua fascia di attività, così da rendere immediatamente visibili i piatti corretti in base all'orario.</p>
-    <p>Le richieste di partecipzaione verranno automaticamente notificate e rese disponibili nella sezione dei messaggi, nella quale sarà possibile accettare o rifiutare le singole richieste</p>
+    <p>Le richieste di partecipzaione verranno automaticamente notificate e rese disponibili nella sezione dei messaggi, nella quale sarà possibile accettare o rifiutare le singole richieste.</p>
     <h3>Per il personale</h3>
     <p>Al primo accesso è possibile cercare il proprio ristorante tra l'elenco nella prima delle due senzioni che si presentano davanti. E' anche possibile, e raccomandato, aggiungere una nota in modo da far presente la propria identità.</p>
     <p class="pill error-box">Non sarà possibile inviare altre richieste finchè quella precedente non sarà stata accettata o rifiutata.</p>
     <p>Una volta all'interno dello staff del proprio ristorante sarà sempre possibile passare da un ruolo a l'altro, in base ai permessi concessi dall'amministratore.</p>
     <h4>Cameriere</h4>
-    <p>Viene, innanzitutto, mostrata una mappa dei tavoli del ristorante divisi per stanza e colorati in funzione del loro stato attuale, seguita dalla lista degli ordini che sono stati preparati e che devono essere serviti</p>
+    <p>Viene, innanzitutto, mostrata una mappa dei tavoli del ristorante divisi per stanza e colorati in funzione del loro stato attuale, seguita dalla lista degli ordini che sono stati preparati e che devono essere serviti.</p>
     <p>In seguito è presente la lista dei piatti disponibili, ossia solo quelli appartenenti ai menu attivi nell'attuale fascia oraria. E' anche possibile cercare tra la lista dei piatti con una barra di ricerca che filtrerà solo i piatti che contengono almeno una delle parole chiave inserite. E' quì che si svolge la creazione degli ordini, dove è possibile, dopo aver selezionato l'apposito tavolo, aggiungere o togliere piatti con eventuali note, su richiesta dei clienti. </p>
-    <p>Infine viene riportato un riassunto dell'ordine, in modo che possa essere revisionato prima di essere inviato in cucina</p>
+    <p>Infine viene riportato un riassunto dell'ordine, in modo che possa essere revisionato prima di essere inviato in cucina.</p>
 
     <h4>Cuoco</h4>
     <p>L'unica lista presente contiene l'elenco di tutti gli ordini effettuati ed in attesa di processazione, in ordine di arrivo decrescente, in modo da evidenziare sempre quelli che stanno aspettando da più tempo.</p>
 
     <h4>Cassa</h4>
-    <p>Viene, innanzitutto, mostrata una mappa dei tavoli del ristorante divisi per stanza e colorati in funzione del loro stato attuale</p>
+    <p>Viene, innanzitutto, mostrata una mappa dei tavoli del ristorante divisi per stanza e colorati in funzione del loro stato attuale.</p>
     <p>Selezionato un tavolo, viene lasciata l'opportunità ai clienti di lasciare una valutazione complessiva del servizio e, in maniera facoltativa, lo spazio per una recensione più approfondita.</p>
     <p>Anche decidendo di saltare la valurazione del servizio, viene riportato il conto del tavolo, comprendente il riassunto di tutti gli ordini effettuati fino a quel momento.</p>
     </div>
