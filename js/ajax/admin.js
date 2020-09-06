@@ -290,6 +290,9 @@ allergeni = ['pesce', 'molluschi', 'latticini', 'glutine',
     'senape', 'sedano', 'piccante', 'surgelato'];
 
 function loadDishSettings(parentDiv, ristorante){
+    while (parentDiv.lastChild) {
+        parentDiv.removeChild(parentDiv.firstChild);
+    }
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listDishes&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -490,6 +493,11 @@ function loadMenuSettings(parentDiv, ristorante){
                     this_button.onclick = function(){updateMenu(index_menu)};
                     this_div.appendChild(this_button);
 
+                    bprintmenu = document.createElement('button');
+                    bprintmenu.appendChild(document.createTextNode('Stampa questo menu'));
+                    bprintmenu.addEventListener('click', function(){window.open("./printMenu.php?menu=" + menu['id_menu'], '_blank')})
+                    this_div.appendChild(bprintmenu)
+
                     if(menu['piatti'] != null){
                         menu['piatti'].split(',').forEach((piatto, index_piatto) => {
                             dpiatto = document.createElement('div');
@@ -597,6 +605,10 @@ function updateTable(percentX, percentY, tavolo, stanza, ristorante) {
     console.log(percentX);
     percentY = document.getElementById(percentY).value;
     console.log(percentY);
+    if (percentX < 0 || percentY > 100 || percentY < 0 || percentY > 100) {
+        sendAlert('inserire valori nel range (0-100) nei campi percentX e percentY', 'error');
+        return;
+    }
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=updateTable&percentX='+percentX+'&percentY='+percentY+'&tavolo='+tavolo+'&stanza='+stanza+'&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {

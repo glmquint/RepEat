@@ -42,6 +42,7 @@
         'listRooms',
         'listDishes',
         'listMenus',
+        'getMenu',
         'removeDish',
         'removeMenu',
         'removeTable',

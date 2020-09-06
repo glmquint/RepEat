@@ -381,7 +381,7 @@ button {
 }
 
 /*VVV mutuamente esclusivi VVV*/
-.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, .tavolo, #index-page > div{
+.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, .tavolo, #index-page > div, .piatto{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -444,6 +444,13 @@ button {
     inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-light),  
     inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-dark);
     padding: 5px;  
+}
+
+.box-smooth-indent, .piatto{
+    box-shadow:  var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-light), 
+    var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-dark),
+    inset var(--shadow-offset) var(--shadow-offset) var(--shadow-size) var(--shadow-dark),  
+    inset                 var(--shadow-offset-neg) var(--shadow-offset-neg) var(--shadow-size) var(--shadow-light);
 }
 
 .box-indent, select:focus, input, /*input:not([type="radio"]), input:not([type="checkbox"]),*/ button:enabled:active, input[type="submit"]:enabled:active, input[type="checkbox"]:enabled:active + label, input[type="radio"]:enabled:active + label, input:enabled:checked + label:not(.release-press), textarea, #notif-unread:not(:empty), nav, #chatpickercontainer, .chat-picker:hover, #access-container, #msgcontainer, .notif-unread, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, #index-page > div > h2{
@@ -714,6 +721,18 @@ a:active{
 .stanza.real > label {
     position: absolute;
 }
+
+dl { /*width: 400px*/ }
+dt { float: left; width: 300px; overflow: hidden; white-space: nowrap }
+dd { width: 100px; overflow: hidden }
+dl > p {
+    font-size: small;
+}
+#print-menu{
+    width: 100%;
+}
+
+dt:after { content: " .................................................................................." }
 
 
 

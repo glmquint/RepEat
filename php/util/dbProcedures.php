@@ -560,6 +560,26 @@
 
 	}
 
+	function getMenu($param){
+		global $repEatDb;
+		if (isset($param['menu'])){
+			$menu = $repEatDb->sqlInjectionFilter($param['menu']);
+		} else  return 'Missing argument: menu';
+		if (isset($param['ristorante'])){
+			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
+		} else  return 'Missing argument: ristorante';
+
+		$queryText = 'SELECT P.id_piatto, P.nome, P.categoria, CAST(P.prezzo AS DECIMAL(5, 2)) AS prezzo, P.ingredienti, P.allergeni, P.ristorante ' .
+						' FROM Menu M INNER JOIN ComposizioneMenu CM ON M.id_menu = CM.menu INNER JOIN Piatto P ON CM.piatto = P.id_piatto ' .
+						' WHERE M.id_menu = ' . $menu . ' AND M.ristorante = ' . $ristorante .
+						' ORDER BY P.categoria;';
+
+		$result = $repEatDb->performQuery($queryText);
+		$repEatDb->closeConnection();
+		return $result;
+
+	}
+
 	function removeDish($param){
 		global $repEatDb;
 		if (isset($param['piatto'])){
