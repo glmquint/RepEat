@@ -192,6 +192,10 @@ html {
     width: 95%;
 }
 
+#index-page > div > p.pill {
+    text-align: center;
+}
+
 #main-nav{
     /*
     position: relative;
