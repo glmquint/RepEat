@@ -381,7 +381,7 @@ button {
 }
 
 /*VVV mutuamente esclusivi VVV*/
-.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, .tavolo, #index-page > div, .piatto{
+.box, select, button, input, textarea, table, .error-box, .success-box, .info-box, nav, #chatpickercontainer, .chat-picker, #role-view > div > div, caption, #preferences-container, #access-container, #msgcontainer, .stanza, .menu, .tooltiptext, #missingadmin, #missingpersonel, .tavolo, #index-page > div, .piatto, #print-menu{
     background-color: var(--main-color);
     border-radius: 5px;
     padding: 8px;
@@ -723,16 +723,26 @@ a:active{
 }
 
 dl { /*width: 400px*/ }
-dt { float: left; width: 300px; overflow: hidden; white-space: nowrap }
-dd { width: 100px; overflow: hidden }
+dt { float: left; width: 84vw; overflow: hidden; white-space: nowrap }
+dd { /*width: 100px*/; overflow: hidden }
 dl > p {
-    font-size: small;
+    font-size: x-small;
+    color: grey;
+    line-height: .5rem;
+    text-indent: 1rem;
 }
 #print-menu{
-    width: 100%;
+    box-shadow:  0px 0px var(--shadow-size) var(--shadow-dark), 
+    0px 0px var(--shadow-size) var(--shadow-light);
 }
 
-dt:after { content: " .................................................................................." }
+#print-menu > img {
+    width: 25%;
+    right: 2rem;
+    position: absolute;
+}
+
+dt:after { content: " ....................................................................................................................................................................................................................................................." }
 
 
 

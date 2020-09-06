@@ -22,16 +22,21 @@ function loadPrintMenu(menu, ristorante) {
                 dprezzo = document.createElement('dd');
                 dprezzo.appendChild(document.createTextNode(piatto['prezzo'] + ' €'));
 
-                pingredienti = document.createElement('p');
-                pingredienti.appendChild(document.createTextNode('Ingredienti: ' + piatto['ingredienti']));
-
-                pallergeni = document.createElement('p');
-                pallergeni.appendChild(document.createTextNode('Allergeni: ' + piatto['allergeni']));
-
                 dl.appendChild(dpiatto);
                 dl.appendChild(dprezzo);
-                dl.appendChild(pingredienti);
-                dl.appendChild(pallergeni);
+
+                if (piatto['ingredienti'] != ''){
+                    pingredienti = document.createElement('p');
+                    pingredienti.appendChild(document.createTextNode('Ingredienti: ' + piatto['ingredienti']));
+                    dl.appendChild(pingredienti);
+                }
+                
+                if (piatto['allergeni'] != ''){
+                    pallergeni = document.createElement('p');
+                    pallergeni.appendChild(document.createTextNode('Allergeni: ' + piatto['allergeni']));
+                    dl.appendChild(pallergeni);
+                }
+                
                 print_menu.appendChild(dl);
             });
         }

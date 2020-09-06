@@ -18,12 +18,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../js/ajax/ajaxManager.js"></script>
     <script src="../js/ajax/printMenu.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Fredoka One&text=RepEat' rel='stylesheet'>
     <link rel="stylesheet" href="../css/neonmorphism.css">
+    <link rel="shortcut icon" type="image/x-icon" href="../css/img/favicon.ico" />
     <title>RepEat</title>
 </head>
-<button id="index-btn" onclick="window.location.href='../index.php'"><img src="../css/img/logo_squared.svg" alt="index"></button>
 
 <body onload="loadPrintMenu(<?php echo (isset($_GET['menu'])?$_GET['menu'] . ', ' . $_SESSION['ristorante']:''); ?>)">
-<div id="print-menu"></div>
+    <div id="print-menu">
+    <img src="../css/img/logo_title.svg" alt="RepEat">
+    </div>
 </body>
 </html>
