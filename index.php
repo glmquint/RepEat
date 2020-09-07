@@ -49,7 +49,7 @@
     Allo scadere del proprio abbonamento, o al raggiungimento di uno dei limiti del proprio livello, l'applicazione si occuperà di notificare ciò e bloccare le conseguenti funzioni.</p>
     <p> Sarà sempre possibile modificare queste informazioni anche in futuro.</p>
     <h4>Admin</h4>
-    <p>Il pannello di controllo dell'amministratore permette prima di tutto di passare a qualunque altro ruolo, potendo così monitorare l'andamento in ogni settore. In seguito è possibile aggiungere stanze, con i rispettivi tavoli, aggiungere i piatti disponibili con i relativi parametri e creare nuovo menù. Per ognuno dei menù è possibile specificare quali piatti gli appartengono e quale sia la sua fascia di attività, così da rendere immediatamente visibili i piatti corretti in base all'orario.</p>
+    <p>Il pannello di controllo dell'amministratore permette prima di tutto di passare a qualunque altro ruolo, potendo così monitorare l'andamento in ogni settore. In seguito è possibile aggiungere stanze, con i rispettivi tavoli, aggiungere i piatti disponibili con i relativi parametri e creare nuovi menù. Per ognuno dei menù è possibile specificare quali piatti gli appartengono e quale sia la sua fascia di attività, così da rendere immediatamente visibili i piatti corretti in base all'orario.</p>
     <p>Le richieste di partecipzaione verranno automaticamente notificate e rese disponibili nella sezione dei messaggi, nella quale sarà possibile accettare o rifiutare le singole richieste.</p>
     <h3>Per il personale</h3>
     <p>Al primo accesso è possibile cercare il proprio ristorante tra l'elenco nella prima delle due senzioni che si presentano davanti. E' anche possibile, e raccomandato, aggiungere una nota in modo da far presente la propria identità.</p>
