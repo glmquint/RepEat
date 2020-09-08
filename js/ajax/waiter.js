@@ -289,7 +289,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
 }
 
 function updateDishList(dishArr, searchterm, parentDiv) {
-    pattern = new RegExp('('+searchterm.replace(/\s+/g, '|')+')');
+    pattern = new RegExp('('+searchterm.replace(/\s+/g, '|')+')', 'i');
     //console.log('('+searchterm.replace(/\s+/g, '|')+')');
     var tmpArr = dishArr.filter(dish => pattern.test(dish['nome']));
     buildDish(tmpArr, parentDiv);

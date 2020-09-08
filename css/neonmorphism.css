@@ -724,7 +724,7 @@ a:active{
 
 dl { /*width: 400px*/ }
 dt { float: left; width: 84vw; overflow: hidden; white-space: nowrap }
-dd { /*width: 100px*/; overflow: hidden }
+dd { /*width: 100px;*/ overflow: hidden }
 dl > p {
     font-size: x-small;
     color: grey;
