@@ -1,3 +1,9 @@
+/**Schermata relative alle offerte attualmente disponibili
+ * 
+ * Viene caricata dinamicamente una tabella con la descrizione dei vari livelli disponibili come efferta per la generazione di una relativa licenza.
+ * Attualmente è sufficiente premere il tasto 'acquista' per generare una chiave valida del relativo livello, che verrà mostrata in un banner al di sotto della tabella.
+ */
+
 function load(){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listLevels', true, null, 
         function(response){
@@ -14,12 +20,13 @@ function load(){
                     for (property in offer){
                         cell = row.insertCell(-1);
                         if (property != 'prezzo' && offer[property] == 0) {
+                            //il valore 0 in qualunque campo al di fuori del prezzo indica l'assenza di un limite (questa icona sembra la più simile ad un infinito)
                             iinf = document.createElement('i');
                             iinf.classList.add('material-icons');
                             iinf.appendChild(document.createTextNode('all_inclusive'));
                             cell.appendChild(iinf);
                         } else{
-                        cell.appendChild(document.createTextNode((property != 'prezzo')?((offer[property] == 0)?'all_inclusive':offer[property]):offer[property]+'€')); //CLEANUP
+                            cell.appendChild(document.createTextNode((property != 'prezzo')?((offer[property] == 0)?'all_inclusive':offer[property]):offer[property]+'€')); //CLEANUP
                         }
                     }
 
@@ -29,9 +36,6 @@ function load(){
                     bgenerate.addEventListener('click', function(){generateKey(this.value)});
                     cell = row.insertCell(-1);
                     cell.appendChild(bgenerate);
-
-
-
                     
                 });
                 
@@ -49,6 +53,7 @@ function load(){
         })
 };
 
+/*------------------------------------------------------------------*/
 
 function generateKey(level){
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=generateKey&level=' + level, true, null, 

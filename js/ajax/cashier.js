@@ -1,4 +1,12 @@
+/**Schermata relativa al ruolo di cassa
+ * 
+ * La cassa seleziona un tavolo dalla mappa che gli viene presentata e permette ai clienti di lasciare facoltativamente una recensione sul servizio ricevuto.
+ * In seguito, ottiene il conto totale di ciò che è stato ordinato al tavolo e salva il pagamento liberando conseguentemente il tavolo
+ */
+
+
 function loadCashierDashboard(parentDiv, user, ristorante){
+    //Come sempre, vengono chiusi tutti i timer tranne che per la notifica di nuovi messaggi
     intervalArr.map((a) => {
         clearInterval(a);
         intervalArr= [];
@@ -8,9 +16,12 @@ function loadCashierDashboard(parentDiv, user, ristorante){
                                                         
     droom = document.createElement('div');
     h3stanza = document.createElement('h3');
+    //titolo della sezione
     h3stanza.appendChild(document.createTextNode('Stanze:'))
     droom.appendChild(h3stanza);
 
+    //pulsanti disabilitati permettono una legenda per ricordare il codice colore utilizzato
+    //per rappresentare lo stato attuale dei tavoli
     legendatext = "Legenda tavoli: ";
 
     ilibero = document.createElement('input');
@@ -57,6 +68,9 @@ function loadCashierDashboard(parentDiv, user, ristorante){
     lservito.classList.add('rtavolo');
     lservito.classList.add('servito');
 
+    //è possibile cambiare la visualizzazione delle stanze da 'compatta' (default)
+    //a 'reale', ossia seconddo la disposizione impostata dall'amministratore per imitare la disposizione attuale dei tavoli
+    //Le stanze vengono schemattizzate in piante pressochè quadrate
     ichangeview = document.createElement('input');
     ichangeview.type = "checkbox";
     ichangeview.name="changeview";
@@ -98,7 +112,7 @@ function loadCashierDashboard(parentDiv, user, ristorante){
     parentDiv.appendChild(droom);
     parentDiv.appendChild(dconto);
 
-
+    //riempimento delle stanze con i tavoli
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -112,12 +126,14 @@ function loadCashierDashboard(parentDiv, user, ristorante){
                 console.log(response);
                 response['data'].forEach((stanza, index_stanza) => {
                     dthis_stanza = document.createElement('div');
+                    //titolo sella sezione
                     dthis_stanza.classList.add('stanza');
                     h5Stanza = document.createElement('h5');
                     h5Stanza.appendChild(document.createTextNode(stanza['nome_stanza']));
                     droom.appendChild(h5Stanza);
                     if(stanza['tavoli'] != null){
                         stanza['tavoli'].split(',').forEach((tavolo, index_tavolo) => {
+                            //i tavoli sono radio buttons nel contesto della propria stanza
                             rtavolo = document.createElement('input');
                             rtavolo.type = 'radio';
                             rtavolo.name = 'tavolo';
@@ -129,11 +145,13 @@ function loadCashierDashboard(parentDiv, user, ristorante){
                             lrtavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
                             lrtavolo.htmlFor = 'tavolo-' + index_stanza + ':' + index_tavolo;
                             lrtavolo.classList.add('rtavolo');
+                            //posizione 'reale' caricata dinamicamente sulle informazioni tenute nel database
                             lrtavolo.style.left = Number(tavolo.split(':')[1]) * (9/10) + '%';
                             lrtavolo.style.top = Number(tavolo.split(':')[2]) * (9/10) + '%';
 
                             dthis_stanza.appendChild(rtavolo);
                             dthis_stanza.appendChild(lrtavolo);
+                            //ogni 3 secondi si effettua il refresh delle stanze per aggiornare lo stato dei singoli tavoli
                             intervalArr.push(setInterval(function intervalSetTableStatus() {
                                 AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getTable&tavolo='+ tavolo.split(':')[0] + '&stanza='+ stanza['id_stanza'] + '&ristorante='+ ristorante, true, null, 
                                 function(response2){
@@ -163,8 +181,8 @@ function loadCashierDashboard(parentDiv, user, ristorante){
 
 }
 
-
-
+//alla selezione del tavolo, appare una schermata perchè i clienti possano lasciare una valutazione e, sempre a scelta, una recensione del servizio ricevuto
+//Di fatto, queste informazioni non verranno poi più utilizzate ma, in un ottica più ampia, possono consentire altre operazioni di data-analytic riguardo la qualità del servizio.
 function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentDiv) {
     sentiment = ['sentiment_very_dissatisfied', 'sentiment_dissatisfied', 'sentiment_neutral', 'sentiment_satisfied', 'sentiment_very_satisfied'];
 
@@ -175,6 +193,7 @@ function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentD
 
     dstarcontainer = document.createElement('div');
     dstarcontainer.id = 'starcontainer';
+    //valutazione sotto forma di stelle/livello di gradimento (1-5)
     for (let i = 1; i < 6; i++) {
         this_star = document.createElement('input');
         this_star.type = 'radio';
@@ -193,6 +212,7 @@ function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentD
         
     }
 
+    //spazio per la recensione
     tarecensione = document.createElement('textarea');
     tarecensione.id = 'recensione';
     tarecensione.placeholder = 'lascia un commento...';
@@ -218,6 +238,7 @@ function buildReviewCheck(stanza_tavolo, nome_stanza_tavolo, ristorante, parentD
 
 }
 
+//Dopo la valutazione viene restituito il totale del conto
 function buildPayCheck(stanza, tavolo, nome_stanza_tavolo, ristorante, parentDiv) {
     dcheckcontainer = document.createElement('div');
     dcheckcontainer.id = 'checkcontainer';
@@ -236,6 +257,7 @@ function buildPayCheck(stanza, tavolo, nome_stanza_tavolo, ristorante, parentDiv
                 dcheckcontainer.appendChild(pnodish);
             } else {
 
+                //viene costruita dinamicamente la tabella con tutto il conto ordinato dal tavolo
                 tableCheck = document.createElement('table');
                 tcheckcaption = tableCheck.createCaption();
                 tcheckcaption.appendChild(document.createTextNode('Conto per il tavolo tavolo ' + nome_stanza_tavolo + ', con permanenza di ' + ((response['data'][0]['prezzo'].split(':')[0] == '00')?'':response['data'][0]['prezzo'].split(':')[0] + ' or'+((response['data'][0]['prezzo'].split(':')[0] == '01')?'a':'e')+', ') + 
@@ -253,7 +275,7 @@ function buildPayCheck(stanza, tavolo, nome_stanza_tavolo, ristorante, parentDiv
                     piatto = row.insertCell(1);
                     prezzo = row.insertCell(2);
                     
-                    // Add some text to the new cells:
+                    // il totale
                     quantita.appendChild(document.createTextNode((elem_piatto['quantita'] != null)?elem_piatto['quantita'] + 'x ':''));
                     piatto.appendChild(document.createTextNode(elem_piatto['piatto']));
                     prezzo.appendChild(document.createTextNode(elem_piatto['prezzo']+'€'));
@@ -261,6 +283,7 @@ function buildPayCheck(stanza, tavolo, nome_stanza_tavolo, ristorante, parentDiv
 
                     }
                 });
+                //E' possibile inserire il metodo di pagamento
                 smetodfopagamento = document.createElement('select');
                 smetodfopagamento.id = 'metodopagamento';
                 lsmetodfopagamento = document.createElement('label');
@@ -292,6 +315,8 @@ function buildPayCheck(stanza, tavolo, nome_stanza_tavolo, ristorante, parentDiv
     
     parentDiv.appendChild(dcheckcontainer);
 }
+
+/*-------------------------------------------------------------------------------------------------*/
 
 function payCheck(tipo_pagamento, tavolo, stanza, ristorante) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=payCheck&tipo_pagamento='+ tipo_pagamento + '&stanza='+ stanza + '&tavolo='+ tavolo + '&ristorante='+ ristorante , true, null, 

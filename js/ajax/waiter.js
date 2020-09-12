@@ -1,6 +1,13 @@
+/**Schermata relativa al ruolo di cameriere
+ * 
+ * Il cameriere seleziona un tavolo dalla mappa che gli viene presentata ed effettua nuovi ordini a partire dai piatti 
+ * disponibili nell'attuale fascia oraria, in funzione delle impostazioni scelte dall'amministratore
+ */
+
 alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 function loadWaiterDashboard(parentDiv, user, ristorante){
+    //Come sempre, vengono chiusi tutti i timer tranne che per la notifica di nuovi messaggi
     intervalArr.map((a) => {
         clearInterval(a);
         intervalArr= [];
@@ -13,6 +20,10 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     droom = document.createElement('div');
     h3stanza = document.createElement('h3');
     h3stanza.appendChild(document.createTextNode('Stanze:'));
+    
+    //pulsanti disabilitati permettono una legenda per ricordare il codice colore utilizzato
+    //per rappresentare lo stato attuale dei tavoli
+
     legendatext = "Legenda tavoli: ";
 
     ilibero = document.createElement('input');
@@ -58,7 +69,10 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     lservito.appendChild(document.createTextNode('servito'));
     lservito.classList.add('rtavolo');
     lservito.classList.add('servito');
-
+    
+    //è possibile cambiare la visualizzazione delle stanze da 'compatta' (default)
+    //a 'reale', ossia seconddo la disposizione impostata dall'amministratore per imitare la disposizione attuale dei tavoli
+    //Le stanze vengono schemattizzate in piante pressochè quadrate
     ichangeview = document.createElement('input');
     ichangeview.type = "checkbox";
     ichangeview.name="changeview";
@@ -90,6 +104,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     droom.appendChild(lservito);
     parentDiv.appendChild(droom);
 
+    //riempimento delle stanze con i tavoli
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -109,6 +124,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
                     droom.appendChild(h5Stanza);
                     if(stanza['tavoli'] != null){
                         stanza['tavoli'].split(',').forEach((tavolo, index_tavolo) => {
+                            //i tavoli sono radio buttons nel contesto della propria stanza
                             rtavolo = document.createElement('input');
                             rtavolo.type = 'radio';
                             rtavolo.name = 'tavolo';
@@ -120,6 +136,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
                             lrtavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
                             lrtavolo.htmlFor = 'tavolo-' + index_stanza + ':' + index_tavolo;
                             lrtavolo.classList.add('rtavolo');
+                            //posizione 'reale' caricata dinamicamente sulle informazioni tenute nel database
                             lrtavolo.style.left = Number(tavolo.split(':')[1]) * (9/10) + '%';
                             lrtavolo.style.top = Number(tavolo.split(':')[2]) * (9/10) + '%';
 
@@ -127,6 +144,7 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
                             dthis_stanza.appendChild(rtavolo);
                             dthis_stanza.appendChild(lrtavolo);
 
+                            //ogni 3 secondi si effettua il refresh delle stanze per aggiornare lo stato dei singoli tavoli
                             intervalArr.push(setInterval(function intervalSetTableStatus() {
                                 AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getTable&tavolo='+ tavolo.split(':')[0] + '&stanza='+ stanza['id_stanza'] + '&ristorante='+ ristorante, true, null, 
                                 function(response2){
@@ -165,12 +183,6 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
 
 
     parentDiv.appendChild(dready);
-
-    /*intervalArr.map((a) => {
-        clearInterval(a);
-        arr = [];
-    })
-    notifUnreadMessages(user);*/
 
     intervalArr.push(setInterval(function intervalgetOrdersReady() {
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getOrdersReady&user='+ user, true, null, 
@@ -232,12 +244,14 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     searchinmenu.type = 'text';
     searchinmenu.placeholder = 'cerca (usa spazio per multi-search)'
     ddishlist = document.createElement('div');
+    //datalist con i piatti filtrabili per nome con i termini inseriti nella barra di ricerca
     ddishlist.id = 'dishlist';
     searchinmenu.addEventListener('keyup', function(){updateDishList(dishArr, this.value, ddishlist)});
     dmenu.appendChild(h3menu);
     dmenu.appendChild(searchinmenu);
     dmenu.appendChild(ddishlist);
     parentDiv.appendChild(dmenu);
+    //seleziona solo i piatti presenti nei menu disponibili nell'attuale fascia oraria
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getCurrentDishes&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -288,9 +302,12 @@ function loadWaiterDashboard(parentDiv, user, ristorante){
     
 }
 
+/*--------------------------------------------------------------------------*/
+
 function updateDishList(dishArr, searchterm, parentDiv) {
-    pattern = new RegExp('('+searchterm.replace(/\s+/g, '|')+')', 'i');
-    //console.log('('+searchterm.replace(/\s+/g, '|')+')');
+    //filtra i nomi che contengono almeno uno dei termini inseriti (case-insensitive)
+    // tecnicamente è possibile inserire regex valido... ma poco male, magari è utile
+    pattern = new RegExp('('+searchterm.replace(/\s+/g, '|')+')', 'i'); 
     var tmpArr = dishArr.filter(dish => pattern.test(dish['nome']));
     buildDish(tmpArr, parentDiv);
 }
@@ -313,22 +330,10 @@ function buildDish(arr, parentDiv){
         dpiatto.id = 'piatto-' + piatto['id_piatto'];
         dpiatto.appendChild(document.createTextNode(piatto['nome']));
 
-        /*
-        iquantity = document.createElement('input');
-        iquantity.type= 'number';
-        iquantity.value = 1;
-        iquantity.id = 'quantity-' + piatto['id_piatto'];
-        liquantity = document.createElement('label');
-        liquantity.htmlFor = 'quantity-' + piatto['id_piatto'];
-        liquantity.appendChild(document.createTextNode('quantità:'));
-        */
 
         notes = document.createElement('textarea');
         notes.id = 'notes-' + piatto['id_piatto'];
         notes.placeholder = 'Note (facoltativo)';
-        /*lnotes = document.createElement('label');
-        lnotes.htmlFor = 'notes-' + piatto['id_piatto'];
-        lnotes.appendChild(document.createTextNode('Note:'))*/
         
         baddpiatto = document.createElement('button');
         baddpiatto.value = piatto['id_piatto']+':'+piatto['nome'];
@@ -344,12 +349,8 @@ function buildDish(arr, parentDiv){
         iremove.classList.add('material-icons');
         iremove.appendChild(document.createTextNode('remove_circle'));
         bremovepiatto.appendChild(iremove);
-        //bremovepiatto.disabled = true;
         bremovepiatto.addEventListener('click', function(){addDishToOrder(this.value, -1)} );
 
-        //dpiatto.appendChild(liquantity);
-        //dpiatto.appendChild(iquantity);
-        //dpiatto.appendChild(lnotes);
         dpiatto.appendChild(notes);
         dpiatto.appendChild(baddpiatto);
         dpiatto.appendChild(bremovepiatto);
@@ -411,15 +412,12 @@ function selectTable(stanza_tavolo, nome_stanza_tavolo) {
     ptableorder.appendChild(document.createTextNode('Ordine per il tavolo ' + nome_stanza_tavolo));
     document.getElementById('tableorder').appendChild(ptableorder);
 
-    /*for (let i = 0; i < document.getElementsByTagName('button').length; i++) {
-        document.getElementsByTagName('button')[i].disabled = false;
-    }*/
     stanza = stanza_tavolo.split(':')[0];
     tavolo = stanza_tavolo.split(':')[1];
     console.log(stanza + ' ' + tavolo);
 }
 
-function makeOrder(utente, ristorante) { //utente_ordine, piatto, quantita, note, tavolo, stanza, ristorante
+function makeOrder(utente, ristorante) { 
     if (document.getElementById('orderlist') == null) {
         sendAlert('Nessun piatto ordinato', 'info');
     } else {

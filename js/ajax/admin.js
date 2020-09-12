@@ -1,5 +1,14 @@
 
+/**Schermata relativa al ruolo di admin
+ * 
+ * In questo pannello è possibile amministrare ogni aspetto relativo al proprio ristorante,
+ * a partire dal ruolo del proprio staff, la disposizione di stanze e tavoli,
+ * il contenuto dei menu con gli orari di validità e i piatti che ne fanno parte con tutte le loro informazioni
+ */
+
+
 function loadStaffSettings(parentDiv, user, ristorante){
+    //Come sempre, vengono chiusi tutti i timer tranne che per la notifica di nuovi messaggi
     intervalArr.map((a) => {
         clearInterval(a);
         intervalArr= [];
@@ -7,6 +16,7 @@ function loadStaffSettings(parentDiv, user, ristorante){
 
     notifUnreadMessages(user);        
 
+    //Per ogni utente associato al ristorante, l'admin può conferire o revocare privilegi riguardo ai ruoli
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listUsers&ristorante='+ ristorante, true, null, 
             function(response){
                 if (response['responseCode'] != 0) {
@@ -19,18 +29,6 @@ function loadStaffSettings(parentDiv, user, ristorante){
                     response['data'].forEach(row => {
                         this_user = document.createElement('div');
                         this_user.classList.add('user');
-                        /*
-                        privs = '';
-                        if (row['privilegi'] == 0) {
-                            privs = 'nessuno';
-                        } else {
-                            privs += (row['privilegi'] & 8)?'admin ':'';
-                            privs += (row['privilegi'] & 1)?'cameriere ':'';
-                            privs += (row['privilegi'] & 2)?'cuoco ':'';
-                            privs += (row['privilegi'] & 4)?'cassa ':'';
-                        }
-                        this_user.appendChild(document.createTextNode(row['username']+', ruoli: ' + privs));
-                        */
 
                         this_user.appendChild(document.createTextNode(row['username'] + ', ruoli: '));
 
@@ -38,6 +36,7 @@ function loadStaffSettings(parentDiv, user, ristorante){
                         form.id = 'form-'+row['id_utente'];
                         form.addEventListener("change", function(){updatePrivilege(row['id_utente'], this.childNodes)});
 
+                        //checkbox per il ruolo di admin
                         cbadmin = document.createElement('input');
                         cbadmin.type = 'checkbox';
                         cbadmin.id = 'admin-'+row['id_utente'];
@@ -47,7 +46,7 @@ function loadStaffSettings(parentDiv, user, ristorante){
                         lcbadmin.htmlFor = 'admin-'+row['id_utente'];
                         lcbadmin.appendChild(document.createTextNode('admin'));
                         
-
+                        //checkbox per il ruolo di cameriere
                         cbcameriere = document.createElement('input');
                         cbcameriere.type = 'checkbox';
                         cbcameriere.id = 'cameriere-'+row['id_utente'];
@@ -57,7 +56,7 @@ function loadStaffSettings(parentDiv, user, ristorante){
                         lcbcameriere.htmlFor = 'cameriere-'+row['id_utente'];
                         lcbcameriere.appendChild(document.createTextNode('cameriere'));
                         
-
+                        //checkbox per il ruolo di cuoco
                         cbcuoco = document.createElement('input');
                         cbcuoco.type = 'checkbox';
                         cbcuoco.id = 'cuoco-'+row['id_utente'];
@@ -67,7 +66,7 @@ function loadStaffSettings(parentDiv, user, ristorante){
                         lcbcuoco.htmlFor = 'cuoco-'+row['id_utente'];
                         lcbcuoco.appendChild(document.createTextNode('cuoco'));
                         
-
+                        //checkbox per il ruolo di cassa
                         cbcassa = document.createElement('input');
                         cbcassa.type = 'checkbox';
                         cbcassa.id = 'cassa-'+row['id_utente'];
@@ -94,6 +93,7 @@ function loadStaffSettings(parentDiv, user, ristorante){
             });
 }
 
+//L'admin può visualizzare e modificare tutte le informazioni riguardo il proprio ristorante, oltre che la licenza attualmente in uso
 function loadRestaurantSettings(parentDiv, ristorante){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getRestaurant&ristorante='+ ristorante, true, null, 
     function(response){
@@ -101,12 +101,14 @@ function loadRestaurantSettings(parentDiv, ristorante){
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
         } else {
             console.log(response);
+            //titolo della sezione
             h3Ristorante = document.createElement('h3');
             h3Ristorante.appendChild(document.createTextNode('Ristorante'));
             parentDiv.appendChild(h3Ristorante);
 
             row = response['data'][0];
 
+            //input per il nome del ristorante
             inome = document.createElement('input');
             inome.id = 'nome_ristorante';
             inome.type = 'text';
@@ -115,6 +117,7 @@ function loadRestaurantSettings(parentDiv, ristorante){
             linome.htmlFor = 'nome_ristorante';
             linome.appendChild(document.createTextNode('Nome ristorante:'));
 
+            //input per l'indirizzo del ristorante
             addr = document.createElement('input');
             addr.id = 'indirizzo';
             addr.type = 'text';
@@ -123,6 +126,7 @@ function loadRestaurantSettings(parentDiv, ristorante){
             laddr.htmlFor = 'indirizzo';
             laddr.appendChild(document.createTextNode('Indirizzo:'));
 
+            //input per il limite di ritardo consentito per la consegna di un ordine
             lco = document.createElement('input');
             lco.id = 'limite_consegna_ordine';
             lco.type = 'number';
@@ -131,6 +135,7 @@ function loadRestaurantSettings(parentDiv, ristorante){
             llco.htmlFor = 'limite_consegna_ordine';
             llco.appendChild(document.createTextNode('Limite consegna ordine (ossia i minuti prima che la consegna di un ordine possa essere considerata in ritardo):'));
 
+            //input per la licenza in uso
             license_key = document.createElement('input');
             license_key.id = 'license_key';
             license_key.type = 'number';
@@ -173,11 +178,12 @@ function loadRestaurantSettings(parentDiv, ristorante){
     })
 }
 
+//l'admin può aggiungere stanze, rinominarle e, per ciascuna, aggiungere tavoli con le relative coordinate (usate per la visualizzazione 'reale' nelle mappe per i camerieri e per la cassa)
 function loadRoomSettings(parentDiv, ristorante){
     while (parentDiv.lastChild) {
         parentDiv.removeChild(parentDiv.firstChild);
     }
-    alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; //traduzione rapida tra un numero e una lettera
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRooms&ristorante='+ ristorante, true, null, 
     function(response){
         if (response['responseCode'] != 0) {
@@ -185,10 +191,12 @@ function loadRoomSettings(parentDiv, ristorante){
         } else {
             console.log('room:');
             console.log(response);
+            //titolo della sezione
             h3Stanze = document.createElement('h3');
             h3Stanze.appendChild(document.createTextNode('Stanze e Tavoli'));
             parentDiv.appendChild(h3Stanze);
             
+            //se non è stata trovata alcuna stanza..
             if (response['data'].length == 0){
                 pnoroom = document.createElement('p');
                 pnoroom.appendChild(document.createTextNode('Aggiungi una stanza per iniziare...'));
@@ -198,8 +206,10 @@ function loadRoomSettings(parentDiv, ristorante){
                     console.log(stanza['id_stanza']);
                     dstanza = document.createElement('div');
                     dstanza.classList.add('stanza');
+                    //nome della stanza come lettera
                     h3Stanza = document.createElement('h3');
                     h3Stanza.appendChild(document.createTextNode('stanza ' + alphabet[stanza['id_stanza']] + ': '));
+                    //nome reale della stanza
                     inome_stanza = document.createElement('input');
                     inome_stanza.type = 'text';
                     inome_stanza.value = stanza['nome_stanza'];
@@ -222,10 +232,13 @@ function loadRoomSettings(parentDiv, ristorante){
 
                             dtavolo = document.createElement('div');
                             dtavolo.classList.add('tavolo');
+                            //ogni tavolo è mnemonicamente rappresentato dalla lettera della propria stanza e dal proprio numero all'interno della stessa
                             nometavolo = document.createElement('b');
                             nometavolo.appendChild(document.createTextNode(alphabet[stanza['id_stanza']] + tavolo.split(':')[0]));
                             dtavolo.appendChild(nometavolo);
 
+                            //le coordinate x e y del tavolo all'interno della stanza
+                            //(poichè sfrutta le proprietà CSS left e top per il rendering, (0,0) rappresenta l'angolo in alto a sinistra della stanza)
                             ipx = document.createElement('input');
                             ipx.id = 'px-' + index_stanza + '-' + index_tavolo;
                             ipx.type = 'number';
@@ -284,11 +297,13 @@ function loadRoomSettings(parentDiv, ristorante){
     });
 }
 
+//la stessa lista di allergeni impiegata all'interno del database
 allergeni = ['pesce', 'molluschi', 'latticini', 'glutine', 
     'frutta a guscio', 'crostacei', 'arachidi', 
     'lupini', 'uova', 'solfiti', 'soia', 'sesamo', 
     'senape', 'sedano', 'piccante', 'surgelato'];
 
+//l'admin può aggiungere piatti al proprio repertorio e di ciascuno modificarne le informazioni
 function loadDishSettings(parentDiv, ristorante){
     while (parentDiv.lastChild) {
         parentDiv.removeChild(parentDiv.firstChild);
@@ -300,10 +315,12 @@ function loadDishSettings(parentDiv, ristorante){
         } else {
             console.log('Dish:');
             console.log(response);
+            //titolo della sezione
             h3Piatti = document.createElement('h3');
             h3Piatti.appendChild(document.createTextNode('Piatti'));
             parentDiv.appendChild(h3Piatti);
             
+            //se non è stato creato ancora alcun piatto..
             if (response['data'].length == 0){
                 pnoroom = document.createElement('p');
                 pnoroom.appendChild(document.createTextNode('Aggiungi quali piatti vengono proposti...'));
@@ -323,6 +340,7 @@ function loadDishSettings(parentDiv, ristorante){
 
                     this_div.appendChild(iindex_piatto);
 
+                    //input per il nome del piatto
                     inome_piatto = document.createElement('input');
                     inome_piatto.type = "text";
                     inome_piatto.id = 'nomepiatto-' + index_piatto;
@@ -338,6 +356,7 @@ function loadDishSettings(parentDiv, ristorante){
                     
                     this_div.appendChild(document.createElement('br'));
 
+                    //input per la categora del piatto (utile per raggruppare i piatti nel ruolo di cameriere)
                     icategoria_piatto = document.createElement('input');
                     icategoria_piatto.type = "text";
                     icategoria_piatto.id = 'categoriapiatto-' + index_piatto;
@@ -353,6 +372,7 @@ function loadDishSettings(parentDiv, ristorante){
                     
                     this_div.appendChild(document.createElement('br'));
 
+                    //il prezzo del piatto
                     iprezzo_piatto = document.createElement('input');
                     iprezzo_piatto.type = "number";
                     iprezzo_piatto.id = 'prezzopiatto-' + index_piatto;
@@ -367,6 +387,7 @@ function loadDishSettings(parentDiv, ristorante){
                     
                     this_div.appendChild(document.createElement('br'));
 
+                    //gli ingredienti/una breve descrizione del piatto
                     taingredienti_piatto = document.createElement('textarea');
                     taingredienti_piatto.id = 'ingredientipiatto-' + index_piatto;
                     taingredienti_piatto.placeholder = '(Breve descrizione del piatto con ingredienti)'
@@ -381,6 +402,7 @@ function loadDishSettings(parentDiv, ristorante){
                     
                     this_div.appendChild(document.createElement('br'));
 
+                    //gli allergeni contenuti nel piatto, a partire dalla lista di allergeni riconosciuti, più l'informazione di un piatto surgelato o piccante
                     lallergeni = document.createElement('label');
                     lallergeni.appendChild(document.createTextNode('allergeni'));
                     this_div.appendChild(lallergeni);
@@ -425,6 +447,8 @@ function loadDishSettings(parentDiv, ristorante){
     });
 }
 
+//l'admin può aggiungere menu che possono essere resi disponibili solo in alcune fasce della giornata,
+//inoltre è quì possibile anche aggiungere o rimuovere i singoli piatti dai menu creati
 function loadMenuSettings(parentDiv, ristorante){
     while (parentDiv.lastChild) {
         parentDiv.removeChild(parentDiv.firstChild);
@@ -436,10 +460,12 @@ function loadMenuSettings(parentDiv, ristorante){
         } else {
             console.log('Menu:');
             console.log(response);
+            //titolo della sezione
             h3Menu = document.createElement('h3');
             h3Menu.appendChild(document.createTextNode('Menu'));
             parentDiv.appendChild(h3Menu);
             
+            //se non è stato ancora creato alcun menu..
             if (response['data'].length == 0){
                 pnoroom = document.createElement('p');
                 pnoroom.appendChild(document.createTextNode('Crea un nuovo menu e aggiungici dei piatti...'));
@@ -465,7 +491,7 @@ function loadMenuSettings(parentDiv, ristorante){
 
                     this_div.appendChild(iindexmenu);
 
-
+                    //input per la scelta degli orari di inizio e fine validità del menu
                     iora_inizio = document.createElement('input');
                     iora_inizio.type = 'time';
                     iora_inizio.id = 'orainizio-' + index_menu;
@@ -493,11 +519,13 @@ function loadMenuSettings(parentDiv, ristorante){
                     this_button.onclick = function(){updateMenu(index_menu)};
                     this_div.appendChild(this_button);
 
+                    //pulsante per stampare il menu 
                     bprintmenu = document.createElement('button');
                     bprintmenu.appendChild(document.createTextNode('Stampa questo menu'));
                     bprintmenu.addEventListener('click', function(){window.open("./printMenu.php?menu=" + menu['id_menu'], '_blank')})
                     this_div.appendChild(bprintmenu)
 
+                    //i piatti attualmente presenti nel menu
                     if(menu['piatti'] != null){
                         menu['piatti'].split(',').forEach((piatto, index_piatto) => {
                             dpiatto = document.createElement('div');
@@ -526,6 +554,9 @@ function loadMenuSettings(parentDiv, ristorante){
                     }
                     parentDiv.appendChild(this_div);
 
+                    //una datalist con tutti i piatti tra cui scegliere da aggiungere al menu.
+                    //Questo tag permette di iniziare a digitare il nome del piatto che si cerca
+                    //per poi utilizzare l'id del piatto perchè questo venga correttamente aggiunto
                     listpiatti = document.createElement('input');
                     listpiatti.id = "inputdatalist-piatti-"+index_menu;
                     listpiatti.setAttribute('list', "datalist-piatti-"+index_menu);
@@ -583,8 +614,6 @@ function updatePrivilege(target_user, nodeList) {
     function(response){
         if (response['responseCode'] != 0) {
             sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
-        } else {
-            //alert('privilegi aggiornati con successo');
         }
     })
 }

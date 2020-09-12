@@ -1,4 +1,12 @@
+/**Schermata relativa ai messaggi tra gli utenti
+ * 
+ * Tra il personale di uno stesso ristorante è possibile scambiare messaggi secondo uno schema delle classiche app di messaggistica istantanea.
+ * Questo permette di centralizzare tutte le informazioni inerenti la gestione del ristorante all'interno dell'applicazione; inoltre è lo
+ * strumento utilizzato per inviare e processare le richieste di partecipazione ad un ristorante
+ */
+
 function loadMessages(user, ristorante) {
+    //Come sempre, vengono chiusi tutti i timer tranne che per la notifica di nuovi messaggi
     intervalArr.map((a) => {
         clearInterval(a);
         intervalArr= [];
@@ -26,6 +34,7 @@ function loadMessages(user, ristorante) {
                 while (dchatpickercontainer.firstChild) {
                     dchatpickercontainer.removeChild(dchatpickercontainer.lastChild);
                 }
+                //nella schermata di selezione della chat vengono elencate tutte le persone con cui l'utente ha almeno un messaggio, il numero di messaggi non letti e l'ultimo messaggio inviato
                 response['data'].forEach(row => {
                     this_div = document.createElement('div');
                     this_div.classList.add('chat-picker');
@@ -44,10 +53,7 @@ function loadMessages(user, ristorante) {
                     this_div.appendChild(unreadbadbe);
                     this_div.appendChild(othername);
                     this_div.appendChild(lastmsg);
-                    //this_btn = document.createElement('button');
                     this_div.addEventListener("click", function(){readMessages(user, row['other'], ristorante)});
-                    //this_btn.appendChild(document.createTextNode('Vai alla chat'));
-                    //this_div.appendChild(this_btn);
                     dchatpickercontainer.appendChild(this_div);
 
                 });
@@ -60,6 +66,7 @@ function loadMessages(user, ristorante) {
     body.appendChild(dchatpickercontainer);
 
     if (ristorante != '-1') {
+        //se non è stato ancora inviato alcun messaggio con un certo utente, è comunque possibile inizare a chattarci selezionandolo da questa lista dei colleghi
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listUsers&ristorante='+ristorante, true, null,
         function (response) {
             if (response['responseCode'] != 0) {
@@ -89,6 +96,7 @@ function loadMessages(user, ristorante) {
 
 };
 
+//si apre la chat con l'utente selezionato
 function readMessages(user, dest, ristorante){
     body = document.getElementById('main-container');
     while (body.firstChild) {
@@ -159,6 +167,7 @@ function readMessages(user, dest, ristorante){
                 
                 this_div.appendChild(this_content);
                 this_div.appendChild(this_metadata);
+                //aggiunge un divisore centrale tra i messaggi di più giorni
                 if (row['ts'].split(' ')[0] != prevdate) {
                     this_date = document.createElement('div');
                     this_date.classList.add('message');
@@ -168,6 +177,8 @@ function readMessages(user, dest, ristorante){
                     prevdate = row['ts'].split(' ')[0]
                 }
                 dmsgcontainer.appendChild(this_div);
+                //se il messaggio è una richiesta di partecipazione, si aggiungono due pulsanti per accettare o rifiutare la richiesta
+                //le richieste appariranno come messaggi non letti finchè non verranno propriamente processate
                 if (row['is_req'] == 1) {
                     this_request = document.createElement('div')
                     this_div.classList.add('request-msg');
@@ -217,6 +228,8 @@ function readMessages(user, dest, ristorante){
 
 };
 
+/*---------------------------------------------------------------------------*/
+
 function processRequest(request, accepted) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=processRequest&req='+request+'&accepted='+accepted, true, null,
     function(response){
@@ -239,6 +252,7 @@ function writeMessage(from_user, to_user, msg, ristorante) {
     });
 }
 
+//aggiunge il numero di messaggi non letti (se diverso da 0) come segnale di notifica sopra l'icona dei messaggi nella barra di navigazione sul fondo dello schermo
 function notifUnreadMessages(user) {
     intervalArr.push(setInterval(function intervalNotifmessages() {
         AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=getChats&user='+ user, true, null, 

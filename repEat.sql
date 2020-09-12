@@ -336,7 +336,7 @@ CREATE TABLE `Conto` (
   `recensione` varchar(1024) DEFAULT NULL,
   `totale` float UNSIGNED,
   `tipo_pagamento` enum('carta', 'bancomat', 'contanti'),
-  `ts_primo_ordine` timestamp DEFAULT CURRENT_TIMESTAMP, -- not a star wars reference
+  `ts_primo_ordine` timestamp DEFAULT CURRENT_TIMESTAMP,
   `ts_pagamento` timestamp NULL DEFAULT NULL,
   `tavolo` int(11) UNSIGNED NOT NULL,
   `stanza` int(11) UNSIGNED NOT NULL,
@@ -406,22 +406,12 @@ CREATE TABLE `Ordine` (
   foreign key(`utente_consegna`) references Utente(`id_utente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DELIMITER $$
-CREATE TRIGGER `test_ordine` BEFORE UPDATE ON `Ordine`
-FOR EACH ROW
-BEGIN
-IF NEW.ts_ordine <> OLD.ts_ordine
-THEN
-	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'cambio ts_ordine!!';
-END IF;
-END $$
-DELIMITER ;
-
 DROP TRIGGER IF EXISTS `upd_table_status`;
 DELIMITER $$
 CREATE TRIGGER `upd_table_status` AFTER UPDATE ON `Ordine`
 FOR EACH ROW
 BEGIN
+
 IF NOT EXISTS (SELECT * 
 				FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto 
 				WHERE C.id_conto = NEW.conto

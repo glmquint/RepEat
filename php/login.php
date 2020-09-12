@@ -1,4 +1,11 @@
     <?php
+        /**Pagina di autenticazione utenti
+         * 
+         * Quì gli utenti hanno la possibilità di effettuare il login del proprio account o,
+         * nel caso non ne avessero uno, di passare all apagina di registrazione per crearne uno.
+         */
+
+
         session_start();
         require_once __DIR__ . "/config.php";
         require_once DIR_UTIL . 'userAuth.php';
@@ -19,7 +26,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"><!--Necessario per accedere velocemente ad alcune icone (l'alternativa è scaricare il pack e usarle come risorsa interna ma questa soluzione è la più rapida)-->
     <link rel="stylesheet" href="../css/neonmorphism.css">
     <link rel="shortcut icon" type="image/x-icon" href="../css/img/favicon.ico" />
    <script src="../js/alertsManager.js"></script>
@@ -32,7 +39,6 @@
     <div id="access-container">
         <h2>Login</h2>
         <form action="./login.php" method="post">
-        <!--input type="text" name="function" id="function" value='login' readonly hidden-->
         <label for="username">username</label><br><input type="text" name="username" id="username" autofocus required onkeyup="this.classList.remove('invalid')"><br>
         <label for="password">password</label><br><input type="password" name="password" id="password" required onkeyup="this.classList.remove('invalid')"><br>
         <input type="submit" value="invia">

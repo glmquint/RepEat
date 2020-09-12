@@ -1,4 +1,11 @@
+/**Schermata relativa alle preferenze dell'utente
+ * 
+ * Sono quì riassunte le informazioni personali dell'utente e le preferenze quali il tema dell'applicazione.
+ * Queste sono facilmente aggiornabili; altrimenti, è possibile effettuare il logout e tornare alla pagina di index
+ */
+
 function loadPreferences(user){
+    //Come sempre, vengono chiusi tutti i timer tranne che per la notifica di nuovi messaggi
     intervalArr.map((a) => {
         clearInterval(a);
         intervalArr= [];
@@ -123,13 +130,17 @@ function loadPreferences(user){
     });
 };
 
+/*-------------------------------------------------------------*/
+
 function updateUser(){
     user = document.getElementById('user').value;
     pwd = document.getElementById("Password").value;
     conf_pwd = document.getElementById("Conferma-Password").value;
+    //check che la password sia stata inserita correttamente due volte
     if (pwd != conf_pwd) {
         sendAlert("La password non coincide tra i due campi Password e Conferma Password", 'error');
     } else {
+        //creazione dinamica dell'url, così da non aggiornare la password se questa è stata lasciata vuota
         url = './ajax/dbInterface.php?function=updateUser&user='+ user;
         if (pwd != '') {
             url += '&password=' + pwd 
@@ -145,6 +156,7 @@ function updateUser(){
                 sendAlert('qualcosa è andato storto: ' + response['message'], 'error');
             } else {
                 sendAlert('preferenze aggiornate correttamente', 'success');
+                //Se è stato cambiato il tema preferito, i cambiamenti prendono effetto immediatamente
                 if (pref_theme == 'dark') {
                     document.getElementsByTagName('html')[0].classList.add('dark-mode'); document.cookie='dark-mode = '+ document.getElementsByTagName('html')[0].classList.length +';path=/577923_quint;expires=Wed, 18 Dec 2023 12:00:00 GMT'
                 } else {

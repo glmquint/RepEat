@@ -1,4 +1,6 @@
 <?php
+    /*Alcune funzioni specifiche riguardo l'autenticazione degli utenti
+    * e la gestione delle variabili di sessione*/
 
     require_once __DIR__ . "/../config.php";
     require_once DIR_UTIL . "repEatDbManager.php"; //includes Database Class
@@ -42,12 +44,10 @@
         $repEatDb->closeConnection();
         if (!$insertResult) return 'A problem occured while inserting the user. Try again later!';
 
-            //header('location: ./../../register.php?errorMessage=' . $insertResult);
 
         return login($param);
 
         
-        //return 'Username and password not valid.';
     }
     
     function authenticate ($username, $password){   
@@ -55,7 +55,7 @@
         $username = $repEatDb->sqlInjectionFilter($username);
         $password = $repEatDb->sqlInjectionFilter($password);
 
-        $queryText = "select id_utente, username, password, pref_theme, privilegi, ristorante from Utente where username='" . $username . /*"' AND password='" . $password . */"'";
+        $queryText = "select id_utente, username, password, pref_theme, privilegi, ristorante from Utente where username='" . $username . "'";
 
         $result = $repEatDb->performQuery($queryText)[0];
         $numRow = mysqli_num_rows($result);
@@ -88,40 +88,5 @@
 
     }
 
-    /*function signin ($mail, $username, $password){  
-        $uniq_fields = array("username", "mail"); 
-        if ($mail != null && $username != null && $password != null){
-            
-            for ($i = 0; $i < count($uniq_fields); $i++){
-                if(check_existing_fieldValue($uniq_fields[$i], $_POST[$uniq_fields[$i]])){
-                    return "This " . $uniq_fields[$i] . " is already taken";
-                }
-            }
-
-        } else
-            return 'Every field is obligatory';
-        
-        return null;
-    }
-
-    function check_existing_fieldValue ($field, $value){ // FIX: This seems redundant...
-        echo "\nfield: " . $field;
-        echo "\nvalue: " . $value;
-        global $repEatDb;
-        if (is_null($repEatDb))
-            echo "\nrepEat is null!: ";
-        if (isset($param['value'])){
-            $value = $repEatDb->sqlInjectionFilter($param['value']);
-        } else  return 'Missing argument: value';
-
-
-        $queryText = "select * from Utente where " . $field . " = '" . $value . "'";
-
-        $result = $repEatDb->performQuery($queryText);
-        $numRow = mysqli_num_rows($result);
-        $repEatDb->closeConnection();
-        return $numRow;
-        
-    }*/
 
 ?>

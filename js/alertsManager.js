@@ -1,3 +1,9 @@
+/**Generalizzazione dei messaggi informativi
+ * 
+ * Questi rimpiazzano fondamentalmente gli alert, con un'apparenza meno invasiva
+ * e più uniforme allo stile del resto dell'applicazione
+ */
+
 function sendAlert(msg, type = 'info') {
     let msgbox = document.createElement('div')
     alertmsg = document.createElement('p');

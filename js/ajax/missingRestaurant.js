@@ -1,3 +1,10 @@
+/**Schermata di richiesta partecipazione/creazione di un ristorante
+ * 
+ * Dopo la prima registrazione, quando ancora non si fa parte di alcun ristorante, si ha la possibilità di inviare una richiesta di partecipazione
+ * tra l'elenco di ristoranti già registrati, oppure, registrare un nuovo ristorante di cui si diventarà l'amministratore.
+ * Per fare ciò è necessario inserire una licenza valida, acquistabile dalla pagina delle offerte
+ */
+
 function loadMissingRestaurant(user){
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=existsRequest&user=' + user, true, null, 
     function(response){
@@ -8,7 +15,9 @@ function loadMissingRestaurant(user){
             while (this_body.firstChild) {
                 this_body.removeChild(this_body.lastChild);
             }
+            //Se non è stata ancora inviata alcuna richiesta di partecipazione..
             if(response['data'][0]['num_requests'] == 0){
+                //costruzione della lista dei ristoranti già registrati in RepEat
                 AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=listRestaurants', true, null, 
                 function(response){
                     if (response['responseCode'] != 0) {
@@ -50,7 +59,8 @@ function loadMissingRestaurant(user){
 
                         p3 = document.createElement('p');
                         p3.appendChild(document.createTextNode('Oppure, se ne sei un amministratore, puoi registrare il tuo ristorante quì:'));
-
+                        
+                        //form per la registrazione di un nuovo ristorante
                         inr = document.createElement('input');
                         inr.type = 'text';
                         inr.name = 'nome_ristorante';
@@ -82,7 +92,7 @@ function loadMissingRestaurant(user){
 
                         p4 = document.createElement('p');
 
-                        p4.innerHTML = 'Se non hai una licenza, puoi acquistarne una tra quelle proposte <a href="./license.php" target="_blank" rel="noopener noreferrer">quì</a>';
+                        p4.innerHTML = 'Se non hai una licenza, puoi acquistarne una tra quelle proposte <a href="./license.php" target="_blank" rel="noopener noreferrer">quì</a>';    //per semplificare l'inclusione di un anchor viene usato innerHTML. Non si tratta di una stringa dinamica quindi è sicuro
                     
                         this_body = document.getElementById('main-container');
                         
@@ -132,6 +142,8 @@ function loadMissingRestaurant(user){
 
     });
 }
+
+/*-------------------------------------------------------*/
 
 function registerRestaurant(nome_ristorante, indirizzo, license_key, user) {
     AjaxManager.performAjaxRequest('GET', './ajax/dbInterface.php?function=registerRestaurant&nome_ristorante='+nome_ristorante+'&indirizzo='+indirizzo+'&license_key='+license_key+'&user=' + user, true, null, 

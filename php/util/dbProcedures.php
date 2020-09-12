@@ -1,4 +1,17 @@
 <?php
+	/**Codice principale comprendente tutte le azioni effettuabili sul database
+	 * 
+	 * Sono quì descritte tutte le funzioni che potranno essere chiamate da dbInterface.php.
+	 * La maggior parte, molto semplici, sono semplificate ad un semplice dump del o dei records richiesti.
+	 * Altre, in genere quando si richiede l'aggiornamento o la creazione di un record, chiamano una stored procedure
+	 * definita in mysql, così da dare corpo ad operazioni un pochino più complesse (in genere,
+	 * la restituzione dell'id del record appena creato).
+	 * 
+	 * Nello script sql sono anche definite diversi trigger che implementano un database reattivo ai cambiamenti apportati.
+	 * 
+	 * La maggior parte delle funzioni quì descritte è di immediata lettura e il comportamento facilmente intuibile dal nome.
+	 * Per alcune sono comunque presenti alcuni commenti clarificatori.
+	 */
 	require_once __DIR__ . "/../config.php";
     require_once DIR_UTIL . "repEatDbManager.php"; //includes Database Class
 	require_once DIR_UTIL . "sessionUtil.php"; //includes session login
@@ -6,7 +19,8 @@
 
 	/*--------------------------------------------------------*/
 
-	function addLicenseLevel($param){  // CURRENTLY NOT AVAILABLE
+	/*L'amministratore di RepEat può quì aggiungere nuove offerte come livelli di licanza*/
+	function addLicenseLevel($param){  // Attualmente non pubblicamente disponibile in quanto disattivato in dbInterface.php
 		global $repEatDb;
 		if (isset($param['id_livello'])){
 			$id_livello = $repEatDb->sqlInjectionFilter($param['id_livello']);
@@ -108,7 +122,7 @@
 
 	}
 
-	function updateRestaurant($param){ // TODO: check isset($var) to make dynamic query
+	function updateRestaurant($param){
 		global $repEatDb;
 		if (isset($param['nome_ristorante'])){
 			$nome_ristorante = $repEatDb->sqlInjectionFilter($param['nome_ristorante']);
@@ -161,10 +175,7 @@
 
 	}
 
-//get_restaurant_detailed(id), TODO AS COMPOSITE FUNCTION IN PHP
-
-
-	function updateUser($param){ //TODO: check if working isset($var) to make dynamic query
+	function updateUser($param){
 		global $repEatDb;
 		$dynamic_set = "id_utente = id_utente";
 		if (isset($param['username'])){
@@ -199,7 +210,7 @@
 
 	}
 
-// delete_user(id), -- DONT IMPLEMENT IT!!
+	// delete_user(id), -- DONT IMPLEMENT IT!!
 
 	function setPrivilege($param){
 		global $repEatDb;
@@ -245,9 +256,9 @@
 		return $result;
 
 	}
-// get_staff_stats(id, rest_id) -- invalid restaurant id TODO!!
-
-// available components: stanza, tavolo, menu, piatto
+	/* get_staff_stats(id, rest_id) -- TODO: Una delle funzionalità non implementate ma facilmente ottenibili è l'ottenimento di statistiche riguardo al proprio staff tramite data-anaytics
+											(si veda, ad esempio, la media delle recensioni degli ordini a cui ogni utente ha partecipato, oppure l'efficienza in termini di numero di ordini consegnati 
+											o tempo impiegato per ognuno di essi, etc..)*/
 
 	function addRoom($param){
 		global $repEatDb;
@@ -298,33 +309,11 @@
 
 	function addDish($param){
 		global $repEatDb;
-		/*
-		if (isset($param['nome_piatto'])){
-			$nome_piatto = $repEatDb->sqlInjectionFilter($param['nome_piatto']);
-		} else  return 'Missing argument: nome_piatto';
-
-		if (isset($param['categoria'])){
-			$categoria = $repEatDb->sqlInjectionFilter($param['categoria']);
-		} else  return 'Missing argument: categoria';
-
-		if (isset($param['prezzo'])){
-			$prezzo = $repEatDb->sqlInjectionFilter($param['prezzo']);
-		} else  return 'Missing argument: prezzo';
-
-		if (isset($param['ingredienti'])){
-			$ingredienti = $repEatDb->sqlInjectionFilter($param['ingredienti']);
-		} else  return 'Missing argument: ingredienti';
-
-		if (isset($param['allergeni'])){
-			$allergeni = $repEatDb->sqlInjectionFilter($param['allergeni']);
-		} else  return 'Missing argument: allergeni';
-		*/
-
 		if (isset($param['ristorante'])){
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
 		} else  return 'Missing argument: ristorante';
 
-		$queryText = 'INSERT INTO Piatto (ristorante) VALUE (' . $ristorante . ');'; //TODO check for allergeni in set format
+		$queryText = 'INSERT INTO Piatto (ristorante) VALUE (' . $ristorante . ');'; 
 						
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
@@ -409,7 +398,7 @@
 			$nome_piatto = $repEatDb->sqlInjectionFilter($param['nome_piatto']);
 		} else  return 'Missing argument: nome_piatto';
 
-		if(!preg_match("/^[^,]+$/", $nome_piatto)){	//necessary for the GROUP_CONCAT in listRooms
+		if(!preg_match("/^[^,]+$/", $nome_piatto)){	//nome piatto non deve contenere virgole: necessario per il corretto funzionamento del GROUP_CONCAT in listMenu
 			return 'Argument nome_piatto can not contain commas';
 		}
 
@@ -475,6 +464,7 @@
 
 	}
 
+	/*Ottiene i piatti disponibili nell'attuale fascia oraria (in funzione dei menu) del proprio ristorante, divisi per categoria*/
 	function getCurrentDishes($param){
 		global $repEatDb;
 		if (isset($param['ristorante'])){
@@ -543,6 +533,7 @@
 
 	}
 
+	/*Riassume i menu del ristorante con i relativi piatti (raggruppati tramite la group_concat)*/
 	function listMenus($param){
 		global $repEatDb;
 		if (isset($param['ristorante'])){
@@ -571,7 +562,7 @@
 
 		$queryText = 'SELECT P.id_piatto, P.nome, P.categoria, CAST(P.prezzo AS DECIMAL(5, 2)) AS prezzo, P.ingredienti, P.allergeni, P.ristorante ' .
 						' FROM Menu M INNER JOIN ComposizioneMenu CM ON M.id_menu = CM.menu INNER JOIN Piatto P ON CM.piatto = P.id_piatto ' .
-						' WHERE M.id_menu = ' . $menu . ' AND M.ristorante = ' . $ristorante .
+						' WHERE M.id_menu = ' . $menu . ' AND M.ristorante = ' . $ristorante . //Poichè ristorante viene passato tramite PHPSESSION, garantisce di non poter vedere il menu di un altro ristorante, pur conoscendone l'id
 						' ORDER BY P.categoria;';
 
 		$result = $repEatDb->performQuery($queryText);
@@ -833,6 +824,10 @@
 
 	}
 
+	/*Ricava l'attesa massima tra gli ordini non ancora consegnati.
+	*
+	* Non usato, è il lascito di una funzionalità non ancora implementata
+	* che coinvolge l'attesa massima consentita in un ristorante*/
 	function getMaxTableWait($param){
 		global $repEatDb;
 		if (isset($param['ristorante'])){
@@ -861,7 +856,7 @@
 
 	}
                     
-	function getCheck($param){ // should be done after an update to calculate total
+	function getCheck($param){ // da chiamare dopo un update che calcoli il totale del conto
 		global $repEatDb;
 		if (isset($param['ristorante'])){
 			$ristorante = $repEatDb->sqlInjectionFilter($param['ristorante']);
@@ -915,6 +910,8 @@
 
 	} 
 
+	/*Restituisce, per ogni persona con cui questo utente ha avuto una comunicazione,
+	* il numero di messaggi non letti, il nome del'altro utente e l'ultima messaggio nella chat*/
 	function getChats($param){
 		global $repEatDb;
 		if (isset($param['user'])){
