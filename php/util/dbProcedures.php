@@ -717,7 +717,7 @@
 			' AND C.ristorante = (SELECT U.ristorante' .
 								' FROM Utente U' .
 								' WHERE id_utente = ' . $user . ') ' .
-		' ORDER BY SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) DESC;';
+		' ORDER BY SEC_TO_TIME(UNIX_TIMESTAMP(CURRENT_TIMESTAMP()) - UNIX_TIMESTAMP(O.ts_ordine) ) DESC;';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
@@ -738,7 +738,7 @@
 			' AND C.ristorante = (SELECT U.ristorante ' .
 								' FROM Utente U '.
 								' WHERE id_utente = ' . $user . ') ' .
-		' ORDER BY SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) DESC;';
+		' ORDER BY SEC_TO_TIME(UNIX_TIMESTAMP(CURRENT_TIMESTAMP()) - UNIX_TIMESTAMP(O.ts_ordine) ) DESC;';
 		$result = $repEatDb->performQuery($queryText);
 		$repEatDb->closeConnection();
 		return $result;
