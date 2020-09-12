@@ -390,7 +390,7 @@ CREATE TABLE `Ordine` (
   `id_ordine` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `note` varchar(255) DEFAULT NULL,
   `quantita` float UNSIGNED NOT NULL DEFAULT 1,
-  `ts_ordine` timestamp NOT NULL,
+  `ts_ordine` timestamp NULL DEFAULT NULL,
   `ts_preparazione` timestamp NULL DEFAULT NULL,
   `ts_consegna` timestamp NULL DEFAULT NULL,
   `conto` int(11) UNSIGNED NOT NULL,
