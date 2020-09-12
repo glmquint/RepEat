@@ -704,13 +704,14 @@
 
 	}
 
+	/*Riassume gli ordini in attesa di essere preparati*/
 	function getOrdersWaiting($param){
 		global $repEatDb;
 		if (isset($param['user'])){
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		$queryText = 'SELECT O.id_ordine, O.quantita, P.nome, O.note, C.tavolo, C.stanza, SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) AS attesa ' . 
+		$queryText = 'SELECT O.id_ordine, O.quantita, P.nome, O.note, C.tavolo, C.stanza, SEC_TO_TIME(UNIX_TIMESTAMP(CURRENT_TIMESTAMP()) - UNIX_TIMESTAMP(O.ts_ordine) ) AS attesa ' . 
 		' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .
 		' WHERE ts_preparazione IS NULL' .
 			' AND C.ristorante = (SELECT U.ristorante' .
@@ -723,13 +724,14 @@
 
 	}
 
+	/*Riassume gli ordini pronti ed in attesa di essere consegnati*/
 	function getOrdersReady($param){
 		global $repEatDb;
 		if (isset($param['user'])){
 			$user = $repEatDb->sqlInjectionFilter($param['user']);
 		} else  return 'Missing argument: user';
 
-		$queryText = 'SELECT O.id_ordine, O.quantita, P.nome, O.note, C.tavolo, C.stanza, SEC_TO_TIME(CURRENT_TIMESTAMP() - O.ts_ordine ) AS attesa ' . 
+		$queryText = 'SELECT O.id_ordine, O.quantita, P.nome, O.note, C.tavolo, C.stanza, SEC_TO_TIME(UNIX_TIMESTAMP(CURRENT_TIMESTAMP()) - UNIX_TIMESTAMP(O.ts_ordine) ) AS attesa ' . 
 		' FROM Ordine O INNER JOIN Conto C ON O.conto = C.id_conto INNER JOIN Piatto P ON O.piatto = P.id_piatto ' .
 		' WHERE ts_preparazione IS NOT NULL' .
 			' AND ts_consegna IS NULL' .
