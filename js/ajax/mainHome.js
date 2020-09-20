@@ -51,7 +51,14 @@ function loadMainHome(user) {
                             t = document.createElement('div');
                             t.innerHTML = 'Licenza scaduta o disabilitata, puoi acquistarne una tra quelle proposte <a href="./license.php" target="_blank" rel="noopener noreferrer">quì</a>';
                             body.appendChild(t);
-                            loadRestaurantSettings(body, ristorante);
+                            restaurantDiv = document.createElement('div');
+                            restaurantDiv.classList.add('restaurant-container');
+                            loadRestaurantSettings(restaurantDiv, ristorante);
+                            // rw = document.createElement('div');
+                            // rw.id = 'role-view';
+                            // rw.appendChild(restaurantDiv);
+                            // body.appendChild(rw);
+                            body.appendChild(restaurantDiv);
                         }
                     } else {
                         p = document.createElement('p');

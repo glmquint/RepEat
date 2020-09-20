@@ -474,7 +474,7 @@ DELIMITER ;
 
 -- SELECT * FROM logtable;
 
-
+/*
 --
 -- Popolamento
 --
